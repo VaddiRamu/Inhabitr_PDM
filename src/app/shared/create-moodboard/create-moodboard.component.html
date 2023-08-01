@@ -1,0 +1,153 @@
+<div class="container">
+  <div class="col-12" mt-5 p-3>
+    <form [formGroup]="moodboardForm" (ngSubmit)="onSubmit()">
+      <div class="container-fluid ">
+        <div class="row d-flex justify-content-center">
+          <div class="col-12 col-md-8 col-lg-8 col-xl-8 p-0">
+            <nav class="breadcrum-nav" aria-label="breadcrumb">
+              <ol class="breadcrumb bg-transparent m-0 p-0 list-view">
+                <li class="breadcrumb-item "><a href="javascript:void(0)">Create New Moodboard</a></li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+        <div class="row d-flex boxWidth pb-4">
+          <div class="col-12 col-md-8 col-lg-8 col-xl-8 bg-white border pr-4 new_board">
+            <label for="mbType" class="control-label pl-2 pt-2">Moodboard Type</label>
+            <div class="btn-group mainGroup" role="group" aria-label="Basic mixed styles example">
+              <ng-container *ngFor="let mbdType of moodbTypess">
+                <button type="button" class="btn-light btnGroup"(click)="selectMoodbType(mbdType)" formControlName="mb_type_detail" 
+                [ngClass]="{'selected':mbdType?.type_id == moodboardTypeId  }" value="{{mbdType?.type_id}}">
+                  <div>
+                    <img width="100px" height="100px" src="{{mbdType.imageSrc}}" alt="{{mbdType.value}}">
+                  </div> 
+                  <div fxLayout="row" class="text image-center" fxLayoutGap="1rem" fxLayoutAlign="start center">
+                    <div fxLayout="row" class="text-lable"> {{mbdType.value}}</div>
+                  </div>                                     
+                </button>
+              </ng-container>
+            </div>
+            <div class="row d-flex justify-content-center mt-4">
+              <div class="form-group  mb-2 col-12 col-md-6">
+                <label for="mbName" class="control-label pl-2">Moodboard Name <span
+                    class="text-danger bold">*</span></label>
+                <input type="text" class="form-control ml-2" id="mbName" required formControlName="moodboard_name"
+                  placeholder="Required">
+              </div>
+              <!-- <div class="form-group mb-2 col-12 col-md-6 ">
+                <label for="mbType" class="control-label pl-2">Moodboard Type</label>
+                <div class="dropdown text-center">
+                  <button class="btn btn-white dropdown-toggle border position-relative text-left rounded-0"
+                    type="button" id="moodboardType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{moodbTypeName}}
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="moodboardType">
+                    <div ng-repeat="mbdType in moodbTypes">
+                      <a class="dropdown-item" *ngFor="let mbdType of moodbTypes" (click)="selectMoodbType(mbdType)"
+                        href="javascript:void(0)">{{mbdType.typename}}</a>
+                    </div>
+                  </div>
+                </div>
+                <input type="text" *ngIf="moodbTypeName == 'Others'" class="form-control mt-2" id="mbType" formControlName="mb_type_detail">
+              </div> -->
+              <div class="form-group  mb-2  col-12 col-md-6 ">
+                <label for="cRef" class="control-label  pl-2">State<span
+                  class="text-danger bold">*</span></label>
+                <ng-select [items]="stateList" class="ml-2" bindLabel="name" formControlName="state"
+                  [(ngModel)]="selectedState" placeholder="Select State" (change)="onChangeState($event)">
+
+                </ng-select>
+
+              </div>
+            </div>
+
+            <div class="row d-flex justify-content-between mt-4">
+              <!-- <div class="form-group mb-2 col-12 col-md-6">
+                <label for="mbUnit" class="pl-2 control-label">Unit#</label>
+                <input type="number" class="form-control ml-2" id="mbUnit" formControlName="unit">
+              </div> -->
+             
+              <div class="form-group mb-2 col-12 col-md-6 ">
+                <label for="mbType" class="control-label pl-2">City<span
+                  class="text-danger bold">*</span></label>
+                <input type="text" class="form-control ml-2" formControlName="city">
+                <!-- <div class="dropdown text-center">
+                <button class="btn btn-white dropdown-toggle border position-relative text-left"
+                  type="button" id="whType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{whName}}
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="moodboardType">
+                  <div *ngFor="let ware of warehouse">
+                    <a class="dropdown-item" (click)="selectWarehouse(ware)"
+                      href="javascript:void(0)">{{ware.warehouse_name}}</a>
+                  </div>
+                </div>
+              </div> -->
+              </div>
+              <div class="form-group  mb-2 col-12 col-md-6">
+                <label for="mbName" class="control-label pl-2">Zipcode(Optional)</label>
+                <input type="text" class="form-control ml-2" id="mbName" formControlName="zipcode"
+                  placeholder="Enter Zipcode">
+              </div>
+            </div>
+            <div class="row  justify-content-between mt-4 ">
+              <div class="form-group mb-2 col-12 col-md-6 ">
+                <div class="add-button">
+                  <div>
+                    <label for="mbType" class="control-label pl-2">Company Name</label>
+                    <span class="text-danger">*</span>
+                  </div>
+                  <a (click)="toggleAddButton()"><small><i class="fa fa-plus-circle pr-1"></i>Create New Company</small></a>
+                </div>
+                <div class="pl-2">
+                  <select *ngIf="!addCompany" (change)="selectCompany($event)" formControlName="company_id"
+                    class="form-control">
+                    <option *ngFor='let company of companyList' [value]="company.sgid">{{company.company}}</option>
+                  </select>
+                  <input type="text" *ngIf="addCompany" class="form-control" id="mbName"
+                    formControlName="company_name" placeholder="Enter Company Name">
+                </div>
+
+
+              </div>
+              <div class="form-group  mb-2 col-12 col-md-6">
+                <!-- <label for="mbName" class="control-label pl-2">Project Name </label><span class="text-danger">*</span>
+                <input type="text" class="form-control ml-2" id="mbName" required formControlName="project_name"
+                  placeholder="Enter Project Name"> -->
+                  <div class="add-button">
+                    <div>
+                      <label for="projectName" class="pl-2 control-label">Project Name </label>
+                      <span class="text-danger bold">*</span>
+                    </div>
+                    <a (click)="toggleAddButtonProject()"><small><i class="fa fa-plus-circle pr-1"></i>Create New Project</small></a>
+                  </div>
+                 
+                  <select *ngIf="!addProject" (change)="selectProject($event)" formControlName="project_id"
+                    class="form-control">
+                    <option disabled></option>
+                    <option *ngFor='let project of projectList' [value]="project.sgid">{{project.project}}</option>
+                  </select>
+                  <input type="text" *ngIf="addProject" class="form-control " id="projectName" value="" formControlName="project_name"
+                   autocomplete="off">
+                     
+              </div>
+            </div>
+
+            <div class="row  d-flex justify-content-center mt-2 mb-2">
+              <div class="col-12 col-md-8 col-lg-8 col-xl-8">
+                <div class="d-flex justify-content-center">
+                  <button type="submit" 
+                    class="border btn btn-light mt-2 mr-2 px-5 add-btn align-item-center ">Create</button>
+                    <button type="submit" [hidden]="routeData.id"
+                    class="border btn btn-light mt-2 px-5 add-btn align-item-center" (click)="backMethod()">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>

@@ -1,0 +1,140 @@
+<header class="section-header auth-header shadow-sm">
+    <div class="container">
+        <div class="row justify-content-center  ">
+            <div class="col-xs-12  d-flex flex-wrap align-content-center " id="header">
+                <div class="header-left d-flex align-items-center"><a class="navbar-brand" href="/">INHABITR <em
+                            _ngcontent-tpd-c1="">Live Flexibly</em></a></div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div id="content" class="col-md-10 float-right pb-3">
+    <div class="container-fluid table-data">
+        <div id="content" class="container mt-5 p-0 page-content">
+            <div class="row">
+                <div class="card prod-card rounded border-0 ml-2 mt-4 col-md-12">
+                    <div class="card-image clearfix text-left mt-3">
+                        <table class="table table-bordered mt-5 bootstrap">
+                            <thead>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Company Name</th>
+                                <th>User ID</th>
+                                <!-- <th>Source</th> -->
+                                <th>Last Password Change Date Time</th>
+                                <th>Last Login Date Time</th>
+                                <th>Reset Password</th>
+                            </thead>
+                            <tbody>
+                                <tr class="ng-star-inserted" *ngFor="let data of tableData">
+                                    <td> {{data.first_name}} </td>
+                                    <td> {{data.last_name}} </td>
+                                    <td> {{data.company}} </td>
+                                    <td> {{data.user_id}} </td>
+                                    <!-- <td> {{data.source}} </td> -->
+                                    <td> {{data.last_pass_change_date}} </td>
+                                    <td> {{data.last_login}} </td>
+                                    <td><span data-toggle="modal" data-target="#myModal" class="fa fa-edit" style="cursor: pointer;" (click)="openPopUp(data)"></span></td>
+                                </tr>
+                            </tbody>
+                            <!-- <tbody>
+                                <tr *ngFor="let data of tableData">
+                                    {{data}}
+                                    <td>{{data.first_name}}</td>
+                                </tr>
+                            </tbody> -->
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+        
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header my-4">
+                <h4 class="model-title">Reset new password</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <section >
+                <div class="container-fluid">
+                    <div>
+                        <div>
+                            <form [formGroup]="resetPwdForm">
+                                <div class="container">
+                                    <div>
+                                        <div class="col-12" >
+                        
+                                            <!-- <div class="row">
+                                                <div class="col text-center">
+                                                    <h4 class="login-title my-4">Reset new password</h4> </div>
+                                            </div> -->
+                                            
+                                            <div class="row align-items-center " >
+                                                <div class="col " style="height:60px">
+                                                    <input type="email" disabled class="form-control" placeholder="Enter your email*"  formControlName="email" [pattern]="emailPattern">
+                                                    <div class="text-danger" *ngIf="resetPwdForm.controls['email'].invalid  && isSubmitted">
+                        
+                                                        <div *ngIf="resetPwdForm.controls['email'].errors.required">
+                                                            Enter email
+                                                        </div>
+                                                        <div *ngIf="resetPwdForm.controls['email'].errors.pattern">
+                                                            invalid email
+                                                        </div>
+                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
+                                            <div class="row align-items-center"  >
+                                                <div class="col " style="height:60px">
+                                                    <input type="password" class="form-control" placeholder="Password*" formControlName="password">
+                                                    <div class="text-danger" *ngIf="resetPwdForm.controls['password'].invalid  && isSubmitted">
+                                                        <div *ngIf="resetPwdForm.controls['password'].errors.required">
+                                                            Enter password
+                                                        </div>
+                                                        <div *ngIf="resetPwdForm.controls['password'].errors.minlength">
+                                                            password must be minimum 6 character length
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="row justify-content-center " >
+                                                <div class="col " style="height:60px" >
+                                                    <input type="password" class="form-control" placeholder="Confirm Password*" formControlName="confirm_password">
+                                                    <div class="text-danger" *ngIf="resetPwdForm.controls['confirm_password'].invalid && isSubmitted">
+                                                        <div *ngIf="resetPwdForm.controls['confirm_password'].errors.required">
+                                                            Confirm password required
+                                                        </div>
+                                                        <div class="text-danger" *ngIf="resetPwdForm.get('confirm_password').errors && 
+                                                        resetPwdForm.get('confirm_password').errors.confirm_password && isSubmitted || resetPwdForm.get('confirm_password').errors && 
+                                          resetPwdForm.get('confirm_password').errors.confirm_password && (resetPwdForm.controls['confirm_password'].dirty && isSubmitted || resetPwdForm.controls['confirm_password'].touched)">
+                                                             Password does not match
+                                                        </div>
+                                                    </div>
+                                                  </div>
+                                            </div>
+                                            <!-- <div class="row justify-content-center " >
+                                                <button type="submit" class="btn btn-dark mb-4" > Reset password  </button>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-dark" data-dismiss="modal" (click)="onSubmit()"> Reset password  </button>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+</div>

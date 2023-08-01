@@ -1,0 +1,12 @@
+.pdf-scroll{
+    height: 620px;
+    overflow-y: scroll;
+    padding: 0 40px 0 40px;
+}
+.modal-title{
+    font-size: 1.5rem !important;
+    text-align: start !important;
+}
+.button-view button{
+    width: 120px;
+}

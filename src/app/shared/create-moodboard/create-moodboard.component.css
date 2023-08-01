@@ -1,0 +1,150 @@
+.breadcrum-nav {
+  margin-top: 40px !important;
+  margin-bottom: 23px;
+  padding: 0 !important;
+}
+
+.breadcrum {
+  padding-left: 0 !important;
+}
+
+.control-label {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 23px;
+  color: #000000;
+  padding-bottom: 5px;
+}
+
+.breadcrumb-item>a {
+  text-decoration: none;
+  font-size: 16px;
+  color: #2E2E2E;
+  line-height: 33px;
+  font-weight: bold;
+}
+
+.breadcrumb-item>a {
+  color: #000;
+  cursor: default;
+}
+
+#moodboardType {
+  width: 100%;
+  background-color: #fff !important;
+  border: 1px solid #dee2e6 !important;
+  color: black !important;
+}
+
+#whType {
+  width: 100%;
+  background-color: #fff !important;
+  border: 1px solid #dee2e6 !important;
+  color: black !important;
+}
+
+.dropdown-toggle::after {
+  position: absolute;
+  right: 10px;
+  top: 15px;
+}
+
+.dropdown-menu {
+  width: 100%;
+}
+
+.add-button {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btnGroup {
+  border: none;
+  /* padding: 5px; */
+  margin: 1px !important;
+  box-shadow: 0px 0px 4px rgb(0 0 0 / 25%);
+  /* padding: 0px; */
+  border: none;
+  /* margin: 3px; */
+  border-radius: 5px;
+}
+
+.selected {
+  border: 3px solid #F7C132 !important;
+}
+
+select {
+  margin: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  padding: 0.5em 3.5em 0.5em 1em;
+  /* background-image: linear-gradient(45deg, transparent 50%, gray 50%),
+    //   linear-gradient(135deg, gray 50%, transparent 50%),
+       radial-gradient(#febf2d 92%, transparent 72%);
+    */
+  background-image: url("/assets/img/newdropdown.svg");
+  /*background-position: calc(100% - 20px) calc(1em + 2px),
+      calc(100% - 15px) calc(1em + 2px), calc(100% - 0.5em) 0.5em;*/
+  background-position: right;
+  background-repeat: no-repeat;
+}
+
+.ng-select ::ng-deep .ng-arrow {
+  display: none !important;
+}
+
+.ng-select ::ng-deep .ng-arrow-wrapper {
+  height: 50px;
+  width: 50px;
+  background-image: url("/assets/img/newdropdown.svg");
+  background-repeat: no-repeat;
+  margin-top: 13px;
+}
+/* .bgColor{
+  background-color: #f4f4f4;
+} */
+
+.form-control{
+  box-shadow: 0px 0px 4px rgb(0 0 0 / 25%);
+border-radius: 5px;
+padding: 0.6rem 1rem;
+font-size: inherit;
+border: 1px;
+width: 100%;
+}
+ng-select{
+box-shadow: 0px 0px 4px rgb(0 0 0 / 25%);
+border-radius: 5px;
+/* padding: 0.6rem 1rem; */
+/* font-size: inherit; */
+border: none;
+width: 100%;
+}
+.boxWidth{
+  width: 1080px;
+}
+.add-btn{
+  height: 49px;
+    font-size: 16px !important;
+    width: 175px;
+}
+
+.new_board{
+  margin: 0 auto;
+  border: none !important;
+}
+.list-view{
+  text-align: center;
+}
+.list-view li{
+  /* width: 100%; */
+  margin-left: 295px;
+}
+::ng-deep.ng-select .ng-clear-wrapper {
+  display: none !important;
+}

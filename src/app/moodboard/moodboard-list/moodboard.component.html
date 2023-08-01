@@ -1,0 +1,101 @@
+<div class="wrapper">
+    <div class="mb-banner">
+        <div class="mb-banner-left" fxLayoutGap="3rem">
+            <div class="mb-banner-icon">
+                <img src="assets/img/moodboard1.svg" alt="iconAltTxt" />
+            </div>
+            <!-- <div class="mb-banner-icon" *ngIf="iconSrc.">
+              <img src="{{ iconSrc }}" alt="{{ iconAltTxt }}" />
+            </div> -->
+            <div fxLayout="column" fxFlex="30" class="textleft">
+                <span class="mb-banner-left-text h1">MOODBOARD</span><br>
+                <span class="margin-btw">Style & create a look from our collection of designer furniture.</span>
+            </div>
+        </div>
+        <div class="mb-banner-right">
+            <img height="100%" width="100%" src="assets/img/mb-banner.jpg" alt=" altTxt " />
+        </div>
+    </div>
+    <ng-content [select]="footer"></ng-content>
+</div>
+
+<div id="content" class="container mt-5 ">
+    <div class="row mb-5">
+        <div class="col-xl-3 d-flex" style="position: absolute;right: 50%;left: 41%; margin-top: -16px;">
+            <a class="addButton" (click)="createMooodBoard();">
+                <i class="fa fa-plus-circle iconDesign" aria-hidden="true"></i>
+            </a>
+            <span class="p-2 pt-4 ml-3" style="font-size: 20px; color: black;"><b>Create New Moodboard</b></span>
+            <!-- <button data-toggle="tooltip" data-placement="bottom" title="Create Moodboard" type="button"
+                class="btn-success mt-2" (click)="createMooodBoard();">
+            </button>  -->
+        </div>
+
+    </div>
+    <div class="active col-12 mt-3  p-5 page-content">
+        <div class="col-12  pt-2" style="bottom: 10px;">
+
+            <div class="row w-100 filters d-flex justify-content-center align-content-center">
+
+                <div class="col text-center">
+                    <span [class.menuactive]="selectedNav === 'all'" (click)='getBoards("all")'>All Moodboards</span>
+                </div>
+                <div class="col text-center">
+                    <span [class.menuactive]="selectedNav === 'my'" (click)='getBoards("my")'>My Moodboards</span>
+                </div>
+
+                <div class="col text-center">
+                    <span [class.menuactive]="selectedNav === 'dis'" (click)='getBoards("dis")'>My Disabled
+                        Moodboards</span>
+                </div>
+            </div>
+            <hr>
+            <div class="row" style="align-items: center;justify-content: center;">
+                <div class="col-xl-3 mt-3 mb-5">
+                    <app-advance-search (OnItemChange)="onCompanyChnage($event)"
+                        (OnKeyUp)="advanceSearchCompany($event)" [list]="companyList" displayKey="company"
+                        [placeholder]="'Select Company'"></app-advance-search>
+                </div>
+                <div *ngIf="selectedCompany" class="select-company col-xl-3  mt-2 mb-5 float-end">
+                    <select id="dropdownMenuButton" (change)="onProjectChange($event)" [(ngModel)]="selectedProject"
+                        class="form-control"
+                        style="display: inline-block;margin-top: .5rem;border-color: black;border-radius: 0.25rem;">
+                        <option value='' disabled hidden> {{'Select Project-'| titlecase}} </option>
+                        <option *ngFor='let attr of projectList' [selected]="attr.selected==true"
+                            [value]="attr.project_name">{{attr.project_name | titlecase}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- <pre> {{ moodboardData | json }} </pre> -->
+            <div class="row card-group container-fuild">
+                <div class="col-4 mb-3" *ngFor="let board of moodboardData" infiniteScroll [infiniteScrollDistance]="2"
+                    [infiniteScrollThrottle]="50" [scrollWindow]="true">
+                    <div class="card mt-3 mb-2 " style="height:100%;     box-shadow: 0px 0px 4px rgb(0 0 0 / 25%);
+                    border-radius: 10px;" class="cardDesign card">
+                        <div> <a class="fa fa-trash pointer" *ngIf="UserId===board.userid && board.isactive" style="float: right; margin: 10px 10px 0 0;
+                                " (click)='DeleteModdboard(board.sgid,board.userid)'></a>
+                            <a class="fa fa-check-circle pointer" *ngIf="UserId===board.userid && !board.isactive"
+                                style="float: right;
+                                font-size: x-large;color:green" (click)='ActiveMoodboard(board.sgid,board.userid)'></a>
+                        </div>
+                        <img src="{{board.is_moodboard_images.large ? board.is_moodboard_images.large : 'https://inhabitr-furniture-prod.s3.amazonaws.com/noimage.jpg' }}"
+                            (click)="details(board.sgid)" class="img-responsive" alt="{{board.boardname}}"
+                            style="height: 200px;">
+                        <div class="font16  pl-3 pb-1 pt-3"><span>Board Name:</span> <span
+                                class="font-weight-bold">&nbsp; {{board.boardname}}</span></div>
+                        <div class="font16  pl-3 pb-1" *ngIf="selectedNav === 'all'"><span>Created by:</span> <span
+                                class="font-weight-bold">&nbsp; {{board.user?.first_name | titlecase }}
+                                {{board.user?.last_name | titlecase}}</span></div>
+                        <div class="font16  pl-3 pb-1"><span>Source: </span> <span *ngIf="board.application_type==1"
+                                class="font-weight-bold">PDM</span><span *ngIf="board.application_type==2"
+                                class="font-weight-bold">Business Inhabitr</span></div>
+                        <!-- <div class="font12  pl-3 pb-3"><span>created by:</span><span class="font-weight-bold">&nbsp; {{board.createdBy}}</span></div>
+                                <div class="font12  pl-3 pb-3"><span>created Date:</span><span class="font-weight-bold">&nbsp; {{board.createdTime}}</span></div>
+                                <div class="font12 pl-3 pb-3 "><span>city:</span><span class="font-weight-bold" >&nbsp; {{board.customer_location}}</span></div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,170 @@
+@import url(../project-common.css);
+
+.room-section{
+    border: 0;
+    background: #fff;
+    /* margin-top: 10px; */
+    padding: 18px 40px;
+}
+
+.room-selection select{
+    width: 100%;
+    padding: 0.4375rem 0.75rem;
+    border: 1px solid #ebedf2;
+    border-radius: 5px;
+}
+.image_container{
+    display: flex;
+    flex-wrap: wrap;
+}
+.image_container img {
+    width: 50%;
+    margin-bottom: 10px;
+    height: 100px;
+    padding: 10px;
+}
+.price-list{
+    list-style: none;
+    padding: 0;
+  
+}
+.price-list li{
+    color: black;
+    padding: 2px 0;
+    font-size: 13px;
+}
+.custom-footer{
+    background: #fafafa;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border: none;
+    padding: 15px;
+}
+.button-details{
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+.button-details button{
+    background-color: #ffc000 !important;
+    border: none !important;
+    padding: 8px 0 8px 10px;
+    width: 100%;
+    margin: 23px 0px 9px 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 16px !important;
+    font-weight: 600;
+    text-align: center;
+}
+.button-details button:focus{
+    outline: none;
+    box-shadow: none;
+}
+.nodata{
+    width: 100%;
+    text-align: center;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.selection-view{
+    background: #F4F4F4;
+    padding: 20px 4px 20px 4px;
+    margin-top: 20px;
+    /* margin: 20px 0px 20px 0px; */
+    border-radius: 5px;
+}
+.heading-view{
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+}
+.heading-view img{
+    padding-right: 13px;
+}
+.border-view{
+    position: relative;
+}
+.border-view::after{
+    content: '';
+    border-left: 3px solid #F4F4F4;
+    position: absolute;
+    /* height: 100%;
+    right: -15px; */
+    height: 87%;
+    right: -26px;
+    top: 0;
+}
+.project-list{
+    list-style: none;
+}
+.project-list li{
+    padding: 10px 0;
+}
+.room-breadcrum-list{
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    padding-left: 0px;
+}
+.room-breadcrum-list li{
+    background: #F4F4F4;
+    border-radius: 50px;
+    padding: 6px 8px 6px 8px;
+    text-align: center;
+    margin: 20px 19px 0 19px;
+    color: #000;
+    font-size: 14px;
+}
+.custom-card:hover .overly-view{
+    background-color: #000;
+    position: absolute;
+    z-index: 9;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    border-radius: 5px;
+    opacity: .6;
+    left: 0; 
+}
+.custom-card:hover .custom-overlay-button{
+    display: block;
+    position: absolute;
+    top: 0;
+    z-index: 9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+}
+.custom-overlay-button{
+    display: none;
+}
+.add-button button{
+    background-color: #ffc000;
+    border: none;
+    padding: 8px 0 8px 10px;
+    width: 200px;
+    height: 50px;
+    margin: 23px 0px 9px 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 16px !important;
+    font-weight: 600;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.view-details button{
+    background-color: #F4F4F4;
+}

@@ -1,0 +1,280 @@
+<div class="col-sm-10 col-md-10 col-7 p-0 float-right">
+<div  id="content" [class]="!showMenu?'active container page-content p-5 mt-5':'container page-content p-5 mt-5'">
+        
+    <div class="container-fluid" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
+        (scrolled)="onScroll()" [scrollWindow]="true">
+        <div class="row  bg-white filters d-flex justify-content-center align-content-center  mb-3">
+                <div class="col text-center" (click)="clearAll('all')">
+                    <span [class.menuactive]="!selectedCategory.name && !publishVal && !selectedSupplier.name && !selectedWarehouse.name"  >All</span>
+                </div>
+                <div class="col text-center"  (click)="open(mymodal,'room')">
+                        <span [class.menuactive]="selectedCategory.name"  >Room Type</span>
+                </div>
+                <div class="col text-center dropdown-toggle" href="#" id="publishDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span [class.menuactive]="selectedCategory.name" >Publish Status</span>
+                </div>
+                <div class="dropdown-menu publishDropdown" aria-labelledby="publishDropdown">
+                    <!-- <div class="col text-center dropdown-item"  (click)="filterItems('publish', 'register_with_ops')">
+                        <span [class.menuactive]="selectedCategory.name"  >Register with Ops</span>
+                    </div>
+                    <div class="col text-center dropdown-item"  (click)="filterItems('unpublish', 'unregister_from_ops')">
+                        <span [class.menuactive]="selectedCategory.name">Not registered with Ops</span>
+                    </div> -->
+                    <div class="col text-center dropdown-item"  (click)="filterItems('publish', 'publish_to_saffron')">
+                        <span [class.menuactive]="selectedCategory.name">Publish to Used Furniture</span>
+                    </div>
+                    <div class="col text-center dropdown-item"  (click)="filterItems('unpublish','unpublish_to_saffron')">
+                        <span [class.menuactive]="selectedCategory.name">Not Publish to Used Furniture</span>
+                    </div>
+                </div>
+                <!-- <div *ngIf="!(loggedUserInfo.supplier_id!= null && loggedUserInfo.supplier_id>0)" class="col text-center" (click)="open(mymodal,'supplier')">
+                    <span [class.menuactive]="selectedSupplier.name"  >Suppliers</span>
+                </div>
+                <div class="col text-center" *ngIf="!(loggedUserInfo.supplier_id!= null && loggedUserInfo.supplier_id>0)" (click)="open(mymodal,'ware')">
+                    <span [class.menuactive]="selectedWarehouse.name"  *ngIf="!(loggedUserInfo.supplier_id!= null && loggedUserInfo.supplier_id>0)">Warehouse</span>
+                </div> -->
+
+                <div *ngIf="(loggedUserInfo.supplier_id!= null && loggedUserInfo.supplier_id>0)" class="col text-center" (click)="open(mymodal,'loc')">
+                    <span [class.menuactive]="selectedWarehouse.name"  >Price Range</span>
+                </div>
+         </div>
+         <div class="row pull-right">
+            <button type="button" class="btn btn-secondary  mr-2 " (click)="resetFilter()">Clear</button>
+          </div>
+          <br>
+         <div class="row mt-2" style="margin-left: 0%;">
+             <div class="col" *ngIf="packagetitle != null">
+                    <span class="badge badge-secondary p-2 pointer mr-2 mb-2" *ngIf="packagetitle != null" (click)="clearAll('category')"><span>{{packagetitle | titlecase}}</span> <span>&nbsp;<i class="fa fa-close"></i></span></span>
+                    <!-- <span class="badge badge-secondary p-2 pointer mr-2  mb-2" *ngIf="selectedSupplier.name" (click)="clearAll('supplier')">{{selectedSupplier.name | titlecase}} <span>&nbsp;<i class="fa fa-close"></i></span></span>
+                    <span class="badge badge-secondary p-2 pointer mr-2  mb-2" *ngIf="selectedWarehouse.name" (click)="clearAll('warehouse')">{{selectedWarehouse.name | titlecase}} <span>&nbsp;<i class="fa fa-close"></i></span></span>
+                    <span class="badge badge-secondary p-2 pointer mr-2  mb-2v" *ngIf="selectedPriceRange.start" (click)="clearAll('pricerange')">{{selectedPriceRange.start}} - {{selectedPriceRange.end}} <span>&nbsp;<i class="fa fa-close"></i></span></span>
+                    &nbsp;<span class="badge badge-secondary p-2 pointer  mb-2" *ngIf="publishVal === 'true'" (click)="clearAll('sort')">Published <span>&nbsp;<i class="fa fa-close"></i></span></span>
+                   &nbsp;<span class="badge badge-secondary p-2 pointer  mb-2" *ngIf="publishVal === 'false'" (click)="clearAll('sort')">UnPublished <span>&nbsp;<i class="fa fa-close"></i></span></span> -->
+                </div>
+         </div>
+         <!-- <div class="row pull-right">
+            <button type="button" class="btn btn-secondary  mr-2 " style="background: #999 !important;" >Clear</button>
+          </div>
+          <br> -->
+        <div class="row mt-2">
+            <div class="col-sm-12 ">
+                <div class="row" style='border-radius:5px;'>
+                    <div class="col-lg-3 form-group"  *ngFor="let item of variations">
+                    <div class="card h-100 w-100">
+                        <div class="full-width product-list" >
+                            <span class="tag" *ngIf="item.isProcured >= 1">Published</span>
+                            <ng-container *ngIf="item.varilength; else newDeb" >
+                                <a id="{{item.varilength.package_id}}" class="details-link" routerLink= "/admin/packagedetails/{{item.varilength.package_id}}">
+                                    <img class="img-fluid" src="{{item.varilength.default_images[0]?.image_url?.large}}">
+                                    <!-- <span class="noProductetxt" *ngIf="!item.variations.default_images">Image not available</span> -->
+                                </a>
+                            </ng-container>
+                            <ng-template #newDeb>
+                                <a id="{{item.sgid}}" class="details-link" routerLink= "/admin/packagedetails/{{item.sgid}}">
+                                    <img class="img-fluid" src="{{item.sgid}}">
+                                    <!-- <span class="noProductetxt" *ngIf="!item.variations.default_images">Image not available</span> -->
+                                </a>
+                            </ng-template>    
+                       
+                    </div>
+                        <div class="card-body">
+                            <div class="container pb-1 pr-0">
+                                <div class="p-0 text-left  bold" ><strong class="font12" >
+                                    {{item.namelength.name | titlecase}}</strong></div>
+                                    <div class="p-0 text-left  bold" >
+                                        <span class="ellipsis prd_title">Price:</span><strong class="font12" >
+                                       &nbsp; {{item.pricelength.pricing_asset_value | currency  }}</strong></div>
+
+                                <div class="p-0 text-left text-black bold">
+                                   <span class="ellipsis prd_title bold">Room Type:</span> <strong class="font12" >
+                                        {{item.catlength.category_name | titlecase}}</strong>
+                            </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="text-center font14 text-muted" *ngIf="data.length === 0">No Data Found.</div>
+            </div>
+        </div>
+    
+    </div>
+</div>
+</div>
+
+<ng-template #mymodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'sort'">Sort By</h4>
+        <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'room'">Room Type</h4>
+        <!-- <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'supplier'">Suppliers</h4>
+        <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'ware'">Warehouse</h4> -->
+        <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'loc'">Price Range</h4>
+
+            <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </span>
+    </div>            
+  <div class="modal-body " >
+      <div class="dialogContent" *ngIf="modalVal === 'room'">
+        <ul ng-if="categories.length>0" class="align-categories">
+            <div class="col-md-3">
+                <span *ngFor="let category of categoriestypes | orderBy:'name':false;; let i = index">
+                    <li flex="100" *ngIf="i < 13">
+                        <span (click)="filterItems(category, modalVal);modal.dismiss('Cross click')"> {{ category.name | titlecase }} ({{category.count}})</span>
+                    </li>
+                </span>
+            </div>
+
+            <div class="col-md-3">
+                <span *ngFor="let category of categoriestypes | orderBy:'name':false;; let i = index">
+                    <li flex="100" *ngIf="i >= 13 && i < 26">
+                        <span (click)="filterItems(category, modalVal);modal.dismiss('Cross click')"> {{ category.name | titlecase }} ({{category.count}})</span>
+                    </li>
+                </span>
+            </div>
+
+            <div class="col-md-3">
+                <span *ngFor="let category of categoriestypes | orderBy:'name':false;; let i = index">
+                    <li flex="100" *ngIf="i >= 26 && i < 38">
+                        <span (click)="filterItems(category, modalVal);modal.dismiss('Cross click')"> {{ category.name | titlecase }} ({{category.count}})</span>
+                    </li>
+                </span>
+            </div>
+
+            <div class="col-md-3">
+                <span *ngFor="let category of categoriestypes | orderBy:'name':false;; let i = index">
+                    <li flex="100" *ngIf="i >= 38">
+                        <span (click)="filterItems(category, modalVal);modal.dismiss('Cross click')"> {{ category.name | titlecase }} ({{category.count}})</span>
+                    </li>
+                </span>
+            </div>
+        </ul>
+       </div>
+       <div class="dialogContent" *ngIf="modalVal === 'supplier'">
+            <ul ng-if="categories.length>0" class="align-categories">
+                <div class="col-md-3">
+                    <span *ngFor="let sup of suppliers |  orderBy:'sup.name':false; let i = index">
+                        <li flex="100" *ngIf="i < 9">
+                            <span (click)="filterItems(sup, modalVal);modal.dismiss('Cross click')"> {{ sup.name | titlecase }} ({{sup.count}})</span>
+                        </li>
+                    </span>
+                </div>
+
+                <div class="col-md-3">
+                    <span *ngFor="let sup of suppliers |  orderBy:'sup.name':false; let i = index">
+                        <li flex="100" *ngIf="i >= 9 && i < 18">
+                            <span (click)="filterItems(sup, modalVal);modal.dismiss('Cross click')"> {{ sup.name | titlecase }} ({{sup.count}})</span>
+                        </li>
+                    </span>
+                </div>
+
+                <div class="col-md-3">
+                    <span *ngFor="let sup of suppliers |  orderBy:'sup.name':false; let i = index">
+                        <li flex="100" *ngIf="i >= 18 && i<27">
+                            <span (click)="filterItems(sup, modalVal);modal.dismiss('Cross click')"> {{ sup.name | titlecase }} ({{sup.count}})</span>
+                        </li>
+                    </span>
+                </div>
+
+                <div class="col-md-3">
+                    <span *ngFor="let sup of suppliers |  orderBy:'sup.name':false; let i = index">
+                        <li flex="100" *ngIf="i >= 27">
+                            <span (click)="filterItems(sup, modalVal);modal.dismiss('Cross click')"> {{ sup.name | titlecase }} ({{sup.count}})</span>
+                        </li>
+                    </span>
+                </div>
+            </ul>
+       </div>
+       <div class="dialogContent" *ngIf="modalVal === 'ware'">
+        <ul ng-if="categories.length>0" class="align-categories"> 
+                <div class="col-md-3">
+                    <span *ngFor="let ware of warehouse | orderBy:'warehouse_name':false; let i = index">
+                        <li flex="100" *ngIf="i < 4">
+                            <span (click)="filterItems(ware, modalVal);modal.dismiss('Cross click')"> {{ ware.warehouse_name }} ({{ware.count}})</span>
+                        </li>
+                    </span>
+                </div>
+
+                <div class="col-md-3">
+                    <span *ngFor="let ware of warehouse | orderBy:'warehouse_name':false; let i = index">
+                        <li flex="100" *ngIf="i >= 4 && i < 8">
+                            <span (click)="filterItems(ware, modalVal);modal.dismiss('Cross click')"> {{ ware.warehouse_name }} ({{ware.count}})</span>
+                        </li>
+                    </span>
+                </div>
+
+
+                <div class="col-md-3">
+                    <span *ngFor="let ware of warehouse | orderBy:'warehouse_name':false; let i = index">
+                        <li flex="100" *ngIf="i >= 8 && i < 12">
+                            <span (click)="filterItems(ware, modalVal);modal.dismiss('Cross click')"> {{ ware.warehouse_name }} ({{ware.count}})</span>
+                        </li>
+                    </span>
+                </div>
+
+                <div class="col-md-3">
+                    <span *ngFor="let ware of warehouse |orderBy:'warehouse_name':false; let i = index">
+                        <li flex="100" *ngIf="i >= 12">
+                            <span (click)="filterItems(ware, modalVal);modal.dismiss('Cross click')"> {{ ware.warehouse_name }} ({{ware.count}})</span>
+                        </li>
+                    </span>
+                </div>
+              </ul>
+       </div>
+
+       <div class="dialogContent" *ngIf="modalVal === 'loc'">
+        <ul ng-if="categories.length>0" class="align-categories"> 
+                <div class="col-md-3">
+                    <span *ngFor="let ware of location | orderBy:'warehouse_name':false; let i = index">
+                        <li flex="100" *ngIf="i < 4">
+                            <span (click)="filterItems(ware, modalVal);modal.dismiss('Cross click')"> {{ ware.warehouse_name }} ({{ware.count}})</span>
+                        </li>
+                    </span>
+                </div>
+
+                <div class="col-md-3">
+                    <span *ngFor="let ware of location | orderBy:'warehouse_name':false; let i = index">
+                        <li flex="100" *ngIf="i >= 4 && i < 8">
+                            <span (click)="filterItems(ware, modalVal);modal.dismiss('Cross click')"> {{ ware.warehouse_name }} ({{ware.count}})</span>
+                        </li>
+                    </span>
+                </div>
+
+
+                <div class="col-md-3">
+                    <span *ngFor="let ware of location | orderBy:'warehouse_name':false; let i = index">
+                        <li flex="100" *ngIf="i >= 8 && i < 12">
+                            <span (click)="filterItems(ware, modalVal);modal.dismiss('Cross click')"> {{ ware.warehouse_name }} ({{ware.count}})</span>
+                        </li>
+                    </span>
+                </div>
+
+                <div class="col-md-3">
+                    <span *ngFor="let ware of location | orderBy:'warehouse_name':false; let i = index">
+                        <li flex="100" *ngIf="i >= 12">
+                            <span (click)="filterItems(ware, modalVal);modal.dismiss('Cross click')"> {{ ware.warehouse_name }} ({{ware.count}})</span>
+                        </li>
+                    </span>
+                </div>
+              </ul>
+       </div>
+    <div class="dialogContent" *ngIf="modalVal === 'sort'">
+        <ul> 
+                <li flex="100">
+                   <span (click)="sortBy(true);modal.dismiss('Cross click')">Publish</span>
+                </li>
+                <li flex="100">
+                        <span (click)="sortBy(false);modal.dismiss('Cross click')">Unpublish</span>
+                     </li>
+              </ul>
+       </div>
+       <div class="dialogContent" *ngIf="modalVal === 'price'">
+        <ul> 
+                <li flex="100"  *ngFor="let priceRange of priceRanges | orderBy:'name':false;">
+                   <span (click)="filterItems(priceRange, modalVal);modal.dismiss('Cross click')">${{priceRange.start}} - ${{priceRange.end}}</span>
+                </li>
+                
+              </ul>
+       </div>
+  </div>
+</ng-template>

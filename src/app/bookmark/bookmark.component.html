@@ -1,0 +1,43 @@
+<header class="section-header auth-header shadow-sm">
+        <div class="container">
+          <div class="row justify-content-center  ">
+                <div class="col-xs-12  d-flex flex-wrap align-content-center " id="header" align="center">
+                    <div  class="header-left d-flex align-items-center"><a  class="navbar-brand" href="/">INHABITR <em _ngcontent-tpd-c1="">Live Flexibly</em></a></div>
+                </div>
+          </div>
+        </div>
+    </header>
+    <div class="container bg-white p-5" *ngIf="error">
+        <div class="row">
+            <div class="col"> <strong class="d-block pb-5 mb-5 text-center">{{error}}</strong>
+            </div>
+        </div>
+    </div>
+    <div class="container bg-white p-2"     *ngIf="itemInfo">
+      <div class="row">
+          <div class="col"> <strong class="d-block pb-2 text-center">Successfully added the Item!!!</strong>
+          </div>
+      </div>
+      <div class="row d-flex justify-content-center">
+          <div class="col">
+              <div class="card">
+                  <div class="card-body img_width m-auto">
+                      <img src="{{itemInfo.image}}" alt="{{itemInfo.name}}" title="{{itemInfo.name}}">
+                  </div>
+              </div>
+          </div>
+          <div class="col">
+                <h6 class="font14">{{itemInfo.name}}</h6>
+                <p class="font12">{{itemInfo.description}}</p>
+                <h6 class="font12">{{itemInfo.salePrice | currency}}</h6>
+          </div>
+      </div>
+      <div class="row mt-4 justify-content-center">
+            <div class="col m-auto">
+                <div class="form-group">
+                    <button type="button" class="btn mt-1 btn-primary btn-block loginbtn w-25 m-auto" (click)="close()"> Ok  </button>
+                </div>
+             </div>
+        </div> <!-- .row// -->    
+      
+    </div>

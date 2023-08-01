@@ -1,0 +1,19 @@
+.bookmarkbtn{
+    padding: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    width: 300px !important;
+    margin: auto;
+    margin-bottom: 10px;
+    display: block;
+    border-radius: 5px;
+    text-align: center;
+    background-color: #FF2600;
+    color: white;
+}
+b{
+    display: block;
+    padding-bottom: 15px;
+    font-size: 16px;
+    text-align: center;
+}

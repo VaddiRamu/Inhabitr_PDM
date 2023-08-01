@@ -1,0 +1,106 @@
+<div>
+    <div class="mb-banner">
+        <div class="mb-banner-left" fxLayoutGap="3rem">
+            <div class="mb-banner-icon">
+                <img src="assets/img/order1.svg" alt="iconAltTxt" />
+            </div>
+            <div fxLayout="column" fxFlex="30" class="textleft">
+                <span class="mb-banner-left-text h1">PROJECTS</span><br>
+                <span class="margin-btw">View the status and summary of the orders.</span>
+            </div>
+        </div>
+        <div class="mb-banner-right">
+            <img height="100%" width="100%" src="assets/img/order-page.jpg" alt=" altTxt " />
+        </div>
+    </div>
+    <ng-content [select]="footer"></ng-content>
+</div>
+
+<section class="mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <a class="addButton" (click)="createProject()">
+                    <i class="fa fa-plus-circle iconDesign" aria-hidden="true"></i>
+                </a>
+                <span class="p-2 pt-4 ml-3" style="font-size: 20px; color: black;"><b>Create New Project</b></span>
+            </div>
+        </div>
+    
+    </div>
+</section>
+<section class="mt-5 pb-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 project-heading">
+                <ul>
+                    <li [ngClass]="{'active':activeIndex=='allProjects'}" (click)="projectList('allProjects')">All Projects</li>
+                    <li [ngClass]="{'active':activeIndex=='myProjectList'}" (click)="projectList('myProjectList')">My Projects</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 project-selection">
+                <!-- <span>Company List</span> -->
+
+                <!-- <div class="dropdown text-center position-relative">
+                    <button
+                        class="btn btn-white dropdown-toggle border position-relative text-left rounded-0"
+                        type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Select Company
+                    </button>
+                    <div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item"
+                            *ngFor="let name of companyList"
+                            onfocus='this.size=7;' onblur='this.size=1;'
+                onchange='this.size=1; this.blur();' [(ngModel)]="companyId" (ngModelChange)="onChange($event)"
+                            href="javascript:void(0)">{{name?.company}}</a>
+                    </div>
+                </div> -->
+
+            <select class="classic" onfocus='this.size=7;' onblur='this.size=1;'
+                onchange='this.size=1; this.blur();' [(ngModel)]="companyId" (ngModelChange)="onChange($event)">
+                 <!-- <option value="" selected>Select Company</option> -->
+                 <option value="" >Select Company</option>
+                <option class="hover" style="cursor: pointer;" [ngValue]="name?.sgid" *ngFor="let name of companyList">{{name?.company}}</option>
+            </select> 
+            </div>
+        </div>
+        <div class="row table-section">
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <th>Project ID</th>
+                        <th>Project Name</th>
+                        <th>Company Name</th>
+                        <th>Total Budget</th>
+                        <th>Lease Length</th>
+                        <th colspan="1">No of Units</th>
+                        <th>Status</th>
+                        <th>Result</th>
+                       
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let table of projectTable;let i=index">
+                            <td>{{table?.sgid}}</td>
+                            <td>{{table?.project_name}}</td>
+                            <td>{{table?.company_name}}</td>
+                            <td>$ {{table?.total_budget}}</td>
+                            <td>{{table?.lease_duration}}</td>
+                            <td>{{table?.no_of_units}}</td>
+                            <td>
+                                <span *ngIf="table?.project_status=='0'">Open</span>
+                                <span *ngIf="table?.project_status=='1'" class="view-list" (click)="getQuote(table)">Close</span>
+                            </td>
+                            <div class="result-view">
+                                <a (click)="projectDetails(table)" class="view-list">View</a>
+                            </div>
+                          
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

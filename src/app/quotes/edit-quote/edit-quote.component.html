@@ -1,0 +1,3501 @@
+<div class="wrapper bg-white" *ngIf="!viewFloorPlan">
+  <div class="mb-banner">
+    <div class="mb-banner-left" fxLayoutGap="3rem">
+      <div class="textleft mb-2">
+        <span *ngIf="is_order != 'YES'" class="mb-banner-left-text h1">QUOTE</span><br>
+        <span *ngIf="is_order == 'YES'" class="mb-banner-left-text h1">order</span>
+      </div>
+      <div *ngIf="is_order != 'YES'" class="mb-banner-icon">
+        <img src="assets/img/quote1.svg" alt="iconAltTxt" />
+      </div>
+      <div *ngIf="is_order == 'YES'" class="mb-banner-icon">
+        <img  src="assets/img/quote1.svg" alt=" altTxt " />
+      </div>
+    </div>
+    <div class="pl-5 pt-2 m-0" *ngIf="!editCustomer">
+      <div class="mr-5 mt-2" *ngIf="is_order == 'YES'">
+        <span class="control-label" style="color: blue">Order Number: </span><span class="bcrum-data" style="color: blue">{{
+          order_number_ref
+          }}</span>
+      </div>
+      <div class="row m-0">
+        <div class="col-3 col-md-3 p-0 mt-2">
+          <span class="control-label">Quote# </span><span class="bcrum-data">{{ quoteId }}</span>
+        </div>
+        <div class="col-3 col-md-3 p-0 mt-2">
+          <span class="control-label">Customer Name: </span><span class="bcrum-data">{{ cusName }}</span>
+        </div>
+        <div class="col-3 col-md-3 p-0 mt-2">
+          <span class="control-label">Address: </span><span class="bcrum-data">{{ cusAddress }}</span>
+        </div>
+        <div class="col-3 col-md-3 p-0 mt-2">
+          <span class="control-label">State: </span><span class="bcrum-data">{{ selectedState }}</span>
+        </div>
+        <div class="col-4 col-md-3 p-0 mt-2">
+          <span class="control-label">City: </span><span class="bcrum-data">{{ selectedCity }}</span>
+        </div>
+        <div class="col-4 col-md-3 p-0 mt-2">
+          <span class="control-label">Zip code: </span><span class="bcrum-data">{{ cus_zipcode }}</span>
+        </div>
+        <div class="col-6 col-md-3 p-0 mt-2">
+          <span class="control-label">Contact No: </span><span class="bcrum-data">{{ cus_contact }}</span>
+        </div>
+        <div class="col-4 col-md-3 p-0 mt-2">
+          <span class="control-label">Email: </span><span class="bcrum-data">{{ cus_email }}</span>
+        </div>
+        <div class="col-4 col-md-3 p-0 mt-2">
+          <span class="control-label">Company Name: </span><span class="bcrum-data">{{ company_name }}</span>
+        </div>
+        <div class="col-6 col-md-3 p-0 mt-2">
+          <span class="control-label">Project Name: </span><span class="bcrum-data">{{ project_name }}</span>
+        </div>
+        <div class="col-4 col-md-6 p-0 mt-2">
+          <span class="control-label">Delivery Timeline: </span><span class="bcrum-data">{{
+            quotationData?.quote?.preferred_delivery_start_date | date:'dd-MMM-yyyy' }} - {{
+            quotationData.quote.preferred_delivery_end_date | date:'dd-MMM-yyyy' }}</span>
+        </div>
+        <div class="col-8 p-0 mt-2">
+          <div class="row">
+            <div class="col-6 col-md-4 mt-2">
+              <span class="pr-3 mb-3 font-weight-bold" title="Create Copy Quote" (click)="editCustomerInfo('copy')"
+                style="right: 60px; cursor: pointer" *ngIf="!editCustomer">
+                <i class="fa fa-files-o create-mb shadow" aria-hidden="true"></i>
+              </span>
+              <span *ngIf="!updateinfo" class="pr-3 mb-3 font-weight-bold" title="Edit this Quote"
+                (click)="editCustomerInfo('edit')" style="cursor: pointer">
+                <i class="fa fa-pencil-square-o edit-mb shadow" aria-hidden="true"></i>
+              </span>
+            </div>
+            <div class="col-6 col-md-4 mt-2" *ngIf="!viewFloorPlan" style="float: right">
+              <!-- <button type="button" class="border btn btn-light mt-2 px-5 add-btn rounded-5" data-dismiss="modal"
+              [disabled]="true">
+              Sync with Ops
+            </button> -->
+            </div>
+          </div>
+         </div>
+        <!-- <div class="row">
+          <div class="col-lg-8 p-0 mt-4 draft-lease">
+            <div class="d-flex">
+                <div class="draft-agreement">
+                    <input type="file" id="img" (change)="OnChange($event,'file')" style="display:none;" name="avatar" accept="image/pdf">
+                    <label for="img"><img src="/assets/img/project/file-icon.png">{{this.fileElement?.name ? this.fileElement?.name : 'Draft Lease Agreement'}} </label>
+                </div>
+                <button class="upload-button">Upload</button>
+            </div>
+          </div>
+        </div> -->
+        <div class="row" *ngIf="quoteProductList.length && quoteInfo.quote_type!==2">
+          <div class="col-lg-12 p-0 mt-4 draft-lease">
+            <div class="d-flex">
+                <button class="btn" (click)="pdfPopUp(quoteInfo?.quote_type)">Generate lease Agreement </button>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="quoteTotal?.quote_type===0">
+          <div class="col-lg-12 mt-4">
+            <p class="m-0" style="color:#dc3545">Note: Monthly Rent does not match with the lease Agreement Amount.</p>
+              <p class="m-0" style="color:#dc3545">It is Amount  ${{quoteTotal?.result | number : '1.2-2'}} {{quoteTotal?.more_less}} than in Lease Agreement</p>
+          </div>
+        </div>
+        <div class="row" *ngIf="quoteTotal?.quote_type===1">
+          <div class="col-lg-12 mt-4">
+            <p class="m-0" style="color:#dc3545">Note: Buy Total does not match with the lease Agreement Product Amount.</p>
+             <p class="m-0" style="color:#dc3545"> It is Amount ${{quoteTotal?.result | number : '1.2-2'}} {{quoteTotal?.more_less}} than in Lease Agreement </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" *ngIf="!viewFloorPlan">
+  <div id="content" #content>
+    <div class="col-12">
+      <form [formGroup]="customerInfoForm" (ngSubmit)="onSubmit()">
+        <div class="container-fluid">
+          <div class="row d-flex justify-content-center mt-5 mb-2">
+            <div class="col-12 p-0">
+              <!-- <span class="head-6" >Edit Quote </span> -->
+              <!-- <div style="float: right">
+                <button type="button" class="border btn btn-light mt-2 px-5 add-btn rounded-5" data-dismiss="modal"
+                  [disabled]="true">
+                  Sync with Ops
+                </button>
+              </div> -->
+            </div>
+          </div>
+          <!-- after customer info created -->
+          <!-- <div class="position-relative">
+            <div class="row d-flex justify-content-start p-4 bg-white" *ngIf="!editCustomer">
+              <div class="mr-5 my-2" *ngIf="is_order == 'YES'">
+                <span class="control-label" style="color: blue">Order Number: </span><span class="bcrum-data"
+                  style="color: blue">{{
+                  order_number_ref
+                  }}</span>
+              </div>
+              <div class="mr-5 my-2">
+                <span class="control-label">Quote# </span><span class="bcrum-data">{{ quoteId }}</span>
+              </div>
+              <div class="mr-5 my-2">
+                <span class="control-label">Customer Name: </span><span class="bcrum-data">{{ cusName }}</span>
+              </div>
+              <div class="mr-5 my-2">
+                <span class="control-label">Address: </span><span class="bcrum-data">{{ cusAddress }}</span>
+              </div>
+              <div class="mr-5 my-2">
+                <span class="control-label">State: </span><span class="bcrum-data">{{ selectedState }}</span>
+              </div>
+              <div class="mr-5 my-2">
+                <span class="control-label">City: </span><span class="bcrum-data">{{ selectedCity }}</span>
+              </div>
+              <div class="mr-5 my-2">
+                <span class="control-label">Zip code: </span><span class="bcrum-data">{{ cus_zipcode }}</span>
+              </div>
+              <div class="mr-5 my-2">
+                <span class="control-label">Contact No: </span><span class="bcrum-data">{{ cus_contact }}</span>
+              </div>
+              <div class="mr-5 my-2">
+                <span class="control-label">Email: </span><span class="bcrum-data">{{ cus_email }}</span>
+              </div>
+              <div class="mr-5 my-2">
+                <span class="control-label">Company Name: </span><span class="bcrum-data">{{ company_name }}</span>
+              </div>
+              <div class="mr-5 my-2">
+                <span class="control-label">Project Name: </span><span class="bcrum-data">{{ project_name }}</span>
+              </div>
+              <div class="mr-5 my-2">
+                <span class="control-label">Delivery Timeline: </span><span class="bcrum-data">{{ quotationData?.quote?.preferred_delivery_start_date | date:'dd-MMM-yyyy' }} - {{ quotationData.quote.preferred_delivery_end_date | date:'dd-MMM-yyyy' }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row bg-white justify-content-end">
+            <span class="pr-3 mb-3 font-weight-bold" title="Create Copy Quote" (click)="editCustomerInfo('copy')"
+              style="right: 60px; cursor: pointer" *ngIf="!editCustomer">
+              <i class="fa fa-files-o create-mb shadow" aria-hidden="true"></i>
+            </span>
+            <span *ngIf="!updateinfo" class="pr-3 mb-3 font-weight-bold" title="Edit this Quote" (click)="editCustomerInfo('edit')"
+              style="cursor: pointer">
+              <i class="fa fa-pencil-square-o edit-mb shadow" aria-hidden="true"></i>
+            </span>
+          </div> -->
+          <!-- afeter custo mer info created end -->
+
+          <div class="row d-flex justify-content-center boxWidth" *ngIf="editCustomer">
+            <div class="col-12 bg-white border pr-4">
+              <div class="row d-flex justify-content-center mt-2">
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="mbNum" class="pl-2 control-label">Quote#</label>
+                  <input type="text" readonly class="form-control" id="mbNum" value="{{ quoteId }}" />
+                </div>
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="mbName" class="control-label pl-2">Customer Name <span
+                    class="text-danger bold">*</span></label>
+                  <input type="text" class="form-control" id="mbName" formControlName="name" />
+                  <div class="text-danger" *ngIf="
+                      !customerInfoForm.controls['name'].valid && isSubmitted
+                    ">
+                    Name is required*
+                  </div>
+                </div>
+              </div>
+
+              <div class="row justify-content-between mt-0">
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="mbType" class="control-label pl-2">Address <span
+                    class="text-danger bold">*</span></label>
+                  <input type="text" class="form-control" id="mbType" formControlName="address" />
+                  <div class="text-danger" *ngIf="
+                      !customerInfoForm.controls['address'].valid && isSubmitted
+                    ">
+                    Address is required*
+                  </div>
+                </div>
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="cRef" class="control-label pl-2">State <span
+                    class="text-danger bold">*</span></label>
+                  <div class="dropdown text-center position-relative"
+                    [ngClass]="{ 'event-none': isCopyQuote ? true : false }">
+                    <button class="btn btn-white dropdown-toggle custom-toggle border position-relative w-100 text-left rounded-0"
+                      type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false">
+                      {{ selectedState }}
+                    </button>
+                    <div class="dropdown-menu" style="width: 100%; max-height: 250px; overflow-y: auto"
+                      aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" *ngFor="let state of states" (click)="selectState(state)"
+                        href="javascript:void(0)">{{ state.name }}</a>
+                    </div>
+                  </div>
+                  <!-- <ng-select  class="w-100"
+                              [items]="states"
+                              bindLabel="name"
+                              placeholder="Select State"
+                              bindValue="sgid"
+                              [(ngModel)]='ngselectedState'
+                              (change)="onChange($event)"
+                              >
+
+                   </ng-select> -->
+                  <div class="text-danger" *ngIf="selectedStateId === undefined && isSubmitted">
+                    State is required*
+                  </div>
+                </div>
+              </div>
+
+              <div class="row justify-content-between mt-0 pb-2">
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="mbUnit" class="pl-2 control-label">City <span
+                    class="text-danger bold">*</span></label>
+                  <!-- <ng-select [items]="cities  | orderBy:'asc':'city_name'" class="w-100"
+                            bindLabel="city_name"
+                            placeholder="Select City"
+                            [(ngModel)]="ngselectedCity"
+                            (change)="oncityChange($event)"
+                            >
+                 </ng-select> -->
+                  <div class="dropdown text-center position-relative"
+                    [ngClass]="{ 'event-none': isCopyQuote ? true : false }">
+                    <button class="btn btn-white dropdown-toggle custom-toggle border position-relative w-100 text-left rounded-0"
+                      type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false">
+                      {{ selectedCity }}
+                    </button>
+                    <div class="dropdown-menu" style="width: 100%; max-height: 250px; overflow-y: auto"
+                      aria-labelledby="dropdownMenuButton1">
+                      <a class="dropdown-item" *ngFor="let city of cities" (click)="oncityChange(city)"
+                        href="javascript:void(0)">{{ city.city_name }}</a>
+                    </div>
+                  </div>
+                  <div class="text-danger" *ngIf="selectedCityId === undefined && isSubmitted">
+                    City is required*
+                  </div>
+                </div>
+
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="mbUnit" class="pl-2 control-label">Email <span
+                    class="text-danger bold">*</span></label>
+                  <input type="text" class="form-control" id="mbUnit" value="{{ cus_email }}" formControlName="email"
+                    [pattern]="emailPattern" />
+                  <div class="text-danger" *ngIf="
+                      !customerInfoForm.controls['email'].valid && isSubmitted
+                    ">
+                    Email is required*
+                  </div>
+
+                  <div class="text-danger" *ngIf="customerInfoForm.controls['email'].errors?.pattern">
+                    Invalid email
+                  </div>
+                </div>
+              </div>
+              <div class="row justify-content-between mt-0 pb-2">
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="optRef" class="control-label pl-2">Zip Code <span
+                    class="text-danger bold">*</span></label>
+                  <input type="text" class="form-control" id="optRef" value="{{ cus_zipcode }}"
+                    formControlName="zipcode" [pattern]="zipcodePattern"
+                    [ngClass]="{ 'event-none': isCopyQuote ? true : false }" />
+                  <div class="text-danger" *ngIf="
+                      (!customerInfoForm.controls['zipcode'].valid &&
+                        customerInfoForm.controls['zipcode'].touched) ||
+                      (!customerInfoForm.controls['zipcode'].valid &&
+                        isSubmitted)
+                    ">
+                    <div class="text-danger" *ngIf="
+                        !customerInfoForm.controls['zipcode'].errors?.pattern
+                      ">
+                      Zip code is required*
+                    </div>
+
+                    <div class="text-danger" *ngIf="
+                        customerInfoForm.controls['zipcode'].errors?.pattern
+                      ">
+                      Invalid zip code
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="optRef" class="control-label pl-2">Phone <span
+                    class="text-danger bold">*</span></label>
+
+                  <input type="text" class="form-control" value="{{ cus_contact }}" formControlName="contact_no"
+                    placeholder="(555) 555-1234" [pattern]="phoneNoPattern" />
+                  <!--  -->
+                  <div class="text-danger" *ngIf="
+                      (!customerInfoForm.controls['contact_no'].valid &&
+                        customerInfoForm.controls['contact_no'].touched) ||
+                      (!customerInfoForm.controls['contact_no'].valid &&
+                        isSubmitted)
+                    ">
+                    <div class="text-danger" *ngIf="
+                        !customerInfoForm.controls['contact_no'].errors?.pattern
+                      ">
+                      contact number is required*
+                    </div>
+
+                    <div class="text-danger" *ngIf="
+                        customerInfoForm.controls['contact_no'].errors?.pattern
+                      ">
+                      Invalid Phone Number
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row justify-content-between mt-0 pb-2">
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <div class="add-button">
+                    <div>
+                      <label for="mbType" class="control-label pl-2">Company Name  <span class="text-danger">*</span></label>
+
+                    </div>
+                    <a  (click)="toggleAddButton()">
+                      <i class="fa fa-plus-circle pr-1"></i> <small>Create New Company</small>
+                    </a>
+                  </div>
+                  <!-- <label for="mbName" class="control-label pl-2"
+                    >Company Name</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="companyName"
+                    value="{{ company_name }}"
+                  /> -->
+                  <div class="pl-2">
+                    <select *ngIf="!addCompany" (change)="selectCompany($event)" formControlName="company_id"
+                      class="form-control">
+                      <option *ngFor="let company of companyList" [value]="company.sgid">
+                        {{ company.company }}
+                      </option>
+                    </select>
+
+                    <input type="text" *ngIf="addCompany" class="form-control" id="optRef" value=""
+                      placeholder="Enter Company Name" formControlName="companyName" />
+                  </div>
+
+                  <!-- <div
+                    class="text-danger"
+                    *ngIf="
+                      !customerInfoForm.controls['companyName'].valid &&
+                      isSubmitted
+                    "
+                  >
+                    Company Name is required*
+                  </div> -->
+                </div>
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <div class="add-button">
+                    <div>
+                        <label for="projectName" class="pl-2 control-label add-button">Project Name<span
+                            class="text-danger bold">*</span>
+                    </label>
+                    </div>
+                <a  (click)="toggleAddButtonProject()">
+                  <i class="fa fa-plus-circle pr-1"> </i> <small>Create New Project</small>
+                </a>
+
+                </div>
+                  <select *ngIf="!addProject" (change)="selectProject($event)" formControlName="project_id"
+                    class="form-control">
+                    <option *ngFor="let project of projectList" [value]="project.sgid">
+                      {{ project.project }}
+                    </option>
+                  </select>
+                  <input type="text" *ngIf="addProject" class="form-control" id="projectName" value=""
+                    formControlName="project_name" autocomplete="off" style="margin-left: 0.5rem !important" />
+                  <!-- <label for="mbName" class="control-label pl-2"
+                    >Project Name</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="project_name"
+                    value="{{ project_name }}"
+                  /> -->
+                  <div class="text-danger" *ngIf="
+                      !customerInfoForm.controls['project_name'].valid &&
+                      isSubmitted
+                    ">
+                    Project Name is required*
+                  </div>
+                </div>
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="optRef" class="control-label pl-2">Delivery Timeline <small>(Optional)</small></label>
+                  <input type="date" class="form1" data-date-format="dd/mm/yyyy" formControlName='preferred_delivery_start_date'><span class="gap">-</span><input type="date" class="form2" data-date-format="dd/mm/yyyy" formControlName='preferred_delivery_end_date'>
+                </div>
+              </div>
+
+              <div class="row d-flex justify-content-center mb-3" *ngIf="!isCopyQuote">
+                <button type="submit" class="btn btn-dark px-4 mr-3 border">
+                  Update
+                </button>
+                <button type="submit" class="btn btn-dark px-4" (click)="editCustomer = false;updateinfo = false;">
+                  Cancel
+                </button>
+              </div>
+              <div class="row d-flex justify-content-center mb-3" *ngIf="isCopyQuote">
+                <button type="submit" class="btn btn-dark px-4 mr-3">Create</button>
+                <button type="button" class="btn btn-dark px-4 "
+                  (click)="isCopyQuote = false; editCustomer = false;updateinfo = false;">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- customer Information end -->
+    <div class="container-fluid p-3">
+      <!-- <div class="container-fluid p-3" > -->
+      <div class="container-fluid">
+        <div class="row d-flex justify-content-center">
+          <div class="col-12 p-0">
+            <h6 class="head-6">Floor Plans and Units</h6>
+          </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+          <div class="col-12 bg-white" style="min-height: 207px">
+            <div class="row d-flex justify-content-around mt-0 border">
+              <div class="col-6 {{ floorPlanClass }}  px-5 py-2 tab-section" (click)="floorPlanTab()">
+                Floor Plans
+              </div>
+              <div class="col-6 {{ unitClass }} px-5 py-2 tab-section" (click)="unitTab()">
+                Units
+              </div>
+            </div>
+            <div class="row d-flex mt-0 pt-4" *ngIf="isFloorPlan">
+              <div class="col-12">
+                <div class="d-flex justify-content-center" *ngIf="nodatafound" style="height: 89px">
+                  <div class="d-flex flex-column ml-2 mt-3" *ngIf="nodatafound">
+                    No Floor Plans found. Please add Floor Plan.
+                  </div>
+                </div>
+                <div class="d-flex justify-content-start" [ngStyle]="{
+                    'overflow-x': floorPlans.length > 8 ? 'auto' : 'none'
+                  }">
+                  <!-- add floor and unit one -->
+                  <div class="d-flex flex-column ml-2 position-relative" *ngFor="let plan of floorPlans">
+                    <span aria-hidden="true" *ngIf="isRemoveFloor" (click)="removeFloor(plan)"
+                      class="px-2 pb-1 cross-close">&times;</span>
+
+                    <div>
+                      <div class="px-4 py-1 border control-label text-dark border-bottom-0">
+                        <a class="fa fa-plus" *ngIf="!isRemoveFloor" style="margin-left: -9px; cursor: pointer"
+                          (click)="cloneFloreplan(plan)"></a>
+                        <span style="margin-left: 15px; margin-right: 10px">{{
+                          plan.floorname
+                          }}</span>
+                        <a class="fa fa-pencil" style="margin-right: -10px; cursor: pointer" data-toggle="modal"
+                          *ngIf="!isRemoveFloor" data-target="#editexampleModal" (click)="editFloreplan(plan)"></a>
+                      </div>
+                      <div class="px-4 py-1 border set-unit text-center" style="cursor: pointer"
+                        (click)="gotoQuote(plan)">
+                        <div style="text-decoration: underline">
+                          {{ plan.total_unit }} Units
+                        </div>
+                        <div>{{ plan.floorplan_type_name }}</div>
+                        <div>{{ plan.floorplan_mb_cnt }} Moodboards</div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- add floor and unit one end-->
+                </div>
+                <div class="text-right mt-4 mb-3" *ngIf="isFloorPlan">
+                  <a href="javascript:void(0)" class="add-floor-link btn" *ngIf="isRemoveFloor"
+                    (click)="isRemoveFloor = false">Cancel</a>
+                  <a href="javascript:void(0)" class="add-floor-link btn" data-toggle="modal" *ngIf="!isRemoveFloor"
+                    data-target="#exampleModal" (click)="ClearFloreplan()">Add Floor Plan</a>
+                  <a href="javascript:void(0)" *ngIf="!isRemoveFloor" class="add-floor-link btn ml-3"
+                    (click)="isRemoveFloor = true" [ngClass]="
+                      floorPlans.length === 0 ? 'cleardisable' : 'clearenable'
+                    ">Remove Floor Plan</a>
+                </div>
+              </div>
+            </div>
+            <!-- add floor unit -->
+
+            <!-- Button trigger modal -->
+            <!-- Modal -->
+            <div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h6 class="modal-title" id="">Add Floor Plans</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="container-fluid">
+                      <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                          <span class="">Floor Plan Name*</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right">
+                          <input type="text" class="form-control float-right rounded-0" id="" value=""
+                            [(ngModel)]="floorPlanName" [ngbTypeahead]="search" />
+                          <hr />
+                        </div>
+                      </div>
+                      <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                          <span class="">Floor Plan Types</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right">
+                          <div class="dropdown text-center position-relative">
+                            <button
+                              class="btn btn-white dropdown-toggle custom-toggle border position-relative w-100 text-left rounded-0"
+                              type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                              aria-expanded="false">
+                              {{ floorTypename }}
+                            </button>
+                            <div class="dropdown-menu" style="width: 70%" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" *ngFor="let floor of floorTypes" (click)="selectFloorType(floor)"
+                                href="javascript:void(0)">{{ floor.name }}</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                          <span class="">No. of Units*</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right">
+                          <input type="number" class="form-control float-right rounded-0" id="" value=""
+                            [(ngModel)]="floorPlanUnit" />
+                        </div>
+                      </div>
+
+                      <div class="row d-flex justify-content-center mt-0 pb-2">
+                        <div>
+                          <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                            data-dismiss="modal" (click)="addFloorPlans()">
+                            Add
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal" id="editexampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h6 class="modal-title" id="">Update Floor Plans</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="container-fluid">
+                      <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                          <span class="">Floor Plan Name*</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right">
+                          <input type="text" class="form-control float-right rounded-0" id="" value=""
+                            [(ngModel)]="floorPlanNameedit" [ngbTypeahead]="search" />
+                          <hr />
+                        </div>
+                      </div>
+                      <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                          <span class="">Floor Plan Types</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right">
+                          <div class="dropdown text-center position-relative">
+                            <button
+                              class="btn btn-white dropdown-toggle custom-toggle border position-relative w-100 text-left rounded-0"
+                              type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                              aria-expanded="false">
+                              {{ floorTypenameedit }}
+                            </button>
+                            <div class="dropdown-menu" style="width: 70%" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" *ngFor="let floor of floorTypes"
+                                (click)="selecteditFloorType(floor)" href="javascript:void(0)">{{ floor.name }}</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                          <span class="">No. of Units*</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right">
+                          <input type="number" readonly class="form-control float-right rounded-0" id="" value=""
+                            [(ngModel)]="floorPlanUnitedit" />
+                        </div>
+                      </div>
+
+                      <div class="row d-flex justify-content-center mt-0 pb-2">
+                        <div>
+                          <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                            data-dismiss="modal" (click)="UpdateFloorPlans()">
+                            Update
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal" id="editdeliveryfeeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h6 class="modal-title" id="">Update Delivery Fee</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="container-fluid">
+                      <form (change)="onItemChange($event)" class="deliveryForm">
+                        <div>
+                          <input type="radio" name="group2" [value]="'unit_level'" [checked]="deliveryFeeShow=='unit_level'">
+                          <label class="pl-2">Delivery Fee / Unit</label>
+                        </div>
+                        <div>
+                          <input type="radio" name="group2" [value]="'order_level'" [checked]="deliveryFeeShow=='order_level'">
+                          <label class="pl-2">Change Delivery fee - Quote/Order</label>
+                        </div>
+                      </form>
+                      <div *ngIf="deliveryFeeShow=='unit_level'">
+                        <div class="row d-flex justify-content-around mt-0 pb-2">
+                          <div class="col-6 control-label mt-2 text-dark">
+                            <span class="">Delivery Fee / Unit (Default) </span>
+                          </div>
+                          <div class="col-6 pr-0 text-right">$199</div>
+                        </div>
+
+                        <div class="row d-flex justify-content-around mt-0 pb-2">
+                          <div class="col-6 control-label mt-2 text-dark">
+                            <span class="">Change Delivery Fee / Unit *</span>
+                          </div>
+                          <div class="col-6 pr-0 text-right" style="display: flex">
+                            $&nbsp;<input type="number" class="form-control float-right" [(ngModel)]="quoteDeliveryFee" />
+                          </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-center mt-0 pb-2">
+                          <div>
+                            <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn" data-dismiss="modal"
+                              (click)="UpdateDeliveryFee()">
+                              Submit
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div *ngIf="deliveryFeeShow=='order_level'">
+                        <div class="row d-flex justify-content-around mt-0 pb-2">
+                          <div class="col-6 control-label mt-2 text-dark">
+                            <span class="">Delivery fee - Quote/Order</span>
+                          </div>
+                          <div class="col-6 pr-0 text-right">${{ quotationData?.quote.delivery_fee | number:'1.0-0' }}</div>
+                        </div>
+                        <div class="row d-flex justify-content-around mt-0 pb-2">
+                          <div class="col-6 control-label mt-2 text-dark">
+                            <span class="">Change Delivery fee - Quote/Order</span>
+                          </div>
+                          <div class="col-6 pr-0 text-right" style="display: flex">
+                            $&nbsp;<input type="number" class="form-control float-right rounded-0" [(ngModel)]="quoteOrderDeliveryFee" />
+                          </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-center mt-0 pb-2">
+                          <div>
+                            <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn" data-dismiss="modal"
+                              (click)="UpdateDeliveryFee()">
+                              Submit
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal" id="editpickupfeeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h6 class="modal-title" id="">Update Pickup Fee</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="container-fluid">
+                      <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                          <span class="">Pickup Fee / Unit </span>
+                        </div>
+                        <div class="col-6 pr-0 text-right">$199</div>
+                      </div>
+
+                      <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                          <span class="">Change Pickup Fee / Unit *</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right" style="display: flex">
+                          $&nbsp;<input type="number" [(ngModel)]="quotePickupFee"
+                            class="form-control float-right rounded-0" />
+                        </div>
+                      </div>
+
+                      <div class="row d-flex justify-content-center mt-0 pb-2">
+                        <div>
+                          <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                            data-dismiss="modal" (click)="UpdatePickupFee()">
+                            Submit
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- add floor unit -->
+            <!-- Unit section -->
+
+            <div class="row d-flex mt-0 pb-2 px-2 mt-5" *ngIf="!isFloorPlan">
+              <div class="col-12">
+                <div class="row d-flex justify-content-center" style="height: 89px" *ngIf="nodatafoundUnit">
+                  <div class="d-flex flex-column ml-2" *ngIf="nodatafoundUnit">
+                    No Unit found. Please add Unit.
+                  </div>
+                </div>
+                <div class="row d-flex justify-content-start">
+                  <div *ngFor="let unit of unitWOPlans" class="position-relative">
+                    <span aria-hidden="true" *ngIf="isRemoveUnit" (click)="removeUnits(unit)"
+                      class="px-2 py-1 cross-close">&times;</span>
+                    <div class="px-4 py-3 ml-2 mb-2 border unit-view" (click)="gotoAddUnit(unit)" [ngClass]="{
+                        'un-assigned': !unit.floorplan_id ? true : false,
+                        'event-none': isRemoveUnit ? true : false
+                      }">
+                      <!-- U{{unit.unit}}  -->
+                      <span *ngIf="unit.name === '' || unit.name == null">
+                        U{{ unit.unit }} </span><span *ngIf="unit.name != '' || unit.name != null">
+                        {{ unit.name }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- add unit modal -->
+            <div class="text-right mb-3 mt-3" *ngIf="!isFloorPlan">
+              <div class="float-left">
+                <span class="px-2 mb-2 ml-2 border unit-view un-assigned"></span>&nbsp;<span class="font-13"> -
+                  Unassigned</span>
+              </div>
+              <a href="javascript:void(0)" class="add-floor-link btn" *ngIf="isRemoveUnit"
+                (click)="isRemoveUnit = false">Cancel</a>
+              <a href="javascript:void(0)" class="add-floor-link btn" *ngIf="!isRemoveUnit" data-toggle="modal"
+                data-target="#unitModal">Add Unit(s)</a>
+              <a href="javascript:void(0)" class="add-floor-link btn ml-3" *ngIf="!isRemoveUnit"
+                (click)="isRemoveUnit = true">Remove Unit(s)</a>
+            </div>
+            <!-- Button trigger modal -->
+            <!-- Modal -->
+            <div class="modal" id="unitModal" tabindex="-1" role="dialog" aria-labelledby="unitModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h6 class="modal-title" id="">Add Number of Units</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="container-fluid">
+                      <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                          <span class="">No. of units</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right">
+                          <input type="number" class="form-control float-right rounded-0" id="" value=""
+                            [(ngModel)]="unit" />
+                        </div>
+                      </div>
+
+                      <div class="row d-flex justify-content-center mt-0 pb-2">
+                        <div>
+                          <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                            (click)="addUnits()">
+                            Add
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- add unit modal end-->
+            <!-- Unit section End -->
+
+            <!-- add moodboard modal -->
+            <div class="modal" id="addMoodboardModal" tabindex="-1" role="dialog" aria-labelledby="addMoodboardLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h6 class="modal-title" id="">Add Moodboard</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="container-fluid">
+                      <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                          <span class="">Add Moodboard</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right">
+                          <div class="dropdown text-center">
+                            <button class="btn btn-white dropdown-toggle custom-toggle border position-relative text-left rounded-0"
+                              type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                              aria-expanded="false">
+                              Dropdown button
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" href="#">Action</a>
+                              <a class="dropdown-item" href="#">Another action</a>
+                              <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row d-flex justify-content-center mt-0 pb-2">
+                        <div>
+                          <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                            data-dismiss="modal">
+                            Add
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- add moodboard modal end -->
+            <!-- view Moodboard modal -->
+            <div class="modal" id="viewMoodboardModal" tabindex="-1" role="dialog" aria-labelledby="viewMoodboardLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h6 class="modal-title" id="">View Moodboard</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="container-fluid">
+                      <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label text-dark d-flex">
+                          <span class="mt-1">Floor Plan Name</span>
+                          <input type="text" class="form-control float-right rounded-0 ml-2" id="" value="" />
+                        </div>
+                        <div class="col-6 pr-0 text-right">
+                          <span class="view-modal-lable text-dark">#unit: 8</span><span
+                            class="ml-3 mr-5 view-modal-lable text-dark">#Moodboard: 2</span>
+                        </div>
+                      </div>
+                      <div class="row d-flex justify-content-center mt-3 pb-2">
+                        <!-- moodboard name with thumbnail  -->
+                        <!-- start one -->
+                        <div class="card ml-2 mb-2" style="width: 150px">
+                          <img src="../../assets/img/d10.jpg" class="card-img-top" alt="moodboard" />
+                          <div class="card-body p-1">
+                            <p class="card-text thumbnail-title">
+                              Moodboard Name #1
+                            </p>
+                          </div>
+                        </div>
+                        <!-- remove part start -->
+                        <!-- one end -->
+                        <div class="card ml-2 mb-2" style="width: 150px">
+                          <img src="../../assets/img/d10.jpg" class="card-img-top" alt="moodboard" />
+                          <div class="card-body p-1">
+                            <p class="card-text thumbnail-title">
+                              Moodboard Name #2
+                            </p>
+                          </div>
+                        </div>
+                        <div class="card ml-2 mb-2" style="width: 150px">
+                          <img src="../../assets/img/d10.jpg" class="card-img-top" alt="moodboard" />
+                          <div class="card-body p-1">
+                            <p class="card-text thumbnail-title">
+                              Moodboard Name #2
+                            </p>
+                          </div>
+                        </div>
+                        <div class="card ml-2 mb-2" style="width: 150px">
+                          <img src="../../assets/img/d10.jpg" class="card-img-top" alt="moodboard" />
+                          <div class="card-body p-1">
+                            <p class="card-text thumbnail-title">
+                              Moodboard Name #2
+                            </p>
+                          </div>
+                        </div>
+
+                        <!-- remove part end -->
+                      </div>
+
+                      <!-- <div class="row d-flex justify-content-center  mt-0 pb-2">
+                                          <div> <button type="button"
+                                                  class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                                                  data-dismiss="modal">Add</button></div>
+                                      </div> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- view moodbaord modal end -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- edit floor Plans -->
+    <div class="range-slider1" *ngIf="testing.rent_duration_slider_month == 12">
+      <label class="rentDuration">
+        <b style="margin-left: -33px">Rent Duration:</b></label>
+      <input style="width: 200px" class="range-slider__range" type="range" value="12" min="1" max="36"
+        (change)="updateRent1($event)" />
+      <span class="range-slider__value">{{ monthNums1 }} &nbsp;Months</span>{{testing.rent_duration_slider_month}}
+    </div>
+    <div class="range-slider1" *ngIf="testing.rent_duration_slider_month != 12">
+      <label class="rentDuration">
+        <b style="margin-left: -33px">Rent Duration:</b></label>
+      <input style="width: 200px" class="range-slider__range" type="range" [value]="quotationData.quote.rent_duration_slider_month" [(ngModel)]="quotationData.quote.rent_duration_slider_month" min="1" max="36"
+        (change)="updateRent1($event)" />
+      <span class="range-slider__value">{{quotationData.quote.rent_duration_slider_month}} &nbsp;Months</span>
+  </div>
+    <!-- quote summary 1 edit floor plans end -->
+
+    <div class="container-fluid p-3">
+      <table class="table table-bordered edit-table bg-white" style="overflow-x: auto" id="mainTable">
+        <thead>
+          <tr>
+            <th scope="col" style="vertical-align: middle"></th>
+            <th scope="col" style="vertical-align: middle">SKU</th>
+            <th scope="col" style="vertical-align: middle">Image</th>
+            <th scope="col" style="vertical-align: middle">Product Name</th>
+            <th scope="col" style="vertical-align: middle">Type</th>
+            <th scope="col" style="vertical-align: middle">Supplier Name</th>
+            <th scope="col" style="vertical-align: middle">
+              Warehouse Location
+            </th>
+            <th scope="col" style="vertical-align: middle">Inventory Level</th>
+            <th scope="col" style="vertical-align: middle">
+              Moodboard Item Qty
+            </th>
+            <th scope="col" style="vertical-align: middle">Asset Value</th>
+            <th scope="col" style="vertical-align: middle">
+              $ Sale Price&nbsp; / Month
+            </th>
+            <th scope="col" style="vertical-align: middle; min-width: 4rem">
+              $ Buy Price&nbsp;
+            </th>
+            <th scope="col" style="vertical-align: middle">
+              $&nbsp;Discount / Month
+            </th>
+            <th scope="col" style="vertical-align: middle">Total</th>
+          </tr>
+        </thead>
+        <!-- <pre> {{ quotationData?.quote_items | json }} </pre> -->
+        <tbody>
+          <tr *ngFor="let product of quoteProductList; let i = index">
+            <th scope="row">{{ i + 1 }}</th>
+            <td>{{ product.sku | uppercase }}</td>
+            <td>
+              <img src="{{ product.b64img }}" alt="{{ product.name }}"
+                (click)="getItem(product.product_id, detailsmodal)" class="table_img" />
+            </td>
+            <td>{{ product.name | titlecase }}</td>
+            <td [ngSwitch]="product.button_type" class="text-center">
+              <div class="text-center text-white text-warning mr-4 ml-4" *ngSwitchCase="0">
+                Rent
+              </div>
+              <div class="text-center text-primary text-white mr-4 ml-4" *ngSwitchCase="1">
+                Buy
+              </div>
+              <div class="text-danger" *ngSwitchDefault>NA</div>
+            </td>
+            <td>{{ product.supplier_name | titlecase }}</td>
+            <td>
+              <span *ngIf="product.warehouse_id !== 1">{{
+                product.warehouse_name
+                }}</span><span *ngIf="product.warehouse_id === 1">{{
+                warehouse_name
+                }}</span>
+            </td>
+            <td>{{ product.inventory_level }}</td>
+
+            <td class="text-center">
+              <span class="mr-1">
+                <!-- <span class="fa fa-plus pointer" (click)="increaseQuantity(prod)"></span> -->
+              </span>
+              <span>
+                <span>{{ product.is_qty }}</span>
+              </span>
+              <span class="ml-1">
+                <!-- <span class="fa fa-minus pointer"  (click)="decreaseQuantity(prod)"></span> -->
+              </span>
+            </td>
+            <td>
+              {{ product.asset_value | currency: "USD":"symbol":"1.2-2" }}
+            </td>
+            <td>
+              <div style="display: flex">
+                <ng-container [ngSwitch]="product.button_type">
+                  <ng-container *ngSwitchCase="0">
+                    $&nbsp;<input class="text-center" type="number" style="width: 54px"
+                      value="{{ product.price ? product.price : 0 }}" (blur)="updatePrice($event, i, product)" />
+                  </ng-container>
+                  <ng-container *ngSwitchCase="1">
+                    <span class="text-danger">NA</span>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <span class="text-danger">NA</span>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <ng-container [ngSwitch]="product.button_type">
+                <ng-container *ngSwitchCase="1">
+                  <span class="row" style="justify-content: center">
+                    <span>$</span>
+                    <input class="text-center" type="number" style="width: 54px"
+                      value="{{ product.buy_price ? product.buy_price : 0 }}"
+                      (blur)="updateBuyPrice($event, i, product)" />
+                  </span>
+                </ng-container>
+                <ng-container *ngSwitchCase="0">
+                  <span class="text-danger">NA</span>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  <span class="text-danger">NA</span>
+                </ng-container>
+              </ng-container>
+            </td>
+            <td>
+              <span>$
+                <input class="text-center" style="width: 50px" type="number"
+                  value="{{ product.discount ? product.discount : 0 }}" (blur)="updateDiscount($event, i, product)" />
+              </span>
+            </td>
+
+            <td>
+              {{ product.is_total | currency: "USD":"symbol":"1.2-2" }}
+              <i *ngIf="!product.unit_id && currentPage.includes('quote/view')" class="fa fa-trash" (click)="deleteProduct(product)"
+                style="padding-left: 0.3rem; cursor: pointer"></i>
+              <!-- <button type="button" class="btn btn-dark"
+                        title="Remove Item"></button> -->
+            </td>
+          </tr>
+
+          <tr>
+            <td colspan="13" class="text-right font-weight-bold border-0">
+              Sub Total
+            </td>
+            <td>
+              {{ quotationData?.sub_total | currency: "USD":"symbol":"1.2-2" }}
+            </td>
+          </tr>
+          <!-- <tr>
+            <td colspan="13" class="text-right font-weight-bold border-0">
+              Discount
+            </td>
+            <td class="px-1 position-relative">
+              <span class="currency-symbol"
+                >$<span style="display: none">{{
+                  quotationData?.quote.discount
+                }}</span></span
+              ><input
+                class="w-100 pl-3"
+                (ngModelChange)="discountChange($event)"
+                type="number"
+                [(ngModel)]="quotationData?.quote.discount"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td colspan="13" class="text-right font-weight-bold border-0">
+              {{ quoteItemStatus == '0' ? 'Monthly Rent': 'Buy Total'}}
+            </td>
+            <td>
+              {{ (quoteItemStatus == '0' ? quoteInfo?.monthly_rent : quoteInfo.buy_total) | currency: "USD":"symbol":"1.2-2" }}
+            </td>
+          </tr> -->
+          <ng-container [ngSwitch]="quoteItemStatus">
+            <ng-container *ngSwitchCase="'0'" [ngTemplateOutlet]="rent"></ng-container>
+            <ng-container *ngSwitchCase="'1'" [ngTemplateOutlet]="buy"></ng-container>
+            <ng-container *ngSwitchDefault>
+              <ng-container [ngTemplateOutlet]="rent"></ng-container>
+              <ng-container [ngTemplateOutlet]="buy"></ng-container>
+            </ng-container>
+          </ng-container>
+
+          <ng-template #rent>
+            <tr>
+              <td colspan="13" class="text-right font-weight-bold border-0">
+                {{ "Monthly Rent" }}
+              </td>
+              <td>
+                {{
+                quotationData?.quote?.monthly_rent
+                | currency: "USD":"symbol":"1.2-2"
+                }}
+              </td>
+            </tr>
+            <tr id="hide-from-pdf1">
+              <td colspan="13" class="text-right font-weight-bold border-0">
+                Monthly Rent Adjustment
+              </td>
+              <td class="px-1 position-relative">
+                <!-- <span class="currency-symbol">$<span style="display: none">{{
+                    quotationData?.quote.rent_discount
+                    }}</span></span><input class="w-100 pl-3" (ngModelChange)="discountChange($event)" type="number"
+                  [(ngModel)]="quotationData?.quote.rent_discount" /> -->
+                <div fxFlex="30">
+                  <button class="buttonPlus" id="decrease_counter" data-html2canvas-ignore="true"(click)="decrement('decrement')"><b>-</b></button>
+                  <input type="text" [(ngModel)]="test" class="inputOf" (keypress)="keyPressNumbers($event)" />
+                  <button (click)="increment(test,'increment')" class="buttonPlus" id="increase_counter"data-html2canvas-ignore="true"><b>+</b></button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="13" class="text-right font-weight-bold border-0">
+                Monthly Rent Adjustment Amount
+              </td>
+              <td >
+                {{quotationData?.quote.rent_adjustment_value | currency: "USD":"symbol":"1.2-2"}}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="13" class="text-right font-weight-bold border-0">
+                Monthly Rent After Adjustment
+              </td>
+              <td >
+                {{quotationData?.quote?.rent_net_total | currency: "USD":"symbol":"1.2-2"}}
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template #buy>
+            <tr>
+              <td colspan="13" class="text-right font-weight-bold border-0">
+                {{ "Buy Price" }}
+              </td>
+              <td>
+                {{
+                quotationData?.quote.buy_sub_total
+                | currency: "USD":"symbol":"1.2-2"
+                }}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="13" class="text-right font-weight-bold border-0">
+                Buy Discount
+              </td>
+              <td class="px-1 position-relative">
+                <span class="currency-symbol">$<span style="display: none">{{
+                    quotationData?.quote.buy_discount
+                    }}</span></span><input class="w-100 pl-3" (ngModelChange)="buyDiscountChange($event)" type="number"
+                  [(ngModel)]="quotationData?.quote.buy_discount" />
+              </td>
+            </tr>
+            <tr>
+              <td colspan="13" class="text-right font-weight-bold border-0">
+                Buy Total After Discount
+              </td>
+              <td>
+                {{
+                quotationData?.quote.buy_net_total
+                | currency: "USD":"symbol":"1.2-2"
+                }}
+              </td>
+            </tr>
+          </ng-template>
+
+          <!-- <tr>
+            <td colspan="13" class="text-right font-weight-bold  border-0">Number of Months</td>
+            <td style="white-space: nowrap;">
+              <span class="ml-1">
+                <span class="fa fa-minus pointer" (click)="decreaseQuoteNOM()"></span>
+              </span>
+              <span class="inc">
+                <span>{{fnl_mnths}}</span>
+              </span>
+              <span class="mr-1">
+                <span class="fa fa-plus pointer" (click)="increaseQuoteNOM()"></span>
+              </span>
+            </td>
+          </tr> -->
+
+          <!-- <tr>
+            <td colspan="13" class="text-right font-weight-bold  border-0"><span>%</span>Discount
+            </td>
+            <td>
+              <input class=" w-100 pl-3" (blur)="discount($event)" type="number" value="0" />
+            </td>
+          </tr> -->
+
+          <tr>
+            <td colspan="13" class="text-right font-weight-bold border-0">
+              <a class="fa fa-pencil pointer" style="color: black; margin-right: 10px" data-toggle="modal"
+                data-target="#editdeliveryfeeModal"></a>Delivery Fee
+            </td>
+            <td class="px-1 position-relative">
+              <span class="currency-symbol">$<span style="display: none">{{
+                  quotationData.quote.delivery_fee | number:'1.0-0'
+                  }}</span></span><input class="w-100 pl-3" (ngModelChange)="deliveryfeeChange($event)" type="number"
+                 value="{{ quotationData?.quote.delivery_fee}}" />
+            </td>
+          </tr>
+          <!-- <tr>
+            <td colspan="13" class="text-right font-weight-bold  border-0"><a class="fa fa-pencil pointer"
+                style="color: black;margin-right: 10px;" data-toggle="modal"
+                data-target="#editpickupfeeModal"></a>Pickup Fee</td>
+            <td class="px-1 position-relative"><span class="currency-symbol">$<span
+                  style="display:none">{{quotationData?.quote.pickup_fee}}</span></span><input class="w-100 pl-3"
+                type="number" (ngModelChange)="pickupfeeChange($event)" [(ngModel)]='quotationData?.quote.pickup_fee'
+                value='{{quotationData?.quote.pickup_fee}}' /></td>
+          </tr> -->
+          <tr>
+            <td colspan="13" class="text-right font-weight-bold border-0">
+              Taxes ({{ quotationData?.quote.tax_percentage }} %)
+            </td>
+            <td>
+              <!-- <span class="currency-symbol">$</span > -->
+              <span>{{
+                quotationData?.quote.tax_amount
+                | currency: "USD":"symbol":"1.2-2"
+                }}</span>
+              <!-- <input
+                class="border-0 w-100 pl-3"
+                (ngModelChange)="taxChange($event)"
+                type="number"
+                [(ngModel)]="quotationData?.quote.tax_amount "
+                value="{{ quotationData?.quote.tax_amount | currency: 'USD':'symbol':'1.2-2'}}"
+              /> -->
+            </td>
+          </tr>
+          <tr>
+            <td colspan="13" class="text-right font-weight-bold border-0">
+              <!-- <div style="float: left;margin-left: 82px; display: none;"> <input type="checkbox" class="checkbox"
+                  [(ngModel)]="quoteB2B" (change)="changequoteB2B()" id="checkbox-3" />
+                <label for="checkbox-3" class="checkbox-click-target">
+                  <span class="checkbox-box"></span><span class="position-relative "
+                    style="top:3px;white-space: nowrap;">Apply B2B Calculation</span>
+                </label>
+              </div> -->
+              Total
+            </td>
+
+            <td>
+              {{ quotationData?.total | currency: "USD":"symbol":"1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td colspan="13" class="text-right font-weight-bold border-0">
+              <a class="fa fa-pencil pointer" style="color: black; margin-right: 10px" data-toggle="modal"
+                data-target="#editpickupfeeModal"></a>Pickup Fee(Charged at the end of the lease)
+            </td>
+            <td class="px-1 position-relative">
+              <span class="currency-symbol">$<span style="display: none">{{
+                  quotationData?.quote.pickup_fee
+                  }}</span></span><input class="w-100 pl-3" type="number" [(ngModel)]="quotationData?.quote.pickup_fee"
+                value="{{ quotationData?.quote.pickup_fee }}" />
+            </td>
+          </tr>
+          <tr id="hide-from-pdf">
+            <td colspan="13" class="text-right font-weight-bold border-0">
+              Total Asset Value
+            </td>
+            <td>{{ TotalAssetValue | currency: "USD":"symbol":"1.2-2" }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table class="table table-bordered edit-table bg-white d-none" id="printImage">
+        <tbody>
+          <tr *ngFor="let rowData of imagePDFData">
+            <ng-container *ngFor="let prod of rowData">
+              <td>
+                <img src="{{ prod.image }}" class="table_img" />
+                <div>{{ prod.name | uppercase }}</div>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- <div class="row d-flex justify-content-center my-3">
+        <input type="checkbox" class="checkbox" [(ngModel)]="quotePublic" (change)="changeStatus()" id="checkbox-2" />
+        <label for="checkbox-2" class="checkbox-click-target">
+          <span class="checkbox-box"></span><span class="position-relative " style="top:3px;">Public</span>
+        </label>
+      </div> -->
+      <div class="row d-flex justify-content-center">
+        <div class="col-lg-2" style="display: flex">
+          <!-- <div class="col-lg-2" > -->
+          <input type="checkbox" class="checkbox" [(ngModel)]="quotePublic" (change)="changeStatus()" id="checkbox-2" />
+          <label for="checkbox-2" class="checkbox-click-target">
+            <span class="checkbox-box"></span><span class="position-relative" style="top: 3px">Public</span>
+          </label>
+        </div>
+
+        <div class="col-lg-2" style="display: flex">
+          <!-- <div class="col-lg-2" > -->
+          <input type="checkbox" class="checkbox" [disabled]="quotePublicToBus" [(ngModel)]="quotePublicToBus"
+            (change)="publicToBus()" id="checkbox-3" />
+          <label for="checkbox-3" class="checkbox-click-target">
+            <span class="checkbox-box"></span><span class="position-relative" style="top: 3px">Publish to Business
+              Inhabitr</span>
+          </label>
+        </div>
+        <div class="col-lg-8">
+          <button *ngIf="!order_number_ref" type="button" class="border btn btn-light rounded-5 mt-2 px-5 add-btn align-item-center"
+            (click)="saveQuote()">
+            Save Quote
+          </button>
+          <button *ngIf="order_number_ref" type="button" class="border btn btn-light rounded-5 mt-2 px-5 add-btn align-item-center"
+            (click)="saveQuote()">
+            Save Order
+          </button>
+          <button type="button" class="border btn btn-light rounded-5 mt-2 px-5 add-btn align-item-cente ml-2"
+          (click)="open(content1)" *ngIf="!currentPage.includes('quote/view') && isorderCreated == 'Update'" [ngClass]="
+              quotationData?.quote_items.length === 0
+                ? 'cleardisable'
+                : 'clearenable'
+            ">
+            {{ isorderCreated }} Order
+          </button>
+
+          <button type="button" class="border btn btn-light rounded-5 mt-2 px-5 add-btn align-item-cente ml-2"
+           (click)="open(content1)" *ngIf="currentPage.includes('quote/view') && isorderCreated !== 'Update'" [ngClass]="
+              quotationData?.quote_items.length === 0
+                ? 'cleardisable'
+                : 'clearenable'
+            ">
+            {{ isorderCreated }} Order
+          </button>
+
+          <button type="button" class="border btn btn-light rounded-5 mt-2 px-5 add-btn align-item-cente ml-2"
+            (click)="generatePDF()">
+            Generate PDF
+          </button>
+        </div>
+
+        <!-- <input type="checkbox" [(ngModel)]="quotePublic" > qwert -->
+
+        <div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ========================================= -->
+<div class="col-sm-10 col-md-10 col-7 py-5 px-3" *ngIf="viewFloorPlan" style="margin:0 auto">
+  <div class="container-fluid mt-5 mb-2">
+    <div class="row d-flex justify-content-center">
+      <div class="col-12 p-0">
+        <a href="javascript:void(0)" (click)="backtoQuote()"
+          style="font-weight: bold; text-decoration: underline; font-size: 13px"><i class="fa fa-angle-left"></i> Back
+          to Quote
+        </a>
+        &nbsp;/
+        <span *ngIf="isFloorplanview" class="control-label-header">Floor Plan</span><span *ngIf="isSgUnitAdd"
+          class="control-label-header">Unassigned Unit</span><span *ngIf="isSgUnitRemove"
+          class="control-label-header">Assigned Unit</span>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white p-3">
+    <!-- =============== -->
+    <div class="container-fluid">
+      <div class="row d-flex justify-content-start mt-0 pb-2">
+        <div class="col-6 text-dark d-flex">
+          <div *ngIf="isFloorplanview" class="w-100">
+            <span class="" for="name">Floor Plan Name</span>
+            <input type="text" class="form-control ml-5 col-sm-6" style="display: inline" name="name" disabled id="name"
+              value="{{ fpName }}" />
+          </div>
+          <div class="w-100" *ngIf="!isFloorplanview">
+            <div style="display: flex">
+              <span for="name" style="white-space: nowrap">Unit name</span>
+              <input type="text" class="form-control ml-5 col-sm-6" style="display: inline" name="name" disabled
+                id="name" value="{{ sgSelectedUnit }}" />
+              <div class="pull-right">
+                <button class="form-control btn btn-add border" data-toggle="modal" data-target="#changeunitnamemodal"
+                  style="margin-left: 10px; white-space: nowrap">
+                  Change Unit Name
+                </button>
+              </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal" id="changeunitnamemodal" tabindex="-1" role="dialog"
+              aria-labelledby="changeunitnamemodal" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h6 class="modal-title" id="">Update Unit Name</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="container-fluid">
+                      <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div>
+                          <input type="text" style="width: 200px" class="form-control float-right rounded-0"
+                            [(ngModel)]="unitname" />
+                        </div>
+                      </div>
+
+                      <div class="row d-flex justify-content-center mt-0 pb-2">
+                        <div>
+                          <button type="button" class="border btn btn-light mt-2 px-5 add-btn" data-dismiss="modal"
+                            (click)="updateunitname()">
+                            Update
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- change unit name modal end-->
+          </div>
+        </div>
+
+        <div class="col-6 pr-0 text-right" *ngIf="isFloorplanview">
+          <span class="view-modal-lable text-dark">#unit: {{ fpUnit }}</span><span
+            class="ml-3 view-modal-lable text-dark">#Moodboard:
+            <span *ngIf="fpMoodboardList?.length > 0">{{
+              fpMoodboardList?.length
+              }}</span></span>
+          <span class="ml-3 mr-5 view-modal-lable text-dark">Floor Plan Type: {{ fpFloorTypename }}</span>
+        </div>
+      </div>
+      <div class="row d-flex justify-content-start mt-3 pb-2">
+        <div class="col-12 border pt-2" *ngIf="isFloorplanview">
+          <div class="row d-flex justify-content-start">
+            <div class="px-4 py-2 ml-2 mb-2 border unit-view" *ngFor="let unit of fpUnitList">
+              <span *ngIf="unit.name === '' || unit.name == null">
+                U{{ unit.unit }} </span><span *ngIf="unit.name != '' || unit.name != null">
+                {{ unit.name }}
+              </span>
+              <span aria-hidden="true" (click)="removeFloorUnits(unit)" class="px-2 py-1 cross-close">&times;</span>
+            </div>
+
+            <div class="px-4 py-2 ml-2 mb-2 border unit-view bg-grey addunit text-black" data-toggle="modal"
+              data-target="#unitModalFloor">
+              + Unit
+            </div>
+          </div>
+        </div>
+        <!-- floorplan dropdown -->
+        <span class="text-dark ml-3" *ngIf="isSgUnitAdd">Select Floor Plan</span>
+        <div class="col-4 pr-0" *ngIf="isSgUnitAdd">
+          <div class="mb-2 col-12" style="display: flex">
+            <!-- <span class="font-weight-bold" *ngIf='isSgUnitRemove' style="position:relative;top:2px">{{sgSelectedFloorPlan}}</span> -->
+            <div class="dropdown text-center position-relative w-100"
+              [ngClass]="{ 'now-allow': isSgUnitRemove ? true : false }">
+              <a class="btn btn-white dropdown-toggle custom-toggle border position-relative text-left rounded-0 w-100"
+                [ngClass]="{ 'event-none': isSgUnitRemove ? true : false }" type="button" id="dropdownMenuButton1"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ sgSelectedFloorPlan }}
+              </a>
+
+              <div class="dropdown-menu" style="width: 100%" aria-labelledby="dropdownMenuButton1">
+                <a class="dropdown-item" *ngFor="let fp of floorPlans" (click)="sgSelectFloorplan(fp)"
+                  href="javascript:void(0)">{{ fp.floorname }}</a>
+              </div>
+            </div>
+            <div>
+              <button class="form-control btn add-btn border" style="margin-left: 10px"
+                (click)="AddFloorplanunitlevel()">
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- floorplan dropdown -->
+        <!-- floorplan  remove -->
+        <div class="pl-3">
+          <span class="text-dark mr-3" *ngIf="isSgUnitRemove">Floor Plan</span>
+          <span *ngIf="isSgUnitRemove" class="font-weight-bold text-black ml-5">
+            {{ sgSelectedFloorPlan }}
+          </span>
+        </div>
+
+        <div class="container-fluid">
+          <div class="row d-flex justify-content-center">
+            <div class="col-12 p-0">
+              <a href="javascript:void(0)" (click)="backtoQuote()" style="
+                  font-weight: bold;
+                  text-decoration: underline;
+                  font-size: 13px;
+                  float: right;
+                  margin-bottom: -40px;
+                  margin-top: 10px;
+                "><i class="fa fa-angle-left"></i> Back to Quote
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 border py-2 my-5" *ngIf="isFloorplanview" style="min-height: 167px">
+          <div class="row d-flex justify-content-start" style="max-height: 307px; overflow-y: auto">
+            <div class="card ml-2 mb-2" style="width: 150px; height: 149px" *ngFor="let board of fpMoodboardList"
+              title="{{ board.moodboard_name }}">
+              <span aria-hidden="true" (click)="removeFloorPlanMb(board)" class="px-2 py-1 cross-close">&times;</span>
+              <img src="{{ board.is_moodboard_images.large }}" class="card-img-top" alt="moodboard" />
+              <div class="card-body p-1">
+                <p class="card-text thumbnail-title">
+                  {{ board.moodboard_name }}
+                </p>
+              </div>
+            </div>
+            <!-- one end -->
+            <!-- remove part start -->
+
+            <div class="card ml-2 mb-2" style="width: 150px; height: 149px" *ngIf="isFloorplanview" data-toggle="modal"
+              data-target="#mbModalFloor">
+              <div class="card-body add-moodboard bg-grey text-black">
+                <p class="card-text" style="font-size: 15px">+ Moodboard</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 border py-2 mb-5" *ngIf="isFloorplanview && directProdList?.length"
+          style="min-height: 167px">
+          <div class="row d-flex justify-content-start" style="max-height: 307px; overflow-y: auto">
+            <div class="card ml-2 mb-2" style="width: 150px; height: 149px" *ngFor="let item of directProdList"
+              title="{{ item.name }}">
+              <!-- <span  aria-hidden="true"  (click)='removeFloorPlanMb(board)' class="px-2 py-1 cross-close">&times;</span> -->
+              <img src="{{ item.product_images.large }}" class="card-img-top" alt="moodboard" />
+              <div class="card-body p-1">
+                <p class="card-text thumbnail-title">{{ item.name }}</p>
+              </div>
+            </div>
+            <!-- one end -->
+            <!-- remove part start -->
+          </div>
+        </div>
+        <!-- floor plan view moodboard end -->
+        <!-- add Floor plan view and remove floor plan view -->
+        <!-- start one -->
+        <div class="col-12 border py-2 my-5" *ngIf="isSgUnitAdd || isSgUnitRemove" style="min-height: 167px">
+          <div class="row d-flex justify-content-start" style="max-height: 307px; overflow-y: auto">
+            <div class="card ml-2 mb-2" style="width: 150px; height: 149px" *ngFor="let board of sgUnitMbList"
+              title="{{ board?.unitmoodboards?.boardname }}">
+              <span aria-hidden="true" (click)="removeSingleUnitToMoodboard(board)"
+                class="px-2 py-1 cross-close">&times;</span>
+              <img src="{{ board.unitmoodboards.is_moodboard_images.large }}" class="card-img-top" alt="moodboard" />
+              <div class="card-body p-1">
+                <p class="card-text thumbnail-title">
+                  {{ board.unitmoodboards.boardname }}
+                </p>
+              </div>
+            </div>
+            <!-- one end -->
+            <!-- remove part start -->
+            <!-- sg unit add + moodboard -->
+
+            <div class="card ml-2 mb-2" *ngIf="isSgUnitAdd || isSgUnitRemove" style="width: 150px; height: 149px"
+              data-toggle="modal" data-target="#mbModalFloor">
+              <div class="card-body add-moodboard bg-grey text-black">
+                <p class="card-text" style="font-size: 15px">+ Moodboard</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- start one -->
+        <div class="col-12 border py-2" *ngIf="(isSgUnitAdd || isSgUnitRemove) && directProdList?.length"
+          style="min-height: 167px">
+          <div class="row d-flex justify-content-start" style="max-height: 307px; overflow-y: auto">
+            <div class="card ml-2 mb-2" style="width: 150px; height: 149px" *ngFor="let item of directProdList"
+              title="{{ item.name }}">
+              <!-- <span  aria-hidden="true"  (click)='removeSingleUnitToMoodboard(board)' class="px-2 py-1 cross-close">&times;</span> -->
+              <img src="{{ item.product_images.large }}" class="card-img-top" alt="moodboard" />
+              <div class="card-body p-1">
+                <p class="card-text thumbnail-title">{{ item.name }}</p>
+              </div>
+            </div>
+            <!-- one end -->
+            <!-- remove part start -->
+            <!-- sg unit add + moodboard -->
+          </div>
+        </div>
+
+        <!-- table product unit -->
+        <div class="container-fluid py-3 px-0" *ngIf="isSgUnitAdd || (isSgUnitRemove && unitLevelProducts?.length)">
+          <!-- <div  *ngFor ="let moodboardSumaryData of unitLevelProducts"> -->
+          <!--  <span>Unit :{{ moodboardSumaryData.unit_name}}</span><br> -->
+
+          <!-- <div  *ngFor ="let moodboardData of moodboardSumaryData.moodboard"> -->
+          <!--  <span>Moodboard Name :{{ moodboardData.moodboard_name}}</span> -->
+          <table class="table table-responsive table-bordered edit-table">
+            <thead>
+              <tr>
+                <th scope="col" style="vertical-align: middle"></th>
+                <th scope="col" style="vertical-align: middle">SKU</th>
+                <th scope="col" style="vertical-align: middle">Image</th>
+                <th scope="col" style="vertical-align: middle">Product Name</th>
+                <th scope="col" style="vertical-align: middle">
+                  Supplier Name
+                </th>
+                <th scope="col" style="vertical-align: middle">
+                  Warehouse Location
+                </th>
+                <th scope="col" style="vertical-align: middle">
+                  Moodboard Name
+                </th>
+                <th scope="col" style="vertical-align: middle">
+                  Inventory Level
+                </th>
+                <th scope="col" style="vertical-align: middle">
+                  Moodboard Item Qty
+                </th>
+                <th scope="col" style="vertical-align: middle">Asset Value</th>
+                <th scope="col" style="vertical-align: middle">
+                  $&nbsp;Price&nbsp;/ Month
+                </th>
+                <th scope="col" style="vertical-align: middle">
+                  $&nbsp;Discount&nbsp;/ Month
+                </th>
+                <th scope="col" style="vertical-align: middle">
+                  %&nbsp;Discount&nbsp;/ Month
+                </th>
+                <th scope="col" style="vertical-align: middle">
+                  $&nbsp;B2B Discount / Month
+                </th>
+                <!-- <th scope="col" style="vertical-align:middle">Sale Price&nbsp;/ Month</th> -->
+                <th scope="col" style="vertical-align: middle">Months</th>
+                <th scope="col" style="vertical-align: middle">Total</th>
+                <th scope="col" *ngIf="isRemoveUnitItem" style="vertical-align: middle"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let mbdata of unitLevelProducts; let i = index">
+                <th scope="row">{{ i + 1 }}</th>
+                <td>{{ mbdata.sku | uppercase }}</td>
+                <td scope="col pointer">
+                  <img src="{{ mbdata.product_images.small }}" alt="{{ mbdata.name }}"
+                    (click)="getItem(mbdata.product_id, detailsmodal)" class="table_img" />
+                </td>
+                <td>{{ mbdata.name | titlecase }}</td>
+                <td>{{ mbdata.supplier_name | titlecase }}</td>
+                <td>{{ mbdata.warehouse_name | titlecase }}</td>
+                <td>{{ mbdata.moodboard_name | titlecase }}</td>
+                <td>{{ mbdata.inventory_level }}</td>
+                <td class="text-center">
+                  <span class="ml-1">
+                    <span class="fa fa-minus pointer" (click)="unit_decreaseQuantity(mbdata)"></span>
+                  </span>
+                  <span class="inc">
+                    <span>{{ mbdata.is_qty }}</span>
+                  </span>
+                  <span class="mr-1">
+                    <span class="fa fa-plus pointer" (click)="unit_increaseQuantity(mbdata)"></span>
+                  </span>
+                </td>
+                <td>
+                  {{ mbdata.asset_value | currency: "USD":"symbol":"1.2-2" }}
+                </td>
+                <td>
+                  <!-- {{mbdata.price  | currency:"USD":"symbol":"1.2-2"}} -->
+                  <div style="display: flex">
+                    $
+                    <input class="pl-3" style="width: 50px" type="number" value="{{ mbdata.price }}"
+                      (blur)="UnitpriceChange($event, i, mbdata)" (keypress)="keyPress($event)" />
+                  </div>
+                </td>
+                <td>
+                  <!-- {{mbdata.discount}} -->
+                  <div style="display: flex">
+                    $
+                    <input class="pl-3" style="width: 50px" type="number" value="{{ mbdata.discount }}"
+                      (blur)="UnitDiscountChange($event, i, mbdata)" (keypress)="keyPress($event)" />
+                  </div>
+                </td>
+                <td class="text-center">
+                  <!-- <span class="mr-1">
+                    <span class="fa fa-plus pointer" (click)="unit_increaseDiscount(mbdata)"></span>
+                  </span> -->
+                  <span style="display: flex">
+                    <!-- {{mbdata.b2b_discount}} -->
+
+                    <input class="pl-3" style="width: 50px" type="number" value="{{ mbdata.percentage_discount }}"
+                      (blur)="UnitB2BDiscountchange($event, i, mbdata)" (keypress)="keyPress($event)" />&nbsp;%
+                  </span>
+                  <!-- <span class="ml-1">
+                    <span class="fa fa-minus pointer" (click)="unit_decreaseDiscount(mbdata)"></span>
+                  </span> -->
+                </td>
+                <td>
+                  {{ mbdata.is_sale_price | currency: "USD":"symbol":"1.2-2" }}
+                </td>
+                <td style="white-space: nowrap">
+                  <span class="ml-1">
+                    <span class="fa fa-minus pointer" (click)="unit_decreaseMonth(mbdata)"></span>
+                  </span>
+                  <span class="inc">
+                    <span>{{ mbdata.months }}</span>
+                  </span>
+                  <span class="mr-1">
+                    <span class="fa fa-plus pointer" (click)="unit_increaseMonth(mbdata)"></span>
+                  </span>
+                </td>
+
+                <td>
+                  {{ mbdata.is_total | currency: "USD":"symbol":"1.2-2" }}
+                </td>
+
+                <td *ngIf="isRemoveUnitItem">
+                  <button type="button" class="btn btn-dark" (click)="removeUnitLevelProduct(mbdata)"
+                    title="Remove Item">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="14" class="text-right font-weight-bold border-0">
+                  Sub Total
+                </td>
+                <td>{{ unitSubTotal | currency: "USD":"symbol":"1.2-2" }}</td>
+              </tr>
+
+              <tr></tr>
+              <tr>
+                <td colspan="14" class="text-right font-weight-bold border-0">
+                  Total Asset Value
+                </td>
+                <td>
+                  {{ unitSubTotal | currency: "USD":"symbol":"1.2-2" }}
+                </td>
+              </tr>
+              <tr>
+                <td colspan="14" class="text-right font-weight-bold border-0">
+                  Delivery fee
+                </td>
+                <td>
+                  <span style="display: flex">$<input class="form-control" style="width: 100px" type="number"
+                      value="{{ Deleveryfee }}" (change)="getDeleveryFee($event)" /></span>
+                </td>
+                <!-- <td><input type="text" value="{{Deleveryfee  | currency:"USD":"symbol":"1.2-2"}}">{{Deleveryfee  | currency:"USD":"symbol":"1.2-2"}}</td> -->
+              </tr>
+              <tr>
+                <td colspan="14" class="text-right font-weight-bold border-0">
+                  Pickup fee(Charged at the end of the lease)
+                </td>
+                <!-- <td>{{pickupfee  | currency:"USD":"symbol":"1.2-2"}}</td> -->
+                <td>
+                  <span style="display: flex">$<input type="number" class="form-control" style="width: 100px"
+                      value="{{ pickupfee }}" (change)="getpickupFee($event)" /></span>
+                </td>
+              </tr>
+              <!-- <tr>
+                <td colspan="14" class="text-right font-weight-bold  border-0">Discount &nbsp;&nbsp;
+                  <span class="mr-1">
+                    <span class="fa fa-plus pointer"  (click)="unit_increaseTotalDiscount()"></span>
+                </span>
+                <span>{{unitDiscount}}</span>
+                <span class="ml-1">
+                  <span class="fa fa-minus pointer"  (click)="unit_decreaseTotalDiscount()"></span>
+                </span> </td>
+                 <td>{{unitDiscountPrice  | currency:"USD":"symbol":"1.2-2"}}</td>
+               </tr> -->
+              <!-- <tr>
+                    <td colspan="14" class="text-right font-weight-bold  border-0">Monthly Rent</td>
+                    <td>{{unitMonthlyRent  | currency:"USD":"symbol":"1.2-2"}}</td>
+                </tr> -->
+            </tbody>
+          </table>
+          <!--  <div  *ngFor ="let mbdata of moodboardData.items">
+
+            {{ mbdata.sku }}
+        </div> -->
+          <!--  </div> -->
+
+          <div class="row d-flex justify-content-center">
+            <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn align-item-cente ml-2"
+              (click)="updateUnit()">
+              Update Unit
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;<button type="button" *ngIf="!isRemoveUnitItem"
+              class="border btn btn-light rounded-0 mt-2 px-5 add-btn align-item-cente ml-2"
+              (click)="isRemoveUnitItem = true">
+              Remove Item
+            </button>
+            &nbsp;&nbsp;<button type="button" *ngIf="isRemoveUnitItem"
+              class="border btn btn-light mt-2 px-5 add-btn align-item-cente ml-2" (click)="isRemoveUnitItem = false">
+              Cancel
+            </button>
+          </div>
+
+          <!--  </div> -->
+        </div>
+        <!-- table product unit end -->
+
+        <!-- table moodboard unit end -->
+
+        <!-- add floor plan view and remove floor plan view -->
+
+        <!-- table moodboard unit -->
+        <p class="font-weight-bold" style="font-size: 13px" *ngIf="isFloorplanview">
+          Moodboards and Units
+        </p>
+        <div class="container-fluid px-0" *ngIf="isFloorplanview && unitsummary?.length">
+          <table class="table table-bordered table-responsive edit-table bg-white mb-5"
+            style="overflow-x: auto; border: 0">
+            <thead>
+              <tr>
+                <th scope="col" style="vertical-align: middle"></th>
+                <th scope="col" *ngFor="let data of unitsummary[0].moodboards; let i = index">
+                  {{ data.moodboard_name }} ({{ data.moodboard_add_counter }})
+                  <!-- <span *ngFor="let v of fpMoodboardList">({{v.moodboard_add_counter}})</span> -->
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let unit of unitsummary; let i = index">
+                <th scope="row">
+                  <!-- <span >U{{unit.unit}}</span> -->
+                  <span *ngIf="unit.name === '' || unit.name == null">
+                    U{{ unit.unit }} </span><span *ngIf="unit.name != '' || unit.name != null">
+                    {{ unit.name }}
+                  </span>
+                </th>
+                <td *ngFor="let ulist of unitsummary[i].moodboards">
+                  <i class="fa fa-check" [ngClass]="{
+                      'd-none': ulist.isactive === 0 ? true : false
+                    }"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Floorplan summary -->
+        <p class="font-weight-bold" style="font-size: 13px" *ngIf="isFloorplanview">
+          Floor Plan Summary
+        </p>
+        <ng-container *ngIf="isFloorplanview">
+          <div class="container-fluid table-bordered">
+            <div class="row d-flex border-bottom justify-content-start">
+              <div class="border px-3 py-2 my-2 mx-2 fp-unit-summary" *ngFor="let unit of fpUnitList"
+                [ngClass]="{ 'is-clicked': unit.isfpsummary ? true : false }" (click)="selectUnitforSummary(unit)">
+                <!-- U{{unit.unit}} -->
+                <span *ngIf="unit.name === '' || unit.name == null">
+                  U{{ unit.unit }} </span><span *ngIf="unit.name != '' || unit.name != null">
+                  {{ unit.name }}
+                </span>
+              </div>
+            </div>
+            <div class="row d-flex justify-content-start">
+              <span for="name" style="white-space: nowrap; margin: 5px">Unit name :</span><input type="text"
+                class="form-control" [(ngModel)]="fp_unitname" style="width: 167px; margin: 5px" />
+            </div>
+            <div class="row">
+              <table class="table table-responsive edit-table bg-white" style="overflow-x: auto; margin-bottom: 0rem">
+                <thead>
+                  <tr>
+                    <th scope="col" style="vertical-align: middle"></th>
+                    <th scope="col" style="vertical-align: middle">SKU</th>
+                    <th scope="col" style="vertical-align: middle">Image</th>
+                    <th scope="col" style="vertical-align: middle">
+                      Product Name
+                    </th>
+                    <th scope="col" style="vertical-align: middle">Type</th>
+                    <th scope="col" style="vertical-align: middle">
+                      Supplier Name
+                    </th>
+                    <th scope="col" style="vertical-align: middle">
+                      warehouse Location
+                    </th>
+                    <th scope="col" style="vertical-align: middle">
+                      Inventory Level
+                    </th>
+                    <th scope="col" style="vertical-align: middle">
+                      Moodboard Name
+                    </th>
+                    <th scope="col" style="vertical-align: middle">
+                      Moodboard Item Qty
+                    </th>
+                    <th scope="col" style="vertical-align: middle">
+                      Asset Value
+                    </th>
+                    <th scope="col" style="vertical-align: middle">
+                      $&nbsp; Sale Price&nbsp;/ Month
+                    </th>
+                    <th scope="col" style="vertical-align: middle">
+                      $ Buy Price&nbsp;/ Month
+                    </th>
+                    <th scope="col" style="vertical-align: middle">
+                      $&nbsp;Discount&nbsp;/ Month
+                    </th>
+                    <!-- <th scope="col" style="vertical-align:middle">%&nbsp;Discount&nbsp;/ Month</th> -->
+                    <!-- <th scope="col" style="vertical-align:middle">$&nbsp;B2B Discount / Month</th> -->
+                    <!-- <th scope="col" style="vertical-align:middle">Months</th> -->
+
+                    <th scope="col" style="vertical-align: middle">Total</th>
+                    <th scope="col" style="vertical-align: middle" *ngIf="isRemoveFloorPlanItem"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let prod of floorPlanData; let i = index">
+                    <th scope="row">{{ i + 1 }}</th>
+                    <td>{{ prod.sku | uppercase }}</td>
+                    <td>
+                      <img src="{{ prod.product_images.small }}" alt="{{ prod.name }}"
+                        (click)="getItem(prod.product_id, detailsmodal)" class="table_img" />
+                    </td>
+                    <td >
+                      <p *ngIf="prod?.reassign_items.length ==0">{{ prod.name | titlecase }}</p>
+                      <p class="cursor" (click)="resignItemPop(prod,resignItemsModal)" *ngIf="prod?.reassign_items.length !=0">{{prod?.reassign_items[0]?.item_name}}
+                        <span class="resign-color">(Reassign Items)</span></p>
+                    </td>
+                    <td [ngSwitch]="prod.button_type" class="text-center">
+                      <div class="text-center text-white text-warning mr-4 ml-4" *ngSwitchCase="0">
+                        Rent
+                      </div>
+                      <div class="text-center text-primary text-white mr-4 ml-4" *ngSwitchCase="1">
+                        Buy
+                      </div>
+                      <div class="text-danger" *ngSwitchDefault>NA</div>
+                    </td>
+                    <td>{{ prod.supplier_name | titlecase }}</td>
+                    <td>{{ prod.warehouse_name }}</td>
+                    <td>{{ prod.inventory_level }}</td>
+                    <td>{{ prod.moodboard_name }}</td>
+                    <td class="text-center" style="white-space: nowrap">
+                      <span class="ml-1">
+                        <span class="fa fa-minus pointer" (click)="decreaseUSItemQuantity(prod)"></span>
+                      </span>
+                      <span class="inc">
+                        <span>{{ prod.is_qty }}</span>
+                      </span>
+                      <span class="mr-1">
+                        <span class="fa fa-plus pointer" (click)="increaseUSItemQuantity(prod)"></span>
+                      </span>
+                    </td>
+                    <td>
+                      {{
+                      prod.pricing_asset_value
+                      | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                    <td style="width: 1rem">
+                      <ng-container [ngSwitch]="prod.button_type">
+                        <ng-container *ngSwitchCase="0">
+                          <span style="display: flex">
+                            $&nbsp;
+                            <input class="text-center" style="width: 4rem" type="number"
+                              value="{{ prod.price ? prod.price : 0 }}" (blur)="updatePrice($event, i, prod)" />
+                          </span>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="1">
+                          <span class="text-danger">NA</span>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                          <span class="text-danger">NA</span>
+                        </ng-container>
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container [ngSwitch]="prod.button_type">
+                        <ng-container *ngSwitchCase="1">
+                          <span style="display: flex">
+                            $&nbsp;<input class="text-center" type="number" style="width: 54px"
+                              value="{{ prod.buy_price ? prod.buy_price : 0 }}"
+                              (blur)="updateBuyPrice($event, i, prod)" />
+                          </span>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="0">
+                          <span class="text-danger">NA</span>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                          <span class="text-danger">NA</span>
+                        </ng-container>
+                      </ng-container>
+                    </td>
+
+                    <td>
+                      <!-- {{prod.discount}} -->
+                      $&nbsp;<input class="pl-3" style="width: 50px" type="number" [(ngModel)]="prod.discount"
+                        value="{{ prod.discount }}" (blur)="updateDiscount($event, i, prod)" />
+                    </td>
+                    <td>
+                      {{ prod.is_total | currency: "USD":"symbol":"1.2-2" }}
+                    </td>
+                    <td *ngIf="isRemoveFloorPlanItem">
+                      <button type="button" class="btn btn-dark" (click)="removeFloorPlanLevelProduct(prod)"
+                        title="Remove Item">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Number of Months
+                    </td>
+                    <td style="width: 100px; white-space: nowrap">
+                      <span class="ml-1">
+                        <span class="fa fa-minus pointer" (click)="decreaseNOM()"></span>
+                      </span>
+
+                      <span class="inc">
+                        <span>{{ unitInfo.months }}</span>
+                      </span>
+                      <span class="mr-1">
+                        <span class="fa fa-plus pointer" (click)="increaseNOM()"></span>
+                      </span>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Sub Total
+                    </td>
+                    <td>
+                      {{
+                      unitInfo.sub_total | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+                  <tr *ngIf="isBuyCard">
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Monthly Rent
+                    </td>
+                    <td>
+                      {{
+                      unitInfo.monthly_rent | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+                  <tr id="hide-from-pdf1">
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Monthly Rent Adjustment
+                    </td>
+                    <td class="px-1 position-relative">
+                      <div>
+                        <button class="buttonPlus" id="decrease_counter" data-html2canvas-ignore="true"(click)="decrement('decrement')"><b>-</b></button>
+                        <input type="text" [(ngModel)]="test" class="inputOf" (keypress)="keyPressNumbers($event)" />
+                        <button (click)="increment(test,'increment')" class="buttonPlus" id="increase_counter"data-html2canvas-ignore="true"><b>+</b></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Monthly Rent Adjustment Amount
+                    </td>
+                    <td >
+                      {{unitInfo?.rent_adjustment_value | currency: "USD":"symbol":"1.2-2"}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Monthly Rent After Adjustment
+                    </td>
+                    <td >
+                      {{unitInfo?.rent_net_total | currency: "USD":"symbol":"1.2-2"}}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Buy Price
+                    </td>
+                    <td>
+                      {{
+                        unitInfo?.buy_price
+                      | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Buy Discount
+                    </td>
+                    <td class="px-1 position-relative">
+                      <span class="currency-symbol">$<span style="display: none">{{
+                        unitInfo?.buy_discount
+                          }}</span></span><input class="w-100 pl-3" (ngModelChange)="unitDiscountChange($event)" type="number"
+                        [(ngModel)]="unitInfo.buy_discount" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Buy Total After Discount
+                    </td>
+                    <td>
+                      {{
+                        unitInfo.buy_net_total
+                      | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Delivery Fee
+                    </td>
+                    <td>
+                      <span style="display: flex">
+                        $&nbsp;<input class="text-center" type="number" style="width: 54px" value="{{
+                            unitInfo.delivery_fee ? unitInfo.delivery_fee : 0
+                          }}" (blur)="updateUSDeliveryFee($event)" />
+                      </span>
+                      <!-- {{floorPlanInfo.delivery_fee | currency:"USD":"symbol":"1.2-2"}} -->
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Taxes ({{ taxRate }} %)
+                    </td>
+                    <td>
+                      {{
+                      unitInfo.tax_amount | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Total Amount
+                    </td>
+                    <td>
+                      {{
+                      unitInfo.net_total | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Pickup Fee(Charged at the end of the lease)
+                    </td>
+                    <td>
+                      <span style="display: flex">
+                        $&nbsp;<input class="text-center" type="number" style="width: 54px" value="{{
+                            unitInfo.pickup_fee ? unitInfo.pickup_fee : 0
+                          }}" (blur)="updateUSPickupFee($event)" />
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row mb-2 d-flex justify-content-center mt-2">
+              <button type="button" class="btn btn-dark px-4" (click)="updateFloorplansummaryofUnit()">
+                Update Unit
+              </button>
+
+              &nbsp;&nbsp;&nbsp;&nbsp;<button type="button" *ngIf="!isRemoveFloorPlanItem" class="btn btn-dark px-4"
+                (click)="isRemoveFloorPlanItem = true">
+                Remove Item
+              </button>
+              &nbsp;&nbsp;<button type="button" *ngIf="isRemoveFloorPlanItem" class="btn btn-dark px-4"
+                (click)="isRemoveFloorPlanItem = false">
+                Cancel
+              </button>
+            </div>
+          </div>
+          <div class="total_fp container-fluid">
+            <p class="font-weight-bold" style="font-size: 13px" *ngIf="isFloorplanview">
+              Total Floor Plan Summary
+            </p>
+            <div class="row d-flex justify-content-center">
+              <table class="table table-bordered table-responsive edit-table bg-white" style="overflow-x: auto">
+                <tbody class="float-right">
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Sub Total
+                    </td>
+                    <td>
+                      {{
+                      floorPlanInfo.sub_total
+                      | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Monthly Rent
+                    </td>
+                    <td>
+                      {{
+                      floorPlanInfo.monthly_rent
+                      | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Delivery Fee
+                    </td>
+                    <td>
+                      {{
+                      floorPlanInfo.delivery_fee
+                      | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Taxes ({{ taxRate }} %)
+                    </td>
+                    <td>
+                      {{
+                      floorPlanInfo.tax_amount
+                      | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Total Amount
+                    </td>
+                    <td>
+                      {{
+                      floorPlanInfo.net_total
+                      | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Pickup Fee(Charged at the end of the lease)
+                    </td>
+                    <td>
+                      {{
+                      floorPlanInfo.pickup_fee
+                      | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="14" class="text-right font-weight-bold border-0">
+                      Total Asset Value
+                    </td>
+                    <td>
+                      {{
+                      floorPlanInfo.asset_value
+                      | currency: "USD":"symbol":"1.2-2"
+                      }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="container-fluid">
+              <div class="row d-flex justify-content-center" style="float: left">
+                <div class="p-0">
+                  <a href="javascript:void(0)" (click)="backtoQuote()" style="
+                      font-weight: bold;
+                      text-decoration: underline;
+                      font-size: 13px;
+                    "><i class="fa fa-angle-left"></i> Back to Quote
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <!-- Floorplan summary -->
+        <!-- table moodboard unit end -->
+
+        <!-- remove part end -->
+      </div>
+
+      <!-- <div class="row d-flex justify-content-center  mt-0 pb-2">
+                <div> <button type="button"
+                        class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                        data-dismiss="modal">Add</button></div>
+            </div> -->
+    </div>
+    <!-- =========== -->
+  </div>
+</div>
+
+<!-- =================================================== -->
+<!-- ========================================= -->
+<div class="col-sm-10 col-md-10 col-12 p-5 d-none" style="margin: 0 auto">
+  <div class="container-fluid mt-5">
+    <div class="row d-flex justify-content-center">
+      <div class="col-12 p-0">
+        <a href="javascript:void(0)" (click)="backtoQuote()"
+          style="font-weight: bold; text-decoration: underline; font-size: 13px"><i class="fa fa-angle-left"></i> Back
+          to Quote
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white p-3">
+    <!-- =============== -->
+
+    <!-- =========== -->
+    <div class="container-fluid">
+      <div class="row d-flex mt-0 pb-2">
+        <div class="col-6">
+          <label class="col-sm-2 control-label text-dark pl-0" for="name" style="white-space: nowrap">Unit Name</label>
+        </div>
+        <div class="col-6 control-label text-dark d-flex">
+          <form class="col-12 pl-0">
+            <div class="ml-3">
+              <input type="text" class="form-control col-sm-6" name="name" disabled id="name"
+                value="{{ sgUnitname }}" />
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row d-flex justify-content-around mt-0 mb-2">
+        <div class="col-6 control-label mt-2 text-dark" *ngIf="!isSgUnitRemove">
+          <span class="">Select Floor plan</span>
+        </div>
+        <div class="col-6 control-label mt-2 text-dark" *ngIf="isSgUnitRemove">
+          <span class="">Floor plan</span>
+        </div>
+        <div class="col-6 pr-0">
+          <div class="mb-2 col-12">
+            <span class="font-weight-bold" *ngIf="isSgUnitRemove" style="position: relative; top: 2px">{{
+              sgSelectedFloorPlan }}</span>
+            <div class="dropdown text-center position-relative w-100"
+              [ngClass]="{ 'now-allow': isSgUnitRemove ? true : false }">
+              <a class="btn btn-white dropdown-toggle custom-toggle border position-relative text-left rounded-0 w-100"
+                [ngClass]="{ 'event-none': isSgUnitRemove ? true : false }" type="button" id="dropdownMenuButton1"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ sgSelectedFloorPlan }}
+              </a>
+              <div class="dropdown-menu" style="width: 100%" aria-labelledby="dropdownMenuButton1">
+                <a class="dropdown-item" *ngFor="let fp of floorPlans" (click)="sgSelectFloorplan(fp)"
+                  href="javascript:void(0)">{{ fp.floorname }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-0 mb-2">
+        <span class="control-label mt-2 text-dark">Select Moodboard</span>
+
+        <div class="col-6 pr-0 text-right">
+          <div class="mb-2 col-12">
+            <div class="dropdown text-center position-relative w-100">
+              <a class="btn btn-white dropdown-toggle custom-toggle border position-relative text-left rounded-0 w-100" type="button"
+                id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ sgSelectedMb }}
+              </a>
+              <div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton1">
+                <a class="dropdown-item" *ngFor="let mb of fpMymblist" (click)="sgSelectMoodboard(mb)"
+                  href="javascript:void(0)">{{ mb.boardname }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="row d-flex justify-content-start  ">
+                <div class="col-6 control-label mt-2 text-dark"><span class="">Selected Unit</span></div>
+                <div class="col-6 my-2"><span   class="px-3 py-2 ml-3 mx-1 my-1 border position-relative add-unit-mb">U{{sgSelectedUnit}} </span></div>
+
+
+            </div> -->
+      <div class="row d-flex justify-content-center mt-0 pb-2">
+        <div *ngIf="!isSgUnitRemove">
+          <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+            (click)="addSingleUnitToMoodboard()">
+            Add
+          </button>
+        </div>
+        <div *ngIf="isSgUnitRemove">
+          <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+            (click)="removeSingleUnitToMoodboard('da')">
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================================================== -->
+<!-- unit modal in floor plan -->
+<div class="modal" id="unitModalFloor" tabindex="-1" role="dialog" aria-labelledby="unitModalFloorLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="">Add Number of Units</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row d-flex justify-content-around mt-0 pb-2">
+            <div class="col-6 control-label mt-2 text-dark">
+              <span class="">No. of units</span>
+            </div>
+            <div class="col-6 pr-0 text-right">
+              <input type="text" class="form-control float-right rounded-0" id="" value=""
+                [(ngModel)]="unitInFloorPlan" />
+            </div>
+          </div>
+
+          <div class="row d-flex justify-content-center mt-0 pb-2">
+            <div>
+              <button type="button" class="border btn btn-light mt-2 px-5 add-btn" (click)="addUnitinFloorPlan()">
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- unit modal in floor plan -->
+<!-- add moodboard -->
+<div class="modal" id="mbModalFloor" tabindex="-1" role="dialog" aria-labelledby="unitModalFloorLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="">Add Moodboard</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row mt-0">
+            <span class="pt-2 mr-3">Select Moodboard</span>
+
+            <div class="">
+              <div class="mb-2 ml-3">
+                <div class="dropdown text-center position-relative w-100">
+                  <a class="btn btn-white dropdown-toggle custom-toggle border position-relative text-left rounded-0 pr-4"
+                    type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    {{ fpselectedmbType }}
+                  </a>
+                  <div class="dropdown-menu scroll" aria-labelledby="dropdownMenuButton1" *ngIf="ismb"
+                  infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" [scrollWindow]="true">
+                    <a class="dropdown-item" *ngFor="let mb of fpMymblist" (click)="selectMb(mb)"
+                      href="javascript:void(0)">{{ mb.boardname }}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-center mb-3">
+            <div class="form-check-inline mr-5">
+              <label class="form-check-label" *ngIf="isFloorplanview">
+                <input type="radio" class="form-check-input" (click)="isAllUnit(1)" [checked]="true"
+                  name="optradio" />All Units
+              </label>
+            </div>
+            <div class="form-check-inline ml-5" *ngIf="isFloorplanview">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" (click)="isAllUnit(0)" name="optradio" />Selected Unit
+              </label>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-center p-2 my-3" *ngIf="isFloorplanview">
+            <div *ngFor="let unit of fpUnitList" [ngClass]="{ 'allow-click': isSelectedAll ? true : false }"
+              (click)="selectUnitsForPlans(unit)" class="px-3 py-2 mx-1 my-1 border position-relative add-unit-mb">
+              U{{ unit.unit }}
+              <span aria-hidden="true" [ngClass]="{ 'fa-check': unit.isActive ? true : false }"
+                class="px-2 pb-1 cross-close fa"></span>
+            </div>
+          </div>
+          <!-- <div class="row d-flex  justify-content-start p-2" *ngIf='isSgUnitAdd'>
+                        <div  *ngIf='isSgUnitAdd' class="px-3 py-2 mx-1 my-1 border position-relative add-unit-mb">U{{sgSelectedUnit}} </div>
+                     </div> -->
+
+          <div class="row d-flex justify-content-center mt-0 pb-2">
+            <div>
+              <button type="button" *ngIf="isFloorplanview" class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                (click)="addmoodbaordinFloorPlan()">
+                Add
+              </button>
+              <button type="button" *ngIf="isSgUnitAdd || isSgUnitRemove" class="border btn btn-light mt-2 px-5 add-btn"
+                data-dismiss="modal" (click)="addSingleUnitToMoodboard()">
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- add Moodboard in floor plan end -->
+<!-- prod detail -->
+<ng-template #detailsmodal let-modal class="rangepopup">
+  <div class="modal-header">
+    <h4 class="modal-title font12" id="modal-basic-title">
+      {{ productName }} - {{ productId }}
+    </h4>
+    <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </span>
+  </div>
+  <div class="modal-body lightbg">
+    <div class="container-fluid">
+      <div class="row d-flex">
+        <div class="col-sm-5 col-md-5 col">
+          <div class="card rounded border-0 ml-2">
+            <div class="card-image clearfix text-center">
+              <img src="{{ displayImage }}" alt="{{ productName }}" style="height: 300px" title="{{ productName }}"
+                class="img_prodinfo-width" />
+            </div>
+          </div>
+          <div class="container-fluid pl-4 mt-3">
+            <div class="row d-flex bg-white overflow-img">
+              <div *ngFor="let image of variationImages; let i = index" class="m-2">
+                <img class="img-thumbnail" src="{{ image.default_images[0].image_url.large }}" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-7 col-md-7 col">
+          <div class="p-3 bg-white">
+            <table class="table tablee border-none m-0 p-0">
+              <tbody>
+                <tr>
+                  <td>Product Name:</td>
+                  <td class="font-weight-bold">{{ productName }}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>{{ attribute }}</td>
+                </tr>
+                <tr>
+                  <td>Supplier Name:</td>
+                  <td class="font-weight-bold">{{ supplierName }}</td>
+                </tr>
+
+                <tr>
+                  <td>Category:</td>
+                  <td class="font-weight-bold">{{ categoryname }}</td>
+                </tr>
+                <tr>
+                  <td>Supplier Asset Price:</td>
+                  <td class="font-weight-bold" *ngIf="!(supplierPrice == null)">
+                    {{ supplierPrice | currency }}
+                  </td>
+                  <td class="font-weight-bold" *ngIf="supplierPrice == null">
+                    -
+                  </td>
+                </tr>
+                <tr>
+                  <td>Inhabitr Asset Price:</td>
+                  <td class="font-weight-bold">
+                    {{ inhabitrPrice | currency }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Rent Price/{{ 12 }} month:</td>
+                  <td class="font-weight-bold" style="width: 79px">
+                    {{ rentPrice | currency }}
+                  </td>
+                  <!-- <td  class="font-weight-bold" style="width: 79px;" >
+                    <div class="range-slider">
+                      <label class="rentDuration" style="margin-left:-30%"> <b style="margin-left: -81px;">Rent Duration:</b></label>
+                      <input class="range-slider__range" type="range" value="12" min="1" max="12" (change)="updateRent($event)">
+                      <span class="range-slider__value">{{monthNums}}</span>
+                    </div>
+            </td> -->
+                </tr>
+                <tr>
+                  <td>Rent Duration:</td>
+
+                  <td class="font-weight-bold" style="width: 79px">
+                    <div class="range-slider">
+                      <!-- <label class="rentDuration" style="margin-left:-30%"> <b style="margin-left: -81px;">Rent Duration:</b></label> -->
+                      <input class="range-slider__range" type="range" value="12" min="1" max="12"
+                        (change)="updateRent($event)" />
+                      <span class="range-slider__value">{{ monthNums }}</span>
+                    </div>
+                  </td>
+                </tr>
+                <!-- <tr>
+                  <td>Supplier Warehouse Location:</td>
+                  <td class="font-weight-bold"><span *ngIf="sourcetype==='API'">{{warehouseLocation}}</span></td>
+                </tr>
+                <tr>
+                  <td>Inhabitr Warehouse Location:</td>
+                  <td class="font-weight-bold"><span *ngIf="sourcetype!=='API'">{{warehouseLocation}}</span></td>
+                </tr> -->
+                <!-- <tr>
+                  <td>Inventory Qty: </td>
+                  <td  class="font-weight-bold"><span *ngIf="is_inventoryCount==0">{{quantity}}</span><span *ngIf="is_inventoryCount==1">{{invQuantity}}</span><i style="margin-left: 25px;cursor: pointer;" (click)="getInventeryqty()" class="fa fa-refresh" aria-hidden="true"></i></td>
+                </tr> -->
+                <!-- <tr >
+                  <td>Supplier Inv: </td>
+                  <td class="font-weight-bold">
+                   <span> {{SupplierInv}}</span>
+                      </td>
+              </tr>
+                <tr >
+                  <td>Total Inhabitr Inv: </td>
+                  <td class="font-weight-bold">
+                      <span >{{TotalInv}}</span><i
+                      style="margin-left: 25px;cursor: pointer;" (click)="getInventeryqty()"
+                      class="fa fa-refresh" aria-hidden="true"></i></td>
+              </tr>
+              <tr >
+                  <td>Assigned Inv: </td>
+                  <td class="font-weight-bold">
+                      <span >{{AssignedInv}}</span></td>
+              </tr> -->
+                <!-- <tr>
+                  <td>Unassigned Inv: </td>
+                  <td class="font-weight-bold">
+                    <span *ngIf="is_inventoryCount==0 ">{{quantity}}</span>
+
+                    <span *ngIf="is_inventoryCount==1">{{invQuantity}}</span> -->
+                <!-- <span *ngIf="is_inventoryCount==0  && supplierName!=='JoyBird'">{{quantity}}</span>
+                    <span *ngIf="sourcetype==='API' && supplierName==='JoyBird'">{{invQuantity}}</span>
+                    <span *ngIf="is_inventoryCount==1  && supplierName!=='JoyBird'">{{invQuantity}}</span> -->
+                <!-- </td>
+              </tr>
+
+              <tr>
+                  <td>B2B Storage: </td>
+                  <td class="font-weight-bold">
+                      <span >{{B2bstorage}}</span></td>
+              </tr>                                 -->
+
+                <tr>
+                  <td>
+                    <table border="1" style="
+                        width: 100%;
+                        margin-top: 11px;
+                        font-size: 13px;
+                        margin-bottom: 11px;
+                      ">
+                      <thead>
+                        <tr>
+                          <th><span>Warehouse</span></th>
+                          <th style="white-space: nowrap">
+                            Inventory
+                            <i style="margin-left: 25px; cursor: pointer" (click)="getInventeryqty()"
+                              class="fa fa-refresh" aria-hidden="true"></i>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody *ngFor="let prod of warehouseLocations; let i = index">
+                        <tr *ngIf="prod.is_inhabitr_warehouse == 'Y'">
+                          <td style="white-space: nowrap">
+                            <span>
+                              <!-- <span
+                                            *ngIf="prod.is_inhabitr_warehouse=='N'">Inhabitr Storage</span> -->
+                              <span *ngIf="prod.is_inhabitr_warehouse == 'Y'">{{
+                                prod.warehouse_name | titlecase
+                                }}</span>
+                            </span>
+                          </td>
+                          <td>
+                            <div>
+                              <span (mouseover)="
+                                  invpopupModelShow(prod.warehouse_id)
+                                " (mouseout)="invpopupModelHide()"><u style="cursor: pointer">{{
+                                  prod.inhabitr_quantity
+                                  ? prod.inhabitr_quantity
+                                  : 0
+                                  }}</u></span>
+                              <!-- <span
+                                            *ngIf="is_inventoryCount===1"
+                                            (mouseover)="invpopupModelShow()"
+                                            (mouseout)="invpopupModelHide()">{{TotalInv}}</span> -->
+                            </div>
+                          </td>
+                        </tr>
+                        <tr *ngIf="prod.is_inhabitr_warehouse == 'N'">
+                          <td>
+                            <span style="white-space: nowrap">
+                              <!-- <span
+                                        *ngIf="prod.is_inhabitr_warehouse=='Y'">Storage</span> -->
+                              <span *ngIf="prod.is_inhabitr_warehouse == 'N'">{{
+                                prod.warehouse_name | titlecase
+                                }}</span>
+                            </span>
+                          </td>
+                          <td>
+                            <span (mouseover)="invpopupModelShow(prod.warehouse_id)" (mouseout)="invpopupModelHide()">{{
+                              prod.supplier_quantity
+                              ? prod.supplier_quantity
+                              : 0
+                              }}</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td>
+                    <div class="tooltiptext" id="invpopup">
+                      <table border="1" style="
+                          width: 100%;
+                          margin-top: 11px;
+                          font-size: 13px;
+                          margin-bottom: 11px;
+                        ">
+                        <tr>
+                          <td style="width: 50%">Assigned Inv:</td>
+                          <td class="font-weight-bold">
+                            <span>{{ AssignedInv }}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Unassigned Inv:</td>
+                          <td class="font-weight-bold">
+                            <!-- <span *ngIf="is_inventoryCount==0">{{unassignedquantity}}</span> -->
+                            <span>{{ invQuantity }}</span>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>B2B Storage:</td>
+                          <td class="font-weight-bold">
+                            <span>{{ B2bstorage }}</span>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>Assigned to quote Inv:</td>
+                  <td class="font-weight-bold">
+                    <span>{{ AssignedtoquoteInv }}</span><i style="margin-left: 25px; cursor: pointer"
+                      class="fa fa-refresh" aria-hidden="true" (click)="getQuoteInventeryqty()"></i>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Source Type:</td>
+                  <td class="font-weight-bold">{{ sourcetype }}</td>
+                </tr>
+                <tr>
+                  <td>Supplier SKU:</td>
+                  <td class="font-weight-bold">
+                    {{ supplierSKU | uppercase }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Inhabitr SKU:</td>
+                  <td class="font-weight-bold">
+                    {{ inhabitrSKU | uppercase }}
+                  </td>
+                </tr>
+                <tr>
+                  <td *ngIf="isOPsDb">Last updated in Ops:</td>
+                  <td class="font-weight-bold" *ngIf="isOPsDb">
+                    {{ updateOps | date: "MM-dd-yy" }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="accordion mt-2" id="accordionExample">
+            <div class="card border-0">
+              <div class="card-header border-0 bg-white" id="headingOne" data-toggle="collapse"
+                data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <h2 class="mb-0">
+                  <button class="btn acc-dropdown bg-white desc" type="button">
+                    Description
+                  </button>
+                </h2>
+              </div>
+
+              <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                  <p>{{ description }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion mt-2" id="accordionExample2">
+            <div class="card border-0">
+              <div class="card-header border-0 bg-white" id="heading2" data-toggle="collapse" data-target="#collapse2"
+                aria-expanded="true" aria-controls="collapse2">
+                <h2 class="mb-0">
+                  <button class="btn acc-dropdown desc" type="button">
+                    Features
+                  </button>
+                </h2>
+              </div>
+
+              <div id="collapse2" class="collapse" aria-labelledby="heading2" data-parent="#accordionExample2">
+                <div class="card-body">
+                  <p>{{ features }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!-- prod detail -->
+
+<table id="userInfoTable" style="display: none">
+  <tbody>
+    <tr>
+      <td align="right">Customer Name</td>
+      <td>{{ cusName }}</td>
+    </tr>
+
+    <tr>
+      <td align="right">Email</td>
+      <td>{{ cus_email }}</td>
+    </tr>
+
+    <tr>
+      <td align="right">Contact No.</td>
+      <td>{{ cus_contact }}</td>
+    </tr>
+    <tr>
+      <td align="right">Address</td>
+      <td>{{ cusAddress }}</td>
+    </tr>
+    <tr>
+      <td align="right">State</td>
+      <td>{{ selectedState }}</td>
+    </tr>
+    <tr>
+      <td align="right">City</td>
+      <td>{{ selectedCity }}</td>
+    </tr>
+    <tr>
+      <td align="right">Zip Code</td>
+      <td>{{ cus_zipcode }}</td>
+    </tr>
+    <tr>
+      <td align="right">Company Name</td>
+      <td>{{ company_name }}</td>
+    </tr>
+    <tr>
+      <td align="right">Project Name</td>
+      <td>{{ project_name }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- mbdetails  no data for this-->
+<table class="mbDeatils" style="display: none">
+  <thead>
+    <tr>
+      <!-- <th>SI No.</th> -->
+      <th>Moodboards</th>
+      <th>Floor Plan</th>
+      <th>No of Unit / Floor plan</th>
+      <th>Units / Moodboard</th>
+      <th>No of Unit / Moodboard</th>
+      <th>Units / Moodboard</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <!-- <th>1</th> -->
+      <td>Living Bed room</td>
+      <td>Lake View</td>
+      <td>5</td>
+      <td>U2,U3, U4, U5</td>
+      <td>2</td>
+      <td>U3, U4</td>
+    </tr>
+  </tbody>
+</table>
+<!-- mbdetails -->
+<!-- floorplan details -->
+<table id="fpHeading" style="display: none">
+  <thead>
+    <tr>
+      <th>Floor Plan Details</th>
+    </tr>
+  </thead>
+</table>
+<table id="topTable" style="display: none">
+  <thead>
+    <tr>
+      <!-- <th>SI No.</th> -->
+      <th>Floor plans</th>
+      <th>No. of Units</th>
+      <th>Floor Plan Types</th>
+      <th>No. of Moodboards</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let fp of floorPlans; let i = index">
+      <!--  <th>{{i+1}}</th> -->
+      <td>{{ fp.floorname }}</td>
+      <td>{{ fp.total_unit }}</td>
+      <td>{{ fp.floorplan_type_name }}</td>
+      <td>{{ fp.floorplan_mb_cnt }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- <div class="container-fluid ">
+  <div class="container-fluid p-3 "> -->
+<table id="userInfoTable1" style="margin-left: 1013px; display: none">
+  <tbody>
+    <tr>
+      <td>Date</td>
+      <td>{{ cusName }}</td>
+    </tr>
+
+    <tr>
+      <td>Reference</td>
+      <td>{{ cus_email }}</td>
+    </tr>
+
+    <tr>
+      <td>Name</td>
+      <td>{{ cusName }}</td>
+    </tr>
+    <tr>
+      <td>Email</td>
+      <td>{{ cus_email }}</td>
+    </tr>
+  </tbody>
+</table>
+<!-- </div>
+</div> -->
+
+<table id="topTable1" style="display: none" class="table table-bordered edit-table bg-white">
+  <thead>
+    <tr>
+      <!-- <th>SI No.</th> -->
+      <th>#</th>
+      <th>Unit</th>
+      <th>Duration (months)</th>
+      <th>Items</th>
+      <th>Qty</th>
+      <th>Total</th>
+      <th>Total After Discount</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let fp of floorPlans; let i = index">
+      <!--  <th>{{i+1}}</th> -->
+      <td>{{ i + 1 }}</td>
+      <td>{{ fp.total_unit }}</td>
+      <td>{{ fp.floorplan_type_name }}</td>
+      <td>{{ fp.floorplan_mb_cnt }}</td>
+      <td>{{ fp.total_unit }}</td>
+      <td>{{ fp.floorplan_type_name }}</td>
+      <td>{{ fp.floorplan_mb_cnt }}</td>
+    </tr>
+    <tr>
+      <td colspan="12"><span>Order Subtotal</span><span>345$</span></td>
+      <td>345$</td>
+    </tr>
+    <!-- <tr>
+      <td colspan="12" class="text-right font-weight-bold  border-0">Total Monthly Rental</td>
+      <td>
+
+
+        <span >
+          <span>{{quotationData?.quote.sub_total  | currency:"USD":"symbol":"1.2-2"}}</span>
+        </span>
+
+
+
+      </td>
+     </tr>
+     <tr>
+      <td colspan="12" class="text-right font-weight-bold  border-0">Total One Time Fees</td>
+      <td>
+
+
+        <span >
+          <span>{{quotationData?.quote.sub_total  | currency:"USD":"symbol":"1.2-2"}}</span>
+        </span>
+
+
+      </td>
+     </tr>
+     <tr>
+      <td colspan="10" class="text-right font-weight-bold  border-0">(+)Total Order Delivery Fee</td>
+      <td colspan="2" >
+
+
+        <span >
+          <span>{{quotationData?.quote.sub_total  | currency:"USD":"symbol":"1.2-2"}}</span>
+        </span>
+
+
+      </td>
+     </tr>
+     <tr>
+      <td colspan="12" class="text-right font-weight-bold  border-0">Total Order Pickup Fee
+        (Charged at the end of your lease)
+        </td>
+      <td>
+
+
+        <span >
+          <span>{{quotationData?.quote.sub_total  | currency:"USD":"symbol":"1.2-2"}}</span>
+        </span>
+
+
+      </td>
+     </tr>
+     <tr>
+      <td  colspan="12" class="text-right font-weight-bold  border-0" >(+)Total Order Deposit</td>
+      <td>
+
+        <span >
+          <span>{{quotationData?.quote.sub_total  | currency:"USD":"symbol":"1.2-2"}}</span>
+        </span>
+
+      </td>
+     </tr> -->
+    <!-- <tr>
+      <td colspan="12" class="text-right font-weight-bold  border-0">Order Total</td>
+      <td>
+        <span >
+          <span>{{quotationData?.quote.sub_total  | currency:"USD":"symbol":"1.2-2"}}</span>
+        </span>
+
+      </td>
+     </tr> -->
+  </tbody>
+</table>
+<div class="container-fluid">
+  <div class="container-fluid p-3">
+    <table class="table table-bordered edit-table bg-white" style="overflow-x: auto; display: none" id="mainTable1">
+      <thead>
+        <tr>
+          <th scope="col" style="vertical-align: middle">#</th>
+          <th scope="col" style="vertical-align: middle">Unit</th>
+          <th scope="col" style="vertical-align: middle">Duration (months)</th>
+          <th scope="col" style="vertical-align: middle">Items</th>
+          <th scope="col" style="vertical-align: middle">Qty</th>
+          <th scope="col" style="vertical-align: middle">Total</th>
+          <th scope="col" style="vertical-align: middle">
+            Total After Discount
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let prod of quotationData?.quote_items; let i = index">
+          <th scope="row">{{ i + 1 }}</th>
+          <td>{{ prod.sku | uppercase }}</td>
+          <td>{{ prod.name | titlecase }}</td>
+          <td>{{ prod.supplier_name | titlecase }}</td>
+          <td>{{ prod.inventory_level }}</td>
+          <td class="text-center">
+            <span class="mr-1">
+              <!-- <span class="fa fa-plus pointer" (click)="increaseQuantity(prod)"></span> -->
+            </span>
+            <span>
+              <span>{{ prod.is_qty }}</span>
+            </span>
+            <span class="ml-1">
+              <!-- <span class="fa fa-minus pointer"  (click)="decreaseQuantity(prod)"></span> -->
+            </span>
+          </td>
+          <td>
+            {{ prod.pricing_asset_value | currency: "USD":"symbol":"1.2-2" }}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="6" class="text-right font-weight-bold border-0">
+            Order Subtotal
+          </td>
+          <td>
+            {{
+            quotationData?.quote.sub_total | currency: "USD":"symbol":"1.2-2"
+            }}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="6" class="text-right font-weight-bold border-0">
+            Total Monthly Rental
+          </td>
+          <td>
+            <span class="mr-1">
+              <span class="fa fa-plus pointer" (click)="increaseQuoteNOM()"></span>
+            </span>
+            <span>
+              <span>{{ fnl_mnths }}</span>
+            </span>
+            <span class="ml-1">
+              <span class="fa fa-minus pointer" (click)="decreaseQuoteNOM()"></span>
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="6" class="text-right font-weight-bold border-0">
+            Total One Time Fees
+            <span class="mr-1">
+              <span class="fa fa-plus pointer" (click)="increaseTotalDiscount()"></span>
+            </span>
+            <span>{{ quotationData?.quote.discount
+              }}<span style="display: none">%</span></span>
+            <span class="ml-1">
+              <span class="fa fa-minus pointer" (click)="decreaseTotalDiscount()"></span>
+            </span>
+          </td>
+          <td>
+            {{
+            quotationData?.quote.discount_price
+            | currency: "USD":"symbol":"1.2-2"
+            }}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="6" class="text-right font-weight-bold border-0">
+            (+)Total Order Delivery Fee
+          </td>
+          <td>
+            {{
+            quotationData?.quote.monthly_rent
+            | currency: "USD":"symbol":"1.2-2"
+            }}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="6" class="text-right font-weight-bold border-0">
+            Total Order Pickup Fee (Charged at the end of your lease)
+          </td>
+          <td class="px-1 position-relative">
+            <span class="currency-symbol">$<span style="display: none">{{
+                quotationData?.quote.delivery_fee
+                }}</span></span><input class="border-0 w-100 pl-3" (ngModelChange)="deliveryfeeChange($event)"
+              type="number" [(ngModel)]="quotationData?.quote.delivery_fee"
+              value="{{ quotationData?.quote.delivery_fee }}" />
+          </td>
+        </tr>
+        <tr>
+          <td colspan="6" class="text-right font-weight-bold border-0">
+            (+)Total Order Deposit
+          </td>
+          <td class="px-1 position-relative">
+            <span class="currency-symbol">$</span><span style="display: none">{{
+              quotationData?.quote.tax_amount
+              }}</span><input class="border-0 w-100 pl-3" (ngModelChange)="taxChange($event)" type="number"
+              [(ngModel)]="quotationData?.quote.tax_amount" value="{{ quotationData?.quote.tax_amount }}" />
+          </td>
+        </tr>
+        <tr>
+          <td colspan="6" class="text-right font-weight-bold border-0">
+            Order Total
+          </td>
+          <td>
+            {{
+            quotationData?.quote.net_total | currency: "USD":"symbol":"1.2-2"
+            }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="container-fluid p-3">
+    <table colspan="12" class="table table-bordered edit-table bg-white" style="overflow-x: auto; display: none"
+      id="mainTable2">
+      <thead>
+        <tr>
+          <th scope="col" style="vertical-align: middle">#</th>
+          <th scope="col" style="vertical-align: middle">Item</th>
+          <th scope="col" style="vertical-align: middle">Qty</th>
+          <!-- <th scope="col" style="vertical-align:middle">Items</th> -->
+          <th scope="col" style="vertical-align: middle">
+            Unit Price(per month)
+          </th>
+          <th scope="col" style="vertical-align: middle">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let prod of quotationData?.quote_items; let i = index">
+          <th scope="row">{{ i + 1 }}</th>
+          <td>{{ prod.name | uppercase }}</td>
+          <td>{{ prod.inventory_level | titlecase }}</td>
+          <td>{{ prod.inventory_level | titlecase }}</td>
+
+          <td class="text-center">
+            <span class="mr-1">
+              <!-- <span class="fa fa-plus pointer" (click)="increaseQuantity(prod)"></span> -->
+            </span>
+            <span>
+              <span>{{ prod.is_qty }}</span>
+            </span>
+            <span class="ml-1">
+              <!-- <span class="fa fa-minus pointer"  (click)="decreaseQuantity(prod)"></span> -->
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" class="text-right font-weight-bold border-0">
+            Unit Subtotal
+          </td>
+          <td>
+            {{
+            quotationData?.quote.sub_total | currency: "USD":"symbol":"1.2-2"
+            }}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" class="text-right font-weight-bold border-0">
+            Unit Monthly Rental
+          </td>
+          <td>
+            <span>
+              <span>{{ fnl_mnths }}</span>
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="4" class="text-right font-weight-bold border-0">
+            Unit One Time Fees (+)Delivery & Assembly
+
+            <span>{{ quotationData?.quote.discount
+              }}<span style="display: none">%</span></span>
+          </td>
+          <td>
+            {{
+            quotationData?.quote.discount_price
+            | currency: "USD":"symbol":"1.2-2"
+            }}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" class="text-right font-weight-bold border-0">
+            Deposit
+          </td>
+          <td class="px-1 position-relative">
+            <span class="currency-symbol">$</span><span style="display: none">{{
+              quotationData?.quote.tax_amount
+              }}</span><input class="border-0 w-100 pl-3" (ngModelChange)="taxChange($event)" type="number"
+              [(ngModel)]="quotationData?.quote.tax_amount" value="{{ quotationData?.quote.tax_amount }}" />
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" class="text-right font-weight-bold border-0">
+            Unit Total
+          </td>
+          <td class="px-1 position-relative">
+            <span class="currency-symbol">$<span style="display: none">{{
+                quotationData?.quote.delivery_fee
+                }}</span></span><input class="border-0 w-100 pl-3" (ngModelChange)="deliveryfeeChange($event)"
+              type="number" [(ngModel)]="quotationData?.quote.delivery_fee"
+              value="{{ quotationData?.quote.delivery_fee }}" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!--
+  <div id="Unitswiseimage" class="container bg-white" style="display: none;" >
+          <div class="col-xl-12  pt-2">
+
+
+                  <div class="row card-group">
+                          <div class="col-4 mb-3"  *ngFor="prod of quotationData?.quote_items">
+                              <div class="card mt-3 mb-2 " style="height:100%">
+                                  <img  src="{{prod.product_images.large}}"  class="img-responsive" alt="{{prod.name}}" style="height: 200px;">
+
+                              </div>
+                          </div>
+                      </div>
+          </div>
+  </div> -->
+  <ng-template #resignItemsModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title font14" id="modal-basic-title">
+        Reassign Items list (Out of {{originalQuantity}} Products
+        <span *ngIf="!resignSignalQuantity">{{resignQuantity}}</span>
+        <span  *ngIf="resignSignalQuantity">{{resignSignalQuantity}}</span> are re-assigned)
+      </h4>
+      <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </span>
+    </div>
+    <div class="modal-body">
+      <div class="dialogContent">
+          <table class="w-100">
+            <thead>
+              <th>SKU</th>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Qty</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let resignOriginalItems of resignOriginalItem ;let i=index">
+                <td>{{resignOriginalItems?.sku}}</td>
+                <td>
+                  <img src="{{ resignOriginalItems.product_images.small }}" alt="{{ resignOriginalItems.name }}"
+                    class="table_img" />
+                </td>
+                <td>{{resignOriginalItems?.name}} <span class="resign-color">(orginal)</span></td>
+                <td>{{resignOriginalItems?.is_qty}}</td>
+              </tr>
+              <tr *ngFor="let resignitems of resignitem">
+                <td>{{resignitems?.item_var_sku}}</td>
+                <td>
+                  <img src="{{ resignitems?.product_images?.small }}" alt="{{ resignitems?.name }}"
+                    class="table_img" />
+                </td>
+                <td>{{resignitems?.item_name}}</td>
+                <td>{{resignitems?.qty}}</td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #content1 let-modal>
+    <div class="create-order">
+    <div class="modal-header">
+      <h5 class="modal-title text-center" id="modal-basic-title" style="margin-left:35%;">Send Agreement</h5>
+      <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">
+            <img src="/assets/img/project/cross.png">
+        </span>
+    </span>
+    </div>
+    <div class="modal-body text-center">
+      <div class="container-fluid">
+        <div class="row d-flex justify-content-around mt-0 pb-2">
+          <div class="col-md-8">
+          <form [formGroup]="createOrderForm">
+            <div class="payment-block mt-3 position-relative">
+               <label for="bankAcc" class="accType">Client Email ID</label>
+                <input type="email" class="form-control text-center" formControlName="email" name="email" placeholder="Enter Email ID" id="email" required>
+            </div>
+            <div *ngIf="f['email'].touched && f['email'].invalid" class="alert alert-danger mt-2 p-1">
+              <div *ngIf="f['email'].errors && f['email'].errors['required']">Email is required</div>
+              <div *ngIf="f['email'].errors && f['email'].errors['email']">Please enter valid email address</div>
+          </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="row d-flex justify-content-center mt-0 pb-2">
+          <div>
+            <button type="button" class="border btn btn-light rounded-0 mt-3 px-5 add-btn"
+            (click)="emailCreateOrder()" [disabled]="!this.createOrderForm.valid" style="padding: 5px 20px !important;">
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Submit</button>
+    </div> -->
+  </div>
+  </ng-template>
+
+  <ng-template #content2 let-modal style="max-width:400px">
+    <div class="">
+    <div class="modal-header">
+      <h5 class="modal-title text-center" id="modal-basic-title" style="margin-left:35%;">Send Agreement</h5>
+      <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">
+            <img src="/assets/img/project/cross.png">
+        </span>
+    </span>
+    </div>
+    <div class="modal-body text-center">
+      <div class="container-fluid">
+        <div class="row d-flex justify-content-around mt-0 pb-2">
+          <div class="col-md-12">
+          <p>An email has been sent to <b>{{email}}.</b> Please check your mail.</p>
+          </div>
+        </div>
+
+        <div class="row d-flex justify-content-center mt-0 pb-2">
+          <div>
+            <button type="button" class="border btn btn-light rounded-0 px-5 add-btn"
+            (click)="modal.close('Save click')" style="padding: 5px 20px !important;">
+              Continue
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Submit</button>
+    </div> -->
+  </div>
+  </ng-template>
+
+ <!-- <div class="modal" id="sendEmailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:400px !important">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="" style="margin-left: 35%;">Send Agreement</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="container-fluid">
+          <div class="row d-flex justify-content-around mt-0 pb-2">
+            <div class="col-md-8">
+            <form [formGroup]="createOrderForm">
+              <div class="payment-block mt-3 position-relative">
+                 <label for="bankAcc" class="accType">Client Email ID</label>
+                  <input type="email" class="form-control text-center" formControlName="email" name="email" placeholder="Enter Email ID" id="email" required>
+              </div>
+              <div *ngIf="f['email'].touched && f['email'].invalid" class="alert alert-danger mt-2 p-1">
+                <div *ngIf="f['email'].errors && f['email'].errors['required']">Email is required</div>
+                <div *ngIf="f['email'].errors && f['email'].errors['email']">Please enter valid email address</div>
+            </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="row d-flex justify-content-center mt-0 pb-2">
+            <div>
+              <button type="button" class="border btn btn-light rounded-0 mt-3 px-5 add-btn" data-dismiss="modal"
+              (click)="emailCreateOrder()" [disabled]="!this.createOrderForm.valid" style="padding: 5px 20px !important;">
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>  -->

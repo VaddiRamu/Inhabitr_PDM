@@ -1,0 +1,287 @@
+<div class="container" *ngIf='!viewFloorPlan'>
+    <div class="col-12 container-fluid pb-3">
+
+        <form [formGroup]="customerInfoForm" (ngSubmit)="onSubmit()">
+            <div class="container-fluid">
+                <!-- <div class="row d-flex justify-content-center">
+                    <div class="col-12  p-0">
+                        <nav class="breadcrum-nav" aria-label="breadcrumb">
+                            <ol class="breadcrumb bg-transparent m-0 p-0">
+                                <li class="breadcrumb-item "><a href="javascript:void(0)">Create New Quotetttt</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div> -->
+                <div class="row d-flex justify-content-center mt-5 mb-4">
+                    <div class="col-12  col-sm-8 p-0  justify-content-center" style="text-align: center;">
+                        <!-- <a class="head-6 link prod-head" routerLink='/admin/quote/list/my'><i class="fa fa-angle-left"></i> My
+                            Quotes</a><span class="head-6">/ Create Quote </span><span class="head-6"
+                            *ngIf='editCustomer'>/ Customer Information</span> -->
+                        <span class="headline"><b>Create New Quote</b></span>
+                    </div>
+                </div>
+                <!-- after customer info created -->
+                <div class="position-relative">
+                    <a class="edit-link btn" (click)="editCustomerInfo()" *ngIf="!editCustomer">Edit</a>
+                    <div class="row d-flex justify-content-between p-4 bg-white" *ngIf="!editCustomer">
+                        <div class="mr-3"><span class="control-label">Quote# </span><span
+                                class="bcrum-data">{{quoteId}}</span></div>
+                        <div class="mr-3"><span class="control-label">Customer Name: </span><span
+                                class="bcrum-data">{{customerInfoForm.value.name}}</span></div>
+                        <div class="mr-3"><span class="control-label">address: </span><span
+                                class="bcrum-data">{{customerInfoForm.value.address}}</span></div>
+                        <div class="mr-3"><span class="control-label">State: </span><span
+                                class="bcrum-data">{{selectedState}}</span></div>
+                        <div class="mr-3"><span class="control-label">City </span><span
+                                class="bcrum-data">{{selectedCity}}</span></div>
+                        <div class="mr-3"><span class="control-label">zipcode: </span><span
+                                class="bcrum-data">{{customerInfoForm.value.zipcode}}</span></div>
+                        <div class="mr-3"><span class="control-label">Contact No: </span><span
+                                class="bcrum-data">{{customerInfoForm.value.contact_no}}</span> </div>
+                        <div class="mr-3"><span class="control-label">email: </span><span
+                                class="bcrum-data">{{customerInfoForm.value.email}}</span> </div>
+
+                    </div>
+                </div>
+                <!-- afeter customer info created end -->
+
+                <div class="row d-flex justify-content-center" *ngIf="editCustomer">
+                    <div class="col-12  col-sm-8 bg-white border p-4">
+
+                        <div class="row d-flex justify-content-center mt-2">
+                            <!-- <div class="form-group mb-2 col-12 col-md-6">
+                                <label for="mbNum" class="pl-2 control-label">Quote#</label>
+                                <input type="text" readonly class="form-control " id="mbNum" value="1242">
+                            </div> -->
+                            <div class="form-group  mb-2 col-12 col-md-6">
+                                <ng-template #rt let-r="result" let-t="term">
+
+                                    <ngb-highlight [result]="r.value" [term]="t"></ngb-highlight>
+                                </ng-template>
+                                <label for="mbName" class="control-label pl-2">Customer Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control " id="mbName" value="" [(ngModel)]="model"
+                                    (keypress)="getuserNames($event)" [ngbTypeahead]="search"
+                                    (ngModelChange)="onCustomerChange()" [inputFormatter]="formatter"
+                                    [resultTemplate]="rt" [ngModelOptions]="{standalone: true}">
+
+                                <!-- <div *ngIf="model.invalid && (model.dirty || model.touched)" class="alert alert-danger">
+
+                                    <div *ngIf="model.errors.required">
+                                        Name is required.
+                                    </div>
+
+
+                                </div> -->
+
+                                <div class="text-danger" *ngIf="!namevalid && isSubmitted">
+                                    {{messages.VALIDATION_NAME}}
+                                </div>
+                            </div>
+                            <div class="form-group mb-2 col-12 col-md-6 ">
+                                <label for="mbType" class="control-label pl-2">Address <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control " id="mbType" value="" formControlName='address'>
+                                <div class="text-danger"
+                                    *ngIf="!customerInfoForm.controls['address'].valid  && isSubmitted">
+                                    {{messages.VALIDATION_ADDRESS}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-between mt-0">
+
+                            <div class="form-group  mb-2  col-12 col-md-6 ">
+                                <label for="cRef" class="control-label pl-2">State <span class="text-danger">*</span></label>
+                                <ng-select [items]="states" class="w-100" bindLabel="name" [(ngModel)]="selectedstate"
+                                    formControlName="state" placeholder="Select State" (change)="onChange($event)">
+
+                                </ng-select>
+                                <div class="text-danger" *ngIf="(selectedStateId === undefined)  && isSubmitted">
+                                    {{messages.VALIDATION_STATE}}
+                                </div>
+
+                            </div>
+                            <div class="form-group mb-2 col-12 col-md-6">
+                                <label for="mbUnit" class="pl-2 control-label">City <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control " id="mbType" value="" formControlName='city'>
+
+                                <!-- <ng-select [items]="cities  | orderBy:'city_name':false" class="w-100"
+                                    bindLabel="city_name" placeholder="Select city" [(ngModel)]="selectedcity"
+                                    [ngModelOptions]="{standalone: true}" (change)="oncityChange($event)">
+                                </ng-select> -->
+                                <!-- <div class="text-danger" *ngIf="(selectedCityId === undefined)  && isSubmitted">
+                                    {{messages.VALIDATION_CITY}}
+                                </div> -->
+
+                                <div class="text-danger"
+                                    *ngIf="(!customerInfoForm.controls['city'].valid && customerInfoForm.controls['city'].touched ) || (!customerInfoForm.controls['city'].valid  && isSubmitted)">
+                                    <div class="text-danger" *ngIf="!customerInfoForm.controls['city'].errors?.pattern">
+                                        {{messages.VALIDATION_CITY}}
+                                    </div>
+
+                                    <div class="text-danger" *ngIf="customerInfoForm.controls['city'].errors?.pattern">
+                                        {{messages.VALIDATION_CITY}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-between mt-0 pb-2">
+
+                            <div class="form-group mb-2 col-12 col-md-6">
+                                <label for="optRef" class="control-label pl-2">Zip Code  <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control " id="optRef" value="" formControlName="zipcode">
+                                <div class="text-danger"
+                                    *ngIf="(!customerInfoForm.controls['zipcode'].valid && customerInfoForm.controls['zipcode'].touched ) || (!customerInfoForm.controls['zipcode'].valid  && isSubmitted)">
+                                    <!-- <div class="text-danger"
+                                        *ngIf="!customerInfoForm.controls['zipcode'].errors?.pattern">
+                                        {{messages.VALIDATION_ZIPCODE}}
+                                    </div> -->
+                                    <div class="text-danger"
+                                        *ngIf="customerInfoForm.controls['zipcode'].errors?.pattern">
+                                        {{messages.ERROR_ZIPCODE}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mb-2 col-12 col-md-6">
+                                <label for="mbUnit" class="pl-2 control-label">Email <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control " id="mbUnit" value="" formControlName='email'
+                                    [pattern]='emailPattern'>
+                                <div class="text-danger"
+                                    *ngIf="!customerInfoForm.controls['email'].valid  && isSubmitted">
+                                    {{messages.VALIDATION_EMAIL}}
+                                </div>
+
+                                <div class="text-danger" *ngIf="customerInfoForm.controls['email'].errors?.pattern">
+                                    {{messages.ERROR_EMAIL}}
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row justify-content-between mt-0 pb-2">
+                            <div class="form-group mb-2 col-12 col-md-6 ">
+                                <div class="add-button">
+                                    <div>
+                                        <label for="mbType" class="control-label pl-2">Company Name</label>
+                                        <span class="text-danger">*</span>
+                                    </div>
+                                    <a  (click)="toggleAddButton()"><small><i class="fa fa-plus-circle pr-1"></i>Create New Company</small> </a> 
+                                </div>
+                                <div class="pl-2">
+                                    <select *ngIf="!addCompany" (change)="selectCompany($event)"
+                                        formControlName="company_id" class="form-control">
+                                        <option *ngFor='let company of companyList' [value]="company.sgid">
+                                            {{company.company}}
+                                        </option>
+                                    </select>
+                                    <!-- <input type="text"  class="form-control" id="mbName" required
+                                        formControlName="newCompanyName" placeholder="Enter Company Name"> -->
+
+                                    <input type="text" *ngIf="addCompany" class="form-control " id="optRef" value=""
+                                        placeholder="Enter Company Name" formControlName="companyName">
+                                    <!-- <div class="text-danger"
+                                        *ngIf="(!customerInfoForm.controls['companyName'].valid && customerInfoForm.controls['companyName'].touched ) || (!customerInfoForm.controls['companyName'].valid  && isSubmitted)">
+                                        <div class="text-danger"
+                                            *ngIf="!customerInfoForm.controls['companyName'].errors?.pattern">
+                                            {{messages.VALIDATION_COMPANYNAME}}
+                                        </div>
+                                    </div> -->
+                                </div>
+
+
+                            </div>
+
+                            <div class="form-group mb-2 col-12 col-md-6">
+                                <div class="add-button">
+                                    <div>
+                                        <label for="projectName" class="pl-2 control-label add-button">Project Name<span
+                                            class="text-danger bold">*</span>
+                                    </label>
+                                    </div>
+                                <a  (click)="toggleAddButtonProject()">
+                                    <small><i class="fa fa-plus-circle pr-1"></i>Create New Project</small>
+                                </a>
+                                 
+                                </div>
+                                <select *ngIf="!addProject" (change)="selectProject($event)"
+                                    formControlName="project_id" class="form-control">
+                                    <option *ngFor='let project of projectList' [value]="project.sgid">
+                                        {{project.project}}</option>
+                                </select>
+                                <input type="text" *ngIf="addProject" class="form-control " id="projectName" value=""
+                                    formControlName="project_name" autocomplete="off"
+                                    style="margin-left: .5rem!important;">
+
+                                <!-- <label for="optRef" class="control-label pl-2">Project Name</label>
+
+                                <input type="text" class="form-control " id="optRef" value="" placeholder="Project Name"
+                                    formControlName="project_name"> -->
+                                <div class="text-danger"
+                                    *ngIf="(!customerInfoForm.controls['project_name'].valid && customerInfoForm.controls['project_name'].touched ) || (!customerInfoForm.controls['project_name'].valid  && isSubmitted)">
+                                    <div class="text-danger"
+                                        *ngIf="!customerInfoForm.controls['project_name'].errors?.pattern">
+                                        {{messages.VALIDATION_PROJECTNAME}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mb-2 col-12 col-md-6">
+                                <label for="optRef" class="control-label pl-2">Phone <span class="text-danger">*</span></label>
+
+                                <input type="tel" class="form-control " value="" formControlName='contact_no'
+                                    (keypress)="keyPressNumbers($event)" placeholder="(555) 555-1234" maxlength="10"
+                                    [pattern]='phoneNoPattern'>
+                                <!--  -->
+                                <div class="text-danger"
+                                    *ngIf="(!customerInfoForm.controls['contact_no'].valid && customerInfoForm.controls['contact_no'].touched ) || (!customerInfoForm.controls['contact_no'].valid  && isSubmitted)">
+                                    <div class="text-danger"
+                                        *ngIf="!customerInfoForm.controls['contact_no'].errors?.pattern">
+                                        {{messages.VALIDATION_CONTACT_NUMBER}}
+                                    </div>
+
+                                    <div class="text-danger"
+                                        *ngIf="customerInfoForm.controls['contact_no'].errors?.pattern">
+                                        {{messages.ERROR_CONTACT_NUMBER}}
+                                    </div>
+                                </div>
+                                <!--  -->
+                                <!-- <div class="text-danger" *ngIf="!customerInfoForm.controls['contact_no'].valid  && isSubmitted">
+                                    contact number is required*
+                                </div> -->
+                            </div>
+                            <div class="form-group mb-1 col-12 col-md-6">
+                                <label for="optRef" class="control-label pl-2">Delivery Timeline <small>(Optional)</small></label>
+                                <input type="date" class="form1" data-date-format="dd/mm/yyyy"
+                                    formControlName='preferred_delivery_start_date'><span class="gap">-</span>
+                                    <input
+                                    type="date" class="form2" data-date-format="dd/mm/yyyy"
+                                    formControlName='preferred_delivery_end_date'>
+                                <!-- <ngb-datepicker #dp (select)="onDateSelection($event)"[dayTemplate]="t" outsideDays="hidden" formControlName="date">
+                                </ngb-datepicker>
+                            
+                                <ng-template #t let-date let-focused="focused">
+                                    <span class="custom-day"
+                                    [class.focused]="focused"
+                                    [class.range]="isRange(date)"
+                                    [class.faded]="isHovered(date) || isInside(date)"
+                                    (mouseenter)="hoveredDate = date"
+                                    (mouseleave)="hoveredDate = null">
+                                {{ date.day }}
+                              </span>
+                            </ng-template> -->
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center mb-2" *ngIf="!updateinfo">
+                            <button type="submit" class="btn btn-dark px-4 add-btn">Submit</button>
+                            <button (click)="cancleMethod()" type="button" class="btn btn-dark px-4 add-btn">Cancel</button>
+                        </div>
+                            
+                        <div class="row d-flex justify-content-center mb-2" *ngIf="updateinfo">
+                            <button type="submit" class="btn btn-dark px-4 add-btn">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- customer Information end -->
+</div>

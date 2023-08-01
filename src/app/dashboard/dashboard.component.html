@@ -1,0 +1,21 @@
+<div class="container-fluid-50 ">
+  <div  id="content" class="page-content bg-color mt-5 ml-5">
+        <div class="mr-1 row">
+          <div class="col-4  {{ card.class2 }} {{ card.class4 }}" *ngFor="let card of cards" [routerLink]="[card.url]"  [queryParams]="card.params">
+            <div class="card {{ card.class }} shadow mb-4" >
+                <div class="card-body text-center d-flex  justify-content-around align-items-center">
+                  <div>
+                  <div class="img-bg mb-2 {{ card.class3 }}">
+                    <!-- <h5 class="card-title">{{dashboardCounts.TOTAL_PRODUCTS}}</h5> -->
+                    <img src={{card.image}} alt={{card.title}}>
+                  </div>
+                    <h3 class="card-text ">{{card.title}}</h3>
+                    <h5 class="card-title">{{card.data }}</h5>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+  </div>
+</div>
+  

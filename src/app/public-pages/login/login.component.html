@@ -1,0 +1,83 @@
+<header class="section-header auth-header shadow-sm">
+    <div class="container">
+      <div class="row justify-content-center  ">
+        <div class="col-xs-12  d-flex flex-wrap align-content-center " id="header" align="center">
+            <div  class="header-left d-flex align-items-center"><a  class="navbar-brand" href="/">INHABITR <em _ngcontent-tpd-c1="">Live Flexibly</em></a></div>
+        </div>
+      </div>
+    </div>
+</header>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-xs-12 col-md-5 align-content-center">
+      <div class="card shadow ">
+        <div class="row mt-2">
+          <div class="col font18 text-black text-center self-content-center" *ngIf="!forgotPassword"><h4 class=login_title>Product Data Management!</h4></div>
+          <div class="col font18 text-black text-center self-content-center" *ngIf="forgotPassword"><div>Forgot Your Password?</div>
+          <div class="pt-3"> Enter your email address below and we'll send you secure link to reset your password.
+            </div>
+            </div>
+            
+        </div>
+        <article class="card-body" >
+          
+          <div class="alert alert-warning alert-dismissible fade show" role="alert" *ngIf="error">
+              <strong>{{error}}</strong>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            
+          <form (ngSubmit)="f.form.valid && doLogin()" #f="ngForm" class="font14" novalidate>
+              <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="text" class="form-control" name="email" [(ngModel)]="loginData.email"[ngClass]="{ 'is-invalid': f.submitted && email.invalid }" required 
+                  pattern='^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$' #email="ngModel" />
+                  <div *ngIf="f.submitted && email.invalid" class="invalid-feedback">
+                      <div *ngIf="email.errors.required">Email is required</div>
+                      <div *ngIf="email.errors.pattern">Email must be a valid email address</div>
+                  </div>
+              </div>
+               <!-- form-group// -->
+           
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" [(ngModel)]="loginData.password" #password="ngModel" [ngClass]="{ 'is-invalid': f.submitted && password.invalid }" required>
+                <div *ngIf="f.submitted && password.invalid" class="invalid-feedback"> 
+                  <div *ngIf="password.errors.required">Password is required</div>
+                </div>
+            </div> <!-- form-group// --> 
+            <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group form-check">
+                      <label class="form-check-label"  style="cursor: pointer;">
+                        <input class="form-check-input" [(ngModel)]="rememberMe" type="checkbox" (change)="remember($event)"  style="cursor: pointer;"name="rememberMe"> Remember me
+                      </label>
+                     
+                    </div>     
+                  </div>
+                  <div class="col-md-8 text-right">
+                   
+                  </div>
+            </div>
+            <div class="">
+              <a  href='javascript:void(0)'  class="forgot" routerLink='/forgot/password'>Forgot password?</a>
+             <span class="float-right"> <span>Don't have an account?</span> <a href="javascript:void(0)" class="singup" routerLink='/signup'> Sign Up</a></span>
+            </div>
+            <div class="row mt-4 justify-content-center">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-dark btn-block "> Login  </button>
+                    </div>
+                 </div>
+            </div> <!-- .row// -->     
+                                                             
+        </form>
+        </article>
+        
+        </div> 
+    </div>
+  </div>
+</div>
+
+  

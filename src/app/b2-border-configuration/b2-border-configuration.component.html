@@ -1,0 +1,270 @@
+
+
+<!-- <div class="col-sm-10 col-md-10 col-7 float-right no-inventory" >
+    <div class="container-fluid ">
+        
+    </div>
+</div> -->
+
+
+
+<div class="container" >
+    <div class="col-12">
+        <!-- <div class="row d-flex justify-content-center mt-5">
+            <div class="col-12 col-sm-12 p-0">
+                <span class="head-6">Switch Off Products with No Inventory</span>
+            </div>
+        </div> -->
+
+        <!-- <div class="row d-flex justify-content-center">
+            <div class="col-12 col-sm-12 p-5 bg-white border">
+                <ul class="row">
+                    <div class="col-md-6" *ngFor="let ina of noInventoryAttr; let i = index">
+                      <label>
+                        <input type="radio" [value]="ina.value" [(ngModel)]="noInventorySelected" name="checkbox" id="ina.name{{i}}"> &nbsp;{{ina.name}}
+                        &nbsp;&nbsp;
+                      </label>
+                    </div>
+                  </ul>
+
+                <button data-toggle="tooltip" data-placement="bottom" title="Submit" type="button"
+          class="btn btn-success mr-2 float-right" (click)="clearProductMode()">Clear</button>
+
+                <button data-toggle="tooltip" data-placement="bottom" title="Submit" type="button"
+          class="btn btn-success mr-2 float-right" (click)="switchProductMode()">Submit</button>
+            </div>
+        </div> -->
+
+        <form >
+            <div class="container-fluid">
+                <!-- <div class="row d-flex justify-content-center">
+                    <div class="col-12  p-0">
+                        <nav class="breadcrum-nav" aria-label="breadcrumb">
+                            <ol class="breadcrumb bg-transparent m-0 p-0">
+                                <li class="breadcrumb-item "><a href="javascript:void(0)">Create New Quote</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div> -->
+                <div class="row d-flex justify-content-center mt-5">
+                    <div class="col-12  col-sm-12 p-0">
+                        <!-- <a class="head-6 link" routerLink='/B2Borderconfig'><i class="fa fa-angle-left"></i> Configuration</a><span class="head-6">/ B2B Order Configuration</span> -->
+                        <span class="head-6">B2B Order Configuration</span>
+                    </div>
+                </div>
+ <!-- after customer info created -->
+ 
+<!-- afeter customer info created end -->
+
+                <div class="row d-flex justify-content-center"  >
+                  
+                    <div class="col-12  col-sm-12 bg-white border pr-4">
+                        <div style="display: flex;margin-top: 29px;"><div >B2B Product Discount</div><div style="margin-left: 449px;">B2B Package Discount</div></div>
+                        <form [formGroup]="b2borderconfigurationForm" (ngSubmit)="onSubmit()">
+                        <div class="row d-flex justify-content-center mt-2">
+                            
+                            
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2">Qty 1</label>
+                                <input type="text" class="form-control " id="mbName"  formControlName='B2B_PRODUCT_QTY1' >
+                                <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PRODUCT_QTY1'].valid && isSubmitted">
+                                  Product Qty1 is required.
+                                </div>
+                                
+                            </div>
+                            <div class="form-group mb-2 col-12 col-md-3 ">
+                                <label for="mbType" class="control-label pl-2">% Discount</label>
+                                <div class="input-container">
+                                <input type="text" class="form-control " id="mbType" value="" formControlName='B2B_PRODUCT_DISCOUNT1'>
+                                <i class="fa fa-percent icon"></i>
+                                </div>
+                                <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PRODUCT_DISCOUNT1'].valid && isSubmitted">
+                                    Product  Discount1 is required.
+                                 </div>
+                               
+                            </div>
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2">Qty 1</label>
+                                <input type="text" class="form-control " id="mbName" value="" formControlName='B2B_PACKAGE_QTY1' >
+                                <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PACKAGE_QTY1'].valid && isSubmitted">
+                                  Package Qty1 is required.
+                                 </div>
+                                
+                            </div>
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2">% Discount</label>
+                                <div class="input-container">
+                                <input type="text" class="form-control " id="mbName" value="" formControlName='B2B_PACKAGE_DISCOUNT1' >
+                                <i class="fa fa-percent icon"></i>
+                            </div>
+                            <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PACKAGE_DISCOUNT1'].valid && isSubmitted">
+                                Package Discount is required.
+                             </div>
+                                
+                            </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-center mt-2">
+                            
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2">Qty 2</label>
+                                <input type="text" class="form-control " id="mbName" value=""  formControlName='B2B_PRODUCT_QTY2' >
+                                <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PRODUCT_QTY2'].valid && isSubmitted">
+                                  Product Qty2 is required.
+                                 </div>
+                                
+                            </div>
+                            <div class="form-group mb-2 col-12 col-md-3 ">
+
+                                <label for="mbType" class="control-label pl-2">% Discount</label>
+                                <div class="input-container">
+                                
+                                <input type="text" class="form-control " id="mbType" value="" formControlName='B2B_PRODUCT_DISCOUNT2'>
+                                <i class="fa fa-percent icon"></i>
+                            </div>
+                            <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PRODUCT_DISCOUNT2'].valid && isSubmitted">
+                                Product Discount is required.
+                             </div>
+                               
+                            </div>
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2">Qty 2</label>
+                                <input type="text" class="form-control " id="mbName" value="" formControlName='B2B_PACKAGE_QTY2'>
+                                <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PACKAGE_QTY2'].valid && isSubmitted">
+                                   Package Qty2 is required.
+                                 </div>
+                            </div>
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                
+                                <label for="mbName" class="control-label pl-2">% Discount</label>
+                                <div class="input-container">
+                                <input type="text" class="form-control " id="mbName" value="" formControlName='B2B_PACKAGE_DISCOUNT2'>
+                                <i class="fa fa-percent icon"></i>
+                            </div>
+                            <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PACKAGE_DISCOUNT2'].valid && isSubmitted">
+                                Package Discount is required.
+                             </div>
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center mt-2">
+                            
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2">Qty 3</label>
+                                <input type="text" class="form-control " id="mbName" value="" formControlName='B2B_PRODUCT_QTY3'>
+                                <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PRODUCT_QTY3'].valid && isSubmitted">
+                                   Product Qty3 is required.
+                                 </div>
+                            </div>
+                            <div class="form-group mb-2 col-12 col-md-3 ">
+                                
+                                <label for="mbType" class="control-label pl-2">% Discount</label>
+                                <div class="input-container">
+                    <input type="text" class="form-control " id="mbType" value="" formControlName='B2B_PRODUCT_DISCOUNT3' >
+                                <i class="fa fa-percent icon"></i>
+                            </div>
+                            <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PRODUCT_DISCOUNT3'].valid && isSubmitted">
+                                Product Discount is required.
+                             </div>
+                               
+                            </div>
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2">Qty 3</label>
+                                <input type="text" class="form-control " id="mbName" value="" formControlName='B2B_PACKAGE_QTY3'>
+                                <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PACKAGE_QTY3'].valid && isSubmitted">
+                                  Package Qty3 is required.
+                                 </div>
+                                
+                            </div>
+                            <div class="form-group  mb-2 col-12 col-md-3">
+
+                                <label for="mbName" class="control-label pl-2">% Discount</label>
+                                <div class="input-container">
+                                <input type="text" class="form-control " id="mbName" value="" formControlName='B2B_PACKAGE_DISCOUNT3'>
+                                <i class="fa fa-percent icon"></i>
+                            </div>
+                            <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PACKAGE_DISCOUNT3'].valid && isSubmitted">
+                                Package Discount is required.
+                             </div>
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center mt-2">
+                            
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2">Qty 4</label>
+                                <input type="text" class="form-control " id="mbName" value="" formControlName='B2B_PRODUCT_QTY4'>
+                                <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PRODUCT_QTY4'].valid && isSubmitted">
+                                   Product Qty4 is required.
+                                 </div>   
+                            </div>
+                            <div class="form-group mb-2 col-12 col-md-3 ">
+                                <label for="mbType" class="control-label pl-2">% Discount</label>
+                                <div class="input-container">
+                                <input type="text" class="form-control " id="mbType"  formControlName='B2B_PRODUCT_DISCOUNT4'>
+                                <i class="fa fa-percent icon"></i>
+                            </div>
+                            <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PRODUCT_DISCOUNT4'].valid && isSubmitted">
+                                Product Discount is required.
+                             </div>
+                            </div>
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2">Qty 4</label>
+                                <input type="text" class="form-control " id="mbName" formControlName='B2B_PACKAGE_QTY4'>
+                                <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PACKAGE_QTY4'].valid && isSubmitted">
+                                   Package Qty4 is required.
+                                 </div> 
+                            </div>
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2">% Discount</label>
+                                <div class="input-container">
+                                <input type="text" class="form-control " id="mbName"  formControlName='B2B_PACKAGE_DISCOUNT4'>
+                                <i class="fa fa-percent icon"></i>
+                            </div>
+                            <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_PACKAGE_DISCOUNT4'].valid && isSubmitted">
+                                Package Discount is required.
+                             </div>
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-left mt-2">
+                            
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2">Max Unit</label>
+                                <input type="text" class="form-control " id="mbName" formControlName='B2B_MAX_UNIT' >
+                                <div class="text-danger" *ngIf="!b2borderconfigurationForm.controls['B2B_MAX_UNIT'].valid && isSubmitted ">
+                                    Max Unit is required.
+                                 </div>   
+                            </div>
+                            <!-- <div class="form-group mb-2 col-12 col-md-3 ">
+                                <label for="mbType" class="control-label pl-2">SALE ASSET VALUE MULTIPLIER</label>
+                                <div class="input-container">
+                                <input type="text" class="form-control " id="mbType" formControlName='saleasset' >
+                                <i class="fa fa-percent icon"></i>
+                            </div>
+                            </div>
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2">FREIGHT MULTIPLIER</label>
+                                <input type="text" class="form-control " id="mbName" formControlName='fmultipler' >
+                                
+                            </div>
+                            <div class="form-group  mb-2 col-12 col-md-3">
+                                <label for="mbName" class="control-label pl-2" style="white-space: nowrap;">Invoice Generate Before Due Date Days</label>
+                                <div class="input-container">
+                                <input type="text" class="form-control " id="mbName" formControlName='invoicegenerate' >
+                                <i class="fa fa-percent icon"></i>
+                            </div>
+                                
+                            </div> -->
+                        </div>
+
+                       
+                        <div class="col-12  p-0">
+                              <!-- <button type="submit" class="btn btn-dark px-4"  style=" margin-left: 1080px;margin-top: 23px;">Update</button> -->
+                              <button type="submit" class="btn btn-dark px-4" style="float: right;margin-bottom: 15px;">Update</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- customer Information end -->
+</div>

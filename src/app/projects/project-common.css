@@ -1,0 +1,443 @@
+.custom-form-control {
+    background-color: #f4f4f4;
+    border: none;
+}
+
+.custom-form-control:focus {
+    outline: none;
+    box-shadow: none;
+}
+.custom-selection-option {
+    background-color: #f4f4f4;
+    box-shadow: 0 0px 0px rgb(0 0 0 / 25%);
+    border: none;
+    padding: 0.375rem 0.75rem;
+    margin-left: 0.5rem !important;
+    border-radius: 0.25rem;
+}
+
+.percentage {
+    position: absolute;
+    right: 14px;
+    top: 40px;
+}
+
+.dollar {
+    position: absolute;
+    top: 37px;
+    left: 32px;
+    z-index: 9;
+}
+.input-dollar{
+    padding: 0 0 0 22px;
+}
+.configure-button{
+    /* width: 100%; */
+    text-align: center;
+    padding: 20px 0 20px 0;
+}
+.configure-button button {
+    background-color: #ffc000;
+    border: none;
+    padding: 8px 0 8px 10px;
+    width: 160px;
+    margin: 23px 0px 9px 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 16px !important;
+    font-weight: 600;
+    text-align: center;
+}
+.configuremoodboard-popup{
+    background-color: #484848;
+    color: #fff;
+    margin-top: -1px;
+}
+.delete-popup button{
+    background-color: #ffc000;
+    padding: 8px 0 8px 10px;
+    width: 120px;
+    margin: 23px 0px 9px 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    text-align: center;
+    border: none;
+    font-size: 16px !important;
+    font-weight: 600;
+}
+.delete-popup .no{
+    background-color: #000 !important;
+    color: #fff !important;
+}
+.delete-popup{
+    text-align: center;
+}
+.configuremoodboard-popup {
+    background-color: #484848;
+    color: #fff;
+    margin-top: -1px;
+}
+
+.configuremoodboard-popup .fa-cog {
+    background-color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    color: #8a8a8a;
+    margin: 0 10px 0 10px;
+}
+
+.configuremoodboard-popup-body .configuremoodboard-table {
+    width: 92%;
+    background-color: #f4f4f4;
+    text-align: center;
+    margin: 20px auto;
+}
+
+.configuremoodboard-table .custom-selection-option {
+    border: 2px solid #000;
+}
+
+.configuremoodboard-popup-body .configuremoodboard-table th {
+    padding: 10px;
+    border: 1px solid #dddddd;
+    text-align: center;
+}
+
+.configuremoodboard-popup-body .configuremoodboard-table td {
+    padding: 20px;
+    border: 1px solid #dddddd;
+    text-align: center;
+
+}
+
+.configuremoodboard-popup-body .configuremoodboard-table .percentage-view {
+    background-color: #fff;
+    border-radius: 5px;
+    width: 30%;
+    text-align: center;
+}
+
+.configuremoodboard-popup-body .configuremoodboard-table .quantity {
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.configuremoodboard-popup-body .configuremoodboard-table .fa-minus {
+    font-size: 12px;
+    padding: 0 10px 0 0px;
+}
+
+.configuremoodboard-popup-body .configuremoodboard-table .fa-plus {
+    font-size: 12px;
+    padding: 0 0px 0 10px;
+}
+
+.configuremoodboard-popup-body .configuremoodboard-table .dollar-symbol {
+    margin: 0;
+}
+
+.configuremoodboard-popup-body .configuremoodboard-table .dollar {
+    top: 6px;
+    padding: 0 8px 0 8px;
+    background-color: #000;
+    border-radius: 4px;
+    color: #fff;
+}
+
+.configuremoodboard-popup-body .configuremoodboard-table .dollar .fa-plus {
+    padding: 0;
+}
+
+.configuremoodboard-popup-body .configuremoodboard-table .dollar-symbol .custom-selection-option {
+    box-shadow: none;
+    border: 2px solid #000;
+    width: 170px;
+    padding: 6px 14px 6px 46px;
+}
+.unitpopup-budget {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+}
+
+.unitpopup-budget li {
+    padding: 0 30px 0 0;
+    position: relative;
+    color: #000;
+}
+.border-color {
+    border: 1px solid #dc3545;
+}
+
+.danger {
+    position: absolute;
+}
+
+.danger span {
+    color: #dc3545;
+    font-size: 11px;
+    margin-left: 10px;
+}
+.Partition p {
+
+    color: red;
+}
+.add-button button {
+    background-color: #ffc000;
+    border: none;
+    padding: 8px 0 8px 10px;
+    width: 120px;
+    margin: 23px 0px 9px 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 16px !important;
+    font-weight: 600;
+    text-align: center;
+}
+
+.add-button {
+    margin: 0 10px 0 0;
+}
+
+.cancel-button {
+    margin: 0 0px 0 10px;
+}
+
+.cancel-button button {
+    background-color: #000;
+    border: none;
+    padding: 8px 0 8px 10px;
+    width: 120px;
+    margin: 23px 10px 9px 0px;
+    border-radius: 5px;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 16px !important;
+    font-weight: 600;
+    text-align: center;
+}
+.latest-table-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.latest-table-tooltip .latest-table-tooltiptext {
+    width: 180px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 1px;
+    position: absolute;
+    z-index: 1;
+    bottom: 123%;
+    left: -20px;
+    margin-left: -60px;
+    font-size: 12px;
+    font-weight: initial;
+    visibility: hidden;
+    cursor: pointer;
+}
+
+.latest-table-tooltip i {
+    background-color: #42a4ec;
+    color: #fff !important;
+    margin: 4px 0px 0 2px;
+    border-radius: 50px;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 16%);
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-size: 12px;
+}
+
+.latest-table-tooltip .latest-table-tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.latest-table-tooltip:hover .latest-table-tooltiptext {
+    visibility: visible;
+}
+
+/* switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 54px;
+    height: 26px;
+    margin: 0px 10px 0 10px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #D2D2D2;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 3px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked+.slider {
+    background-color: #D2D2D2;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #ccc;
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.show-filter-tab {
+    width: 100%;
+    background-color: #ECECEC;
+    padding: 20px 25px;
+    border-radius: 5px;
+    display: flex;
+}
+.flex-div-1{
+    display: flex;
+    width: 70%;
+    margin: 0;
+}
+.flex-div-1::after{
+    content: '';
+    border-left: 1px solid #ced4da;
+    height: 100%;
+}
+.flex-div-1 .list-div{
+    display: flex;
+    position: relative;
+}
+.flex-div-1 .list-div li{
+    padding: 0 16px 0 0px;
+} 
+.flex-div-2{
+    width: 30%;
+}
+.filter-header{
+    background: #F7F6F7;
+    border: none;
+}
+.popup-padding{
+    width: 100%;
+    align-items: center;
+}
+/* switch */
+
+.configure-product-view table {
+    width: 94%;
+    margin: 0 auto;
+    background-color: #e7e7e7;
+    text-align: center;
+
+}
+
+.border-class {
+    border: 2px solid red;
+}
+
+.configure-product-view .product-quantity-table th {
+    padding: 10px;
+    border: 1px solid #dddddd;
+}
+
+.configure-product-view .product-quantity-table td {
+    padding: 10px;
+    border: 1px solid #dddddd;
+}
+
+.product-quantity-table button {
+    border: 1px solid #000;
+    color: #000;
+}
+
+.configure-product-view .quantity {
+    background-color: #f4f4f4f4;
+    box-shadow: rgb(50 50 93 / 25%) 0px 2px 5px -1px, rgb(0 0 0 / 30%) 0px 1px 3px -1px;
+    border-radius: 36px;
+    padding: 3px 3px 3px 3px;
+}
+
+.inc input {
+    width: 37px;
+    border: none;
+    background: transparent;
+    text-align: center;
+}
+
+.configure-product-view .quantity .fa-minus {
+    margin: 0 6px 0 0px;
+    font-size: 12px;
+}
+
+.configure-product-view .quantity .fa-plus {
+    margin: 0 0px 0 5px;
+    font-size: 12px;
+}
+
+.configure-product-view .percentage-view {
+    background-color: #fff;
+    border-radius: 5px;
+    width: 30%;
+    text-align: center;
+}
+.configure-product-view {
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    height: 300px;
+    overflow-y: scroll;
+    padding: 22px 0;
+    text-align: center;
+    position: relative;
+}

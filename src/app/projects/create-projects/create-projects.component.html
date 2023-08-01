@@ -1,0 +1,985 @@
+<section class="project-breadcrum" *ngIf="hideForm">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <ul>
+                    <li routerLink="/admin/projects/list">
+                        <img _ngcontent-dpw-c156="" src="/assets/img/project/arrow-left.png">
+                        <span> Back to Projects</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+                
+                        <app-calculator></app-calculator>
+                
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="new-stepper">
+                    <li (click)="breadCrumbNavigataion('projects')" [ngClass]="{'active':stepIndex >0,'pe-none':isQuote_btnDisable==true}"><a >Projects</a></li>
+                    <li (click)="breadCrumbNavigataion('groupunits')" [ngClass]="{'active':stepIndex >1}" ><a >Groups/Units</a></li>
+                    <li (click)="breadCrumbNavigataion('moodboards')" [ngClass]="{'active':stepIndex >2}" > <a >Moodboards</a> </li>
+                    <li  (click)="breadCrumbNavigataion('summary')" [ngClass]="{'active':stepIndex >3}" ><a >  Summary</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="group-heading">
+    <!-- rent/mo -->
+<!-- rent/mo -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <div *ngIf="unitsInfo?.is_show">
+                    <h3 class="p-0">Group & Assign your units</h3>
+                    <p class="p-0">Take your units and group them by assigning them a floorplan and
+                        a budget.</p>
+                </div>
+                <div *ngIf="unitGroupInfo.is_show">
+                    <h3 class="p-0">Package Budget Allocation</h3>
+                    <p class="p-0">Now that you've grouped and designated your unts, assign them with furniture packages</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="unit-budget-section" *ngIf="showAll">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 unit-header mt-3">
+                <ul class="edit-form" [ngClass]="{'pe-none':isQuote_btnDisable==true}">
+                    <li (click)="breadCrumbNavigataion('projects')"><img src="assets/img/project/edit.png"> </li>
+                </ul>
+                <ul class="unit-budget-list mt-2">
+                    <li><b>project
+                            name:</b>
+                        {{unitsInfo?.project?.project_name}}</li>
+                    <li><b>Total Client's Budget for Project</b><small> (Inclusive of all Units / Lease Length)</small>:
+                        ${{unitsInfo?.project?.total_budget}}</li>
+                    <li *ngIf="unitsInfo?.project?.location"><b>locations:</b>
+                        {{unitsInfo?.project?.location}}</li>
+                    <li><b>no.units:</b> {{unitsInfo?.project?.no_of_units}} Units</li>
+                    <li *ngIf="unitsInfo?.project?.earnout_type=='RTO'"><b>type:</b> Rent to Own
+                    </li>
+                    <li *ngIf="unitsInfo?.project?.earnout_type=='RTR'"><b>type:</b> Rent to
+                        Return
+                    </li>
+                    <li *ngIf="unitsInfo?.project?.earnout_type=='Bo'"><b>type:</b> Buy</li>
+                </ul>
+                <ul class="unit-budget-breadcrumb mt-2">
+                    <li><b>Freight:</b> {{unitsInfo?.project?.freight_percentage}}%</li>
+                    <li><b>Earnout Percentage:</b> {{unitsInfo?.project?.earnout_percentage}}%</li>
+                    <li><b>Total Earnout Amt:</b> ${{unitsInfo?.project?.earnout_amount}}</li>
+                    <li><b>Inhabitr Target AV After Freight Deduction:</b> ${{unitsInfo?.project?.inhabitr_asset_budget}}</li>
+                    <li *ngIf="unitsInfo?.project?.rent_per_month"><b>Inhabitr Target Rent/month for all units:</b> ${{unitsInfo?.project?.rent_per_month}}</li>
+                    <li *ngIf="unitsInfo?.project?.buyprice"><b>Total Buy
+                        Price:</b> ${{unitsInfo?.project?.buyprice}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="create-project-section" *ngIf="showCreateForm">
+    <div class="container-fluid">
+        <div  class="project">
+            <h3>
+                <span *ngIf="!project_id">Welcome to the Project Builder</span>
+                <span *ngIf="project_id">Update the Project Builder</span>
+            </h3>
+            <p *ngIf="!project_id">Begin by creating a project with a budget,units,earnout pricing.</p>
+            <p *ngIf="project_id">Begin by updating a project with a budget,units,earnout pricing.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- create form -->
+<section class="create-project-section" *ngIf="showCreateForm">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <form [formGroup]="createProjectForm">
+                    <!-- create form -->
+                    <div class="project-form">
+                        <div class="project-block-1">
+                            <div class="row mt-3">
+                                <div class="form-group col-md-4 position-relative">
+                                    <div class="d-flex justify-content-between">
+                                        <label for="mbName" class="control-label pl-2">Client/Company</label>
+                                        <!-- <a (click)="toggle()"><small><i class="fa fa-plus-circle pr-1"></i>Create New
+                                                Company</small></a> -->
+                                    </div>
+                                    <div *ngIf="!companyOptions">
+                                        <select formControlName="company_id" class="w-100 custom-selection-option project"
+                                            onfocus='this.size=7;' onblur='this.size=1;'
+                                            onchange='this.size=1; this.blur();' style="background-color: #f4f4f4;text-align: left;">
+                                            <option value="" hidden selected>Select a Company</option>
+
+                                            <option [hidden]='companyLists?.company==""' value={{companyLists?.sgid}}
+                                                *ngFor="let companyLists of companyList">
+                                                {{companyLists?.company}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div *ngIf="companyOptions">
+                                        <input type="text" class="form-control ml-2 custom-form-control"
+                                            formControlName="company_name" />
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="mbName" class="control-label pl-2">Project Name</label>
+                                    <input type="text" class="form-control custom-form-control ml-2"
+                                        formControlName="project_name" />
+                                    <!-- <div class="text-danger" *ngIf="createProjectForm.controls['project_name'].invalid  && isSubmitted">
+                                            <div *ngIf="createProjectForm.controls['project_name'].errors.required">
+                                                Enter Name
+                                            </div>
+            
+                                        </div>        -->
+                                </div>
+                                <div class="form-group col-md-4 position-relative">
+                                    <label for="mbName" class="control-label pl-2">Lease Length</label>
+                                    <select formControlName="lease_length" class="w-100 custom-selection-option project"
+                                        (change)="ProjectBudgetCalulation()" onfocus='this.size=5;' onblur='this.size=1;'
+                                        onchange='this.size=1; this.blur();' style="background-color: #f4f4f4;text-align: left;z-index: 999;">
+                                        <option value="" hidden selected>Select a Lease Length</option>
+                                        <option disabled>None</option>
+                                        <option value={{leaseLists?.lease}} *ngFor="let leaseLists of leaseList">
+                                            {{leaseLists?.lease}}
+                                        </option>
+                                    </select>
+                                </div>
+                                
+                            </div>
+                            <div class="row mt-3">
+                                <div class="form-group col-md-4">
+                                    <label for="mbName" class="control-label pl-2">Total Client's Budget for Project <small class="small-text">(Inclusive of all Units / Lease Length)</small></label>
+                                    <span class="dollar">$</span> <input type="number" (change)="ProjectBudgetCalulation()"
+                                        oninput="validity.valid||(value='')"
+                                        class="form-control ml-2 input-dollar custom-form-control"
+                                        formControlName="total_budget" />
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="mbName" class="control-label pl-2">No Units</label>
+                                    <input type="number" oninput="validity.valid||(value='')"
+                                        class="form-control ml-2 custom-form-control" formControlName="no_of_units" />
+                                </div>
+
+                                <div class="form-group col-md-4 position-relative">
+                                    <label for="mbName" class="control-label pl-2">State</label>
+                                    <select formControlName="state_sgid" class="w-100 custom-selection-option project"
+                                        onfocus='this.size=7;' onblur='this.size=1;' onchange='this.size=1; this.blur();' style="background-color: #f4f4f4;text-align: left;">
+                                        <option value="" hidden selected>Select a State</option>
+                                        <option value={{stateLists?.sgid}} *ngFor="let stateLists of stateList">
+                                            {{stateLists?.name}}
+                                        </option>
+                                    </select>
+                                </div>
+
+
+                            </div>
+                            <div class="row mt-3">
+                                <div class="form-group col-md-4">
+                                    <label for="mbName" class="control-label pl-2">City</label>
+                                    <input type="text" class="form-control ml-2 custom-form-control"
+                                        formControlName="city_name" />
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="mbName" class="control-label pl-2">Zipcode</label>
+                                    <input type="text" class="form-control ml-2 custom-form-control"
+                                        formControlName="zipcode" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-block-1 mt-4">
+                            <div class="row mt-3">
+                                <div class="form-group col-md-3 position-relative">
+                                    <div>
+                                        <label for="mbName" class="control-label pl-2">Earnout Type</label>
+                                    </div>
+                                    <select formControlName="earnout_type" class="w-100 Earnout-selection-option project"
+                                        (change)="earnoutType($event)" style="background-color: #f4f4f4;box-shadow: 0 0px 0px rgb(0 0 0 / 25%);text-align: left;">
+                                        <option value="" disabled selected>Select Your Option</option>
+                                        <option value="RTR">Rent to Return</option>
+                                        <option value="RTO">Rent to Own</option>
+                                        <option value="BO">Buy</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3 earnout_input">
+                                    <label for="mbName" class="control-label pl-2">
+                                        Earnout Multiplier 
+                                        <span class="latest-table-tooltip ml-1">
+                                            <i aria-hidden="true" class="fa fa-info"></i>
+                                            <span class="latest-table-tooltiptext">
+                                                <span>Add Multiplier between 0 and 1 to calculate the Earnout Amount</span>
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <input type="text" (change)="earnoutMultiplierCalulation()" class="form-control ml-2 custom-form-control"
+                                        formControlName="earnout_multiplier" maxlength="3" required/>
+                                </div>
+                                <div class="form-group col-md-3 earnout_input">
+                                    <label for="mbName" class="control-label pl-2">Earnout Percentage </label>
+                                    <input type="text" (change)="earnoutPercentageCalulation()"
+                                    [ngClass]="{'border-color':createProjectForm?.get('earnout_percentage')?.hasError('EarnoutErrorMsg')}"
+                                    (keypress)="($event.charCode >= 48 && $event.charCode < 58)" class="form-control ml-2 custom-form-control"
+                                        formControlName="earnout_percentage" maxlength="3" required/><span class="percentage">%</span>
+                                        <div class="danger">
+                                            <span *ngIf="createProjectForm?.get('earnout_percentage')?.hasError('EarnoutErrorMsg')">Percentage should be less than 90</span>
+                                        </div>    
+                                </div>
+                                <div class="form-group col-md-3 earnout-color">
+                                    <label for="mbName" class="control-label pl-2">
+                                        Total Earnout Value
+                                        <span class="latest-table-tooltip ml-1">
+                                            <i aria-hidden="true" class="fa fa-info"></i>
+                                            <span class="latest-table-tooltiptext">
+                                                <span>Earnout Multiplier / Percentage * Total Client's Budget for Project</span>
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <span class="dollar">$</span><input type="number" readonly
+                                        oninput="validity.valid||(value='')"
+                                        class="form-control ml-2 custom-form-control input-dollar"
+                                        formControlName="total_earnout" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-block-1 mt-4">
+                            <div class="row mt-3">
+                                <div class="form-group col-md-4 earnout_input">
+                                    <label for="mbName" class="control-label pl-2">Freight</label>
+                                    <input type="text" maxlength="3"
+                                    (keypress)="($event.charCode >= 48 && $event.charCode < 58)"(change)="ProjectBudgetCalulation()" class="form-control ml-2 custom-form-control"
+                                        formControlName="freight_percentage" required /><span class="percentage">%</span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="mbName" class="control-label pl-2">Inhabitr Target AV Before Freight Deduction</label>
+                                    <span class="dollar">$</span><input type="number" readonly
+                                        oninput="validity.valid||(value='')" 
+                                        class="form-control ml-2 custom-form-control input-dollar"
+                                        formControlName="inhabitr_asset_budget_without_freight" />
+                                </div>
+                                <div class="form-group col-md-4 withfreight-color">
+                                    <label for="mbName" class="control-label pl-2">Inhabitr Target AV After Freight
+                                        <span class="latest-table-tooltip ml-1">
+                                            <i aria-hidden="true" class="fa fa-info"></i>
+                                            <span class="latest-table-tooltiptext">
+                                                <span>This is used for all calculations</span>
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <span class="dollar">$</span><input type="number" readonly
+                                        oninput="validity.valid||(value='')" 
+                                        class="form-control ml-2 custom-form-control input-dollar"
+                                        formControlName="inhabitr_asset_budget_with_freight" />
+                                </div>
+                               
+                                <div class="form-group col-md-4">
+                                    <label for="mbName" class="control-label pl-2">Inhabitr Target Rent/month for all units</label>
+                                    <span class="dollar">$</span><input type="number" readonly
+                                        oninput="validity.valid||(value='')"
+                                        class="form-control ml-2 custom-form-control input-dollar"
+                                        formControlName="total_rent_per_month" />
+                                </div>
+                                <!-- <div class="form-group col-md-4">
+                                    <label for="mbName" class="control-label pl-2">Inhabitr Rental Budget/for Entire lease length/for all units</label>
+                                    <span class="dollar">$</span><input type="number" readonly
+                                        oninput="validity.valid||(value='')"
+                                        class="form-control ml-2 custom-form-control input-dollar"
+                                        formControlName="inhabitr_budget" />
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="project-block-1 mt-4">
+                            <div class="form-group col-md-4">
+                                <label for="mbName" class="control-label pl-2">Total Client Budget/ Month for all units (Customer Pays)</label>
+                                <span class="dollar">$</span><input type="number" readonly
+                                    oninput="validity.valid||(value='')"
+                                    class="form-control ml-2 custom-form-control input-dollar"
+                                    formControlName="total_rent" />
+                            </div>
+                        </div>    
+                        <!-- <div class="row mt-3">
+                            <div class="form-group col-md-4">
+                                <label for="mbName" class="control-label pl-2">Total Buy Price</label>
+                                <span class="dollar">$</span><input type="number" readonly
+                                    oninput="validity.valid||(value='')"
+                                    class="form-control ml-2 custom-form-control input-dollar"
+                                    formControlName="total_buy_price" />
+                            </div>
+                           
+                           
+                        </div> -->
+                        
+                        <div class="row project-submit-button">
+                            <button class="create-buuton" [ngClass]="{'opacity-100':createProjectForm.valid}" (click)="projectForm()" type="button" [disabled]="!createProjectForm.valid"  *ngIf="!project_id">Submit</button>
+                            <button class="create-buuton" [ngClass]="{'opacity-100':createProjectForm.valid}"  (click)="projectForm()" type="button" [disabled]="!createProjectForm.valid"  *ngIf="project_id">Update</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- create form -->
+
+<!-- create group and group list -->
+<section class="create-project-section" *ngIf="unitsInfo?.project && unitsInfo?.is_show">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div>
+                    <div class="mt-4 new-unit-form">
+                        <div class="text-center new-create-units">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <ul class="group-distribution" [ngClass]="{'pe-none':isQuote_btnDisable==true}">
+                                        <li><span class="cursor" (click)="getGroupDistribution(unitsInfo?.project)"><img src="assets/img/project/edit.png"> Group Budget Distribution</span></li>
+                                    </ul>
+                                </div>    
+                            </div>
+                            <div class="row new-unit-border">
+                                <div class="col-7">
+                                    <h4 class="p-0">Create/Edit Grouped Units</h4>
+                                    <ul class="unit-budget-breadcrumb mt-2">
+                                        <li><b>No.Units:</b> {{unitsInfo?.project?.no_of_units}} Units</li>
+                                        <li><b>Inhabitr Budget:</b> ${{unitsInfo?.project?.inhabitr_budget}}</li>
+                                        <li *ngIf="unitsInfo?.project?.unassgined_units !=0" [ngClass]="{'text-danger':unitsInfo?.project?.unassgined_units !=0}">
+                                            <b>Unassgined Units:</b> {{unitsInfo?.project?.unassgined_units}} 
+                                            {{unitsInfo?.project?.unassgined_units > 1 ? 'Units' : 'Unit' }}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-2">
+                                    <p *ngIf="unitsInfo?.total_group_percentage!=100 && unitsInfo?.unit_groups?.length " class="text-danger">Please adjust your group distribution percentage</p>
+                                </div>
+                                <div class="col-3 item-center-view">
+                                   
+                                    <div class="unit-budget-edit-button">
+                                        <button [disabled]='isQuote_btnDisable' (click)="groupDialog()"><img src="/assets/img/project/plus-square.png">
+                                            Add a Group</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="unit-budget-form">
+                                <table class="group-list-table">
+                                    <thead>
+                                        <th>Group Name</th>
+                                        <th>Unit Floor Plan Type</th>
+                                        <th>No.of Units</th>
+                                        <th>Group Target AV</th>
+                                        <th>Group Rent Per Month</th>
+                                        <th>Action</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let unit of unitsInfo.unit_groups; let i = index">
+                                            <td>{{unit.group_name}}</td>
+                                            <td>{{unit.floorname}}</td>
+                                            <td>{{unit.no_of_units}}</td>
+                                            <td>${{unit.inhabitr_asset_budget | number: '1.2-2'}}</td>
+                                            <td>${{unit?.rent_per_month  | number: '1.2-2'}}</td>
+                                            <td [ngClass]="{'pe-none':isQuote_btnDisable==true}">
+                                                <img (click)="getUnitGropById(unit)" class="cursor pr-3" src="/assets/img/project/edit-2.png">
+                                                <img class="cursor" (click)="deleteGroupDialog(unit,'group')" src="/assets/img/project/trash-2.png" width="20px">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="form-group configure-flex">
+                                    <div class="configure-button">
+                                        <button type="button" [disabled]='disableButton' (click)="unassignedpop()">Next</button>
+                                    </div>
+                                </div>
+                                <p class="quote-view" *ngIf="isQuote_btnDisable==true" (click)="navigateQuotePage()"><span>
+                                    Go To Quote</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>                
+
+
+<!-- create group and group list -->
+
+<!-- Assign Moodboard to your grouped units -->
+
+<section class="create-project-section" *ngIf="unitGroupInfo?.unit_groups && unitGroupInfo.is_show">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div>
+                    <div class="mt-4 new-create-units unassigned">
+                        <div class="text-center pt-3">
+                            <h4>Assign Moodboard to your grouped units</h4>
+                            <h5 *ngIf="unitGroupInfo?.project?.unassgined_units !=0" class="text-danger">
+                                Unassgined Units:
+                                {{unitGroupInfo?.project?.unassgined_units}}
+                                {{unitGroupInfo?.project?.unassgined_units > 1 ? 'Units' : 'Unit' }}
+                            </h5>
+                        </div>
+                        <div class="assign-packages">
+                            <ul *ngFor="let unitGroupInfo of unitGroupInfo?.unit_groups | orderBy:'group_name':false;let i=index ">
+                                <h5>{{unitGroupInfo?.group_name}}</h5>
+                                <li>Floor plan: {{unitGroupInfo?.floorname}}</li>
+                                <li>No Of Units: {{unitGroupInfo?.no_of_units}}</li>
+                                <li>Group Target AV: ${{unitGroupInfo?.inhabitr_asset_budget}}</li>
+                                <li>Rent Per Month: ${{unitGroupInfo?.rent_per_month}}</li>
+                                <li>Rent Per Month Per Unit: ${{(unitGroupInfo?.rent_per_month / unitGroupInfo?.no_of_units) | number: '1.0-0'}}</li>
+                                <li>Moodboards: {{unitGroupInfo?.moodboard_count}}</li>
+                                <!-- <li class="unit-budget-edit-button">
+                                    <button (click)="addMoodboard(unitGroupInfo)">
+                                        <img src="/assets/img/project/plus-square.png"> Add Moodboards
+                                    </button>
+                                </li> -->
+                                <div *ngIf="unitGroupInfo?.moodboard_count>0" class="tick-mark">
+                                    <img src="/assets/img/project/check-circle.png">
+                                </div>
+                            </ul>
+                        </div>
+                        <div class="form-group configure-flex">
+                            <div class="unit-view-details-button">
+                                <button type="button" (click)="breadCrumbNavigataion('groupunits')">Back</button>
+                            </div>
+                            <div class="configure-button">
+                                <button type="button" [disabled]="disableButton" (click)="breadCrumbNavigataion('moodboards')">Next</button>
+                            </div>
+                        </div>
+                        <p class="quote-view" *ngIf="isQuote_btnDisable==true" (click)="navigateQuotePage()"><span>
+                            Go To Quote</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Assign Moodboard to your grouped units -->
+
+
+<!-- Group Level Info -->
+<section class="create-project-section moodboard-package-list" *ngIf="moodboardPackagesInfo?.unitGroups && moodboardPackagesInfo?.is_show">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="new-create-units">
+                    <h6 ><span class="cursor" (click)="breadCrumbNavigataion('assignMoodboards')"><img src="/assets/img/project/arrow-left.png">Moodboards/Packages </span> </h6>
+                    <div class="add-moodboard mt-3" *ngFor="let unitGroup of moodboardPackagesInfo?.unitGroups;let i=index">
+                        <h5>Group Level Info 
+                            <span class="text-danger" *ngIf="moodboardPackagesInfo?.project?.unassgined_units !=0">
+                            (Unassgined Units:
+                            {{moodboardPackagesInfo?.project?.unassgined_units}}
+                            {{moodboardPackagesInfo?.project?.unassgined_units > 1 ? 'Units' : 'Unit' }})
+                        </span></h5>
+                        <div class="group-info">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5>Group-{{i+1}} ({{unitGroup?.group_name}}) <small>{{unitGroup?.added_products}} of {{unitGroup?.total_products ? unitGroup?.total_products : 0}} items added</small></h5>
+                                    
+                                </div>
+                                <ul class="edit-group" [ngClass]="{'pe-none':isQuote_btnDisable==true}">
+                                    <li class="budget-adjust" *ngIf="unitGroup?.hide_product_add">Please adjust your moodboard budget distribution to make it 100%</li>
+                                    <li class="cursor" (click)="mdBgtDistPopUp(unitGroup)">
+                                        <img src="assets/img/project/edit.png">Moodboard Budget Distribution
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <ul class="unit-budget-breadcrumb">
+                                    <li>Moodboard:{{unitGroup.moodboards.length}}</li>
+                                    <li>Floor Plan: {{unitGroup?.floorname}}</li>
+                                    <li>No Of Units : {{unitGroup?.no_of_units}}</li>
+                                    <li>Group Inhabitr Target AV After Freight:${{unitGroup?.inhabitr_asset_budget}}</li>
+                                    <li>Group Inhabitr Rent Budget Per Month:${{unitGroup?.rent_per_month}}</li>
+                                    <li>Group Earnout:${{unitGroup?.earnout_amount}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="unit-list-option"><a (click)="unitList()">Unit List</a></h5>
+                            <div class="assign-packages" *ngIf="unitListShow">
+                                <ul *ngFor="let unit of unitGroup?.units | orderBy:'unit_id':false;">
+                                    <h5>Unit-{{unit?.unit_id}}</h5>
+                                    <li>Moodboards:{{unitGroup.moodboards?.length}}</li>
+                                    <li>Budget Percentage: {{unit?.percentage_distribution}}%</li>
+                                    <!-- <li>Budget: ${{unit?.budget}}</li> -->
+                                     <li>Unit Budget: ${{unit?.budget}}</li>
+                                    <!-- <li>Rent Per Month: ${{unit?.rent_per_month}}</li> -->
+                                    <li>Unit Rent per Month: ${{unit?.rent_per_month}}</li>
+                                    <!-- <li>Unit Inhabitr Target AV After Freight: ${{unit?.inhabitr_asset_budget}}</li> -->
+                                    <li>Unit Target AV: ${{unit?.inhabitr_asset_budget}}</li>
+                                    <!-- <li>Unit Inhabitr Rent Budget Per Month: ${{unit?.inhabitr_asset_budget_per_month}}</li> -->
+                                    <!-- <li>Unit Rent Budget Per Month: ${{unit?.inhabitr_asset_budget_per_month}}</li> -->
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="moodboard-flex">
+                            <div class="moodboard-add-button mt-1 justify-content-center">
+                                <p class="cursor" [ngClass]="{'pe-none':isQuote_btnDisable==true}" (click)="mbOptsPopup(unitGroup)">
+                                    <img src="assets/img/project/add-moodboard.png">
+                                </p>
+                                <p>Add a Moodboard</p>
+                            </div>
+                            <div class="moodboard-add-button mt-1" *ngFor="let moodboards of unitGroup.moodboards">
+                                <div class="moodboard-icons">
+                                    <div>
+                                        <ul class="moodboard-information">
+                                            <li class="tooltip">
+                                                <i aria-hidden="true" class="fa fa-info"></i>
+                                                <span class="tooltiptext">
+                                                    <span *ngFor="let category of moodboards?.category_distribution">
+                                                        <span>{{category?.category_name}} :</span>
+                                                        <span> {{category?.distribution_percentage}}%</span>
+                                                        <span> (Qty : {{category?.quantity}})</span> |
+                                                </span>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <ul class="setting-view" [ngClass]="{'pe-none':isQuote_btnDisable==true}">
+                                            <li (click)="deleteGroupDialog(moodboards,'moodboardItem')"><i aria-hidden="true" class="fa fa-trash-o"></i></li>
+                                            <li (click)="eidtMbPopUp(moodboards)"><i aria-hidden="true" class="fa fa-pencil"></i></li>
+                                            <!-- <li (click)="updateMoodboardCategory(moodboards,configureMoodboard,true)"><i class="fa fa-cog" aria-hidden="true"></i></li> -->
+                                        </ul>
+                                    </div>
+                                </div>
+                                <ul class="moodboard-content">
+                                    <h6>{{moodboards?.moodboard_name}}</h6>
+                                    <li>Type: {{moodboards?.room_type_name}}</li>
+                                    <li>MB Asset Budget Per Unit:${{moodboards?.inhabitr_asset_budget}}</li>
+                                    <li>MB Rent Budget/Month/ Unit:${{moodboards?.rent_per_month}}</li>
+                                    <li>Items: {{moodboards?.added_items}} of {{moodboards?.total_items ? moodboards?.total_items : 0}} added</li>
+                                    <li>Assigned Units: {{moodboards?.assigned_units}}</li>
+                                    <li *ngIf="moodboards?.earnout_type=='RTR'">RTR: Rent to Return<li>
+                                    <li *ngIf="moodboards?.earnout_type=='RTO'">RTO: Rent to Own</li>
+                                    <li *ngIf="moodboards?.earnout_type=='BO'">BO: Buy</li>
+                                    <div class="add-items">
+                                        <ul class="list-unstyled"> <li *ngIf="moodboards?.added_items==moodboards?.total_items"><img src="/assets/img/project/check-circle.png"></li></ul>
+                                    </div>
+                                </ul>
+                                
+                                <div class="unit-budget-edit-button"  *ngIf="!unitGroup?.hide_product_add">
+                                    <button (click)="getMoodboardWiseCategories(moodboards)">
+                                        <img src="assets/img/project/plus-square.png">Add Products
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right"><b>{{unitGroup?.added_products}} of {{unitGroup?.total_products ? unitGroup?.total_products : 0}} items added</b></div>
+                    </div>
+                    <div class="form-group configure-flex">
+                        <div class="unit-view-details-button">
+                            <button type="button" (click)="breadCrumbNavigataion('assignMoodboards')">Back</button>
+                        </div>
+                        <div class="configure-button">
+                            <button type="button" (click)="breadCrumbNavigataion('summary')" [disabled]="disableButton">Finish</button>
+                        </div>
+                    </div>
+                    <p class="quote-view" *ngIf="isQuote_btnDisable==true" (click)="navigateQuotePage()"><span>
+                        Go To Quote</span></p>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Group Level Info -->
+
+<!-- Group wise product items -->
+<section class="create-project-section moodboard-package-list item-view" *ngIf="moodboardWiseInfo?.moodboardCategories && moodboardWiseInfo.is_show">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="new-create-units">
+                    <!-- selected product list -->
+                    <div>
+                        <h3 style="font-size: 1.55rem;">{{moodboardWiseInfo?.unit_group?.group_name}} - Group
+                        <span class="text-danger item-unassigned" *ngIf="moodboardWiseInfo.moodboardInfo?.unassgined_units !=0">
+                            (Unassgined Units:
+                             {{moodboardWiseInfo.moodboardInfo?.unassgined_units}}
+                             {{moodboardWiseInfo.moodboardInfo?.unassgined_units > 1 ? 'Units' : 'Unit' }})
+                            </span>
+                        </h3>
+                        <h5 class="pt-2"><span class="cursor pr-2" (click)="backToMoodboard()"><img src="/assets/img/project/arrow-left.png"></span>{{moodboardWiseInfo?.moodboardInfo?.moodboard_name}}</h5>
+                        <ul class="unit-budget-breadcrumb">
+                            <li>Type:{{moodboardWiseInfo?.moodboardInfo?.room_type_name}}</li>
+                            <li>Assigned Units:{{moodboardWiseInfo?.moodboardInfo?.assigned_units}}</li>
+                            <li>MB Asset Budget After Freight: ${{moodboardWiseInfo?.moodboardInfo?.inhabitr_asset_budget}}</li>
+                            <li>MB Rent Budget Per Month/All Units: ${{moodboardWiseInfo?.moodboardInfo?.rent_per_month}}</li>
+                            <li>Earnout: ${{moodboardWiseInfo?.moodboardInfo?.earnout_amount}}</li>
+                            <li>Items: {{moodboardWiseInfo?.moodboardInfo?.added_items}} of {{moodboardWiseInfo?.moodboardInfo?.total_items}} added</li>
+                        </ul>
+                        <div class="moodboard-flex" >
+                            <div class="card custom-product-list-view mt-1 mb-3" [ngClass]="{'add-product-view':moodboardCategories.product_name !=null}" *ngFor="let moodboardCategories of moodboardWiseInfo?.moodboardCategories">
+                                <div class="card-body custom-product-list-body">
+                                    <img *ngIf="moodboardCategories.product_name==null" (click)="productView(moodboardCategories)" src="{{moodboardCategories?.category_icon}}">
+                                    <img *ngIf="moodboardCategories.product_name !=null"  src="{{moodboardCategories?.image}}">
+
+                                    <div>
+                                        <p class="m-0" *ngIf="moodboardCategories.product_name==null">{{moodboardCategories?.category_name}}</p>
+                                    <p class="m-0" *ngIf="moodboardCategories.product_name !=null">{{moodboardCategories?.product_name}}</p>
+                                    <ul class="asset-value">
+                                        <li>Asset Budget:$<span>{{moodboardCategories?.inhabitr_asset_budget}}</span></li>
+                                        <li>Rent Budget/Month:$<span>{{moodboardCategories?.rent_per_month}}</span></li>
+                                        <li>Earnout Expected/Month/Unit:$<span>{{moodboardCategories?.earnout_amount}}</span></li>
+                                        <li>Quantity:<span>{{moodboardCategories?.quantity}}</span></li>
+                                    </ul>
+                                    <ul class="asset-value" *ngIf="moodboardCategories.product_name!=null">
+                                        <li>Asset Value:$<span>{{moodboardCategories?.added_inhabitr_asset_budget}}</span></li>
+                                        <li>Rent/Month:$<span>{{moodboardCategories?.added_rent_per_month}}</span></li>
+                                        <li [ngClass]="{'text-danger':moodboardCategories?.added_earnout_amount<0 ,'text-success':moodboardCategories?.added_earnout_amount>0}">Earnout of That Product :
+                                            <span> {{moodboardCategories?.added_earnout_amount < 0 ? '-':''}} ${{(moodboardCategories?.added_earnout_amount+'').replace('-','')}}</span>
+                                        </li>
+                                    </ul>
+                                    <h6 class="swap-product" [ngClass]="{'pe-none':isQuote_btnDisable==true}"  (click)="productView(moodboardCategories)" *ngIf="moodboardCategories.product_name !=null">Swap the Product</h6>
+                                    </div>
+                                </div>
+                                <!-- <div class="card-footer custom-product-list-footer">
+                                    
+                                   
+                                </div> -->
+                            </div>
+                            <div class="card custom-product-list-view mt-1 mb-3" [ngClass]="{'pe-none':isQuote_btnDisable==true}">
+                                <div class="card-body custom-product-list-body item-product-icon" style="justify-content: center;">
+                                    <p (click)="addItems(updateMbId)"><i _ngcontent-fda-c151="" aria-hidden="true" class="fa fa-plus"></i></p>
+                                </div>
+                                <div class="card-footer custom-product-list-footer">
+                                    <p>Add a Item</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="text-center">
+                            <div class="add-button">
+                                <button type="button">Confirm</button>
+                            </div>
+                        </div> -->
+                    </div>
+                     <!-- selected product list -->
+                     <!-- selected product table -->
+                    <div class="selected-table" *ngIf="moodboardItemsInfo?.moodboardItems?.length">
+                        <table class="item-table table-responsive">
+                            <th>Product Name</th>
+                            <th>Image</th>
+                            <th>Supplier Name</th>
+                            <th>SKU</th>
+                            <!-- <th>City</th> -->
+                            <!-- <th>Type</th> -->
+                            <!-- <th>Quantity</th> -->
+                            <th>Asset Price</th>
+                            <th>Buy Price</th>
+                            
+                            <th>Rental Budget/ Month</th>
+                            <th>Actual Rent/ Month</th>
+                            <th>Quantity</th>
+                            <!-- <th>Months</th> -->
+                            <!-- <th>Earnout Percentage</th> -->
+                            <th>Earnout Amount Difference
+                                <li class="tooltip mooboard-table-tooltip new-tooltip">
+                                    <i aria-hidden="true" class="fa fa-info"></i>
+                                    <span class="tooltiptext">
+                                       <span>Earnout Amount Difference = Rent Budget of Item - Actual Rent of the Item</span>
+                                    </span>
+                                </li>
+                            </th>
+                            <th>Customer Presented Asset Amount</th>
+                            <th>Customer Presented Rental/ Month</th>
+                            <th colspan="12">Total</th>
+                            <tbody>
+                                <tr *ngFor="let items of moodboardItemsInfo?.moodboardItems">
+                                    <td>{{items?.product_name}}</td>
+                                    <td>
+                                        <img src="{{items?.image}}" class="img-thumbnail" width="40px">
+                                    </td>
+                                    <td>{{items?.supplier_name}}</td>
+                                    <td>{{items?.sku}}</td>
+                                    <td>${{items?.asset_value }}</td>
+                                    <td >${{items?.buyPrice }}</td>
+                                   
+                                    <td>${{items?.rent_per_month }}</td>
+                                    <td>${{items?.item_price }}</td>
+                                    <td>{{items?.quantity}}</td>
+                                    <!-- <td >{{items?.earnout_percentage}}%</td> -->
+                                    <td [ngClass]="{'text-danger':items?.earnout_amount<0 ,'text-success':items?.earnout_amount>0}">
+                                        <span> {{items?.earnout_amount < 0 ? '-':''}} ${{(items?.earnout_amount+'').replace('-','')}}</span>
+                                    </td>
+                                    <td >${{items?.customer_asset_budget_per_month}}</td>
+                                    <td >${{items?.rent_per_month_customer}}</td>
+                                    <td colspan="12" width="10%" [ngClass]="{'pe-none':isQuote_btnDisable==true}">${{items?.total}}
+                                         <i class="fa fa-trash-o cursor" (click)="deleteGroupDialog(items,'tableItemList')" aria-hidden="true"></i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="12" style="border-width: 0 0 0 1px;text-align: right;">MB Total Asset Price</td>
+                                    <td>${{moodboardItemsInfo?.moodboardSummary?.total_asset_price}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="12" style="border-width: 0 0 0 1px;text-align: right;">MB Total Buy Price:</td>
+                                    <td>${{moodboardItemsInfo?.moodboardSummary?.total_buy_price}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="12" style="border-width: 0 0 0 1px;text-align: right;">MB Total Rent Budget/Mo/Unit:</td>
+                                    <td>${{moodboardItemsInfo?.moodboardSummary?.total_rental_price}}</td>
+                                </tr>
+                               
+                                <tr>
+                                    <td colspan="12" style="border-width: 0 0 0 1px;text-align: right;"><b>Actual MB Rent/Mo/Unit:</b></td>
+                                    <td><b>${{moodboardItemsInfo?.moodboardSummary?.total_actual_rental_price}}</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="12"  style="border-width: 0 0 0 1px;text-align: right;">
+                                        <b>MB Total Earnout Amount diff /Mo/unit 
+                                            <span class="latest-table-tooltip ml-2">
+                                                <i  aria-hidden="true" class="fa fa-info"></i>
+                                                <span class="latest-table-tooltiptext"><span>MB Total Rent Budget/Mo/Unit - Actual MB Rent/Mo/Unit</span></span></span>
+                                        </b>
+                                    </td>
+                                    <td [ngClass]="{'text-danger':moodboardItemsInfo?.moodboardSummary?.total_earnout_amount<0 ,'text-success':moodboardItemsInfo?.moodboardSummary?.total_earnout_amount>0}">
+                                        {{moodboardItemsInfo?.moodboardSummary?.total_earnout_amount < 0 ? '-':''}} <b>${{(moodboardItemsInfo?.moodboardSummary?.total_earnout_amount+'').replace('-','')}}</b>
+                                    </td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td colspan="12" style="border-width: 0 0 0 1px;text-align: right;"><b>Customer Presented MB  Total Rent/Mo/Unit:</b></td>
+                                    <td><b>${{moodboardItemsInfo?.moodboardSummary?.total_rental_price_customer}}</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="12" style="border-width: 0 0 0 1px;text-align: right;"><b>Customer Presented MB  Total Asset Amount/Unit:</b></td>
+                                    <td><b>${{moodboardItemsInfo?.moodboardSummary?.total_asset_price_customer}}</b></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>  
+                     <!-- selected product table -->
+                     <div class="form-group configure-flex">
+                        <div class="unit-view-details-button">
+                            <button type="button" (click)="backToMoodboard()">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>                
+<!-- Group wise product items -->
+
+
+<!-- summary table -->
+
+<section class="create-project-section" *ngIf="summaryInfo?.is_show">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="summary-result">
+                    <div class="total-group-list">
+                        <div>
+                            <h4 class="p-0">Project Summary (<small>Total Product: {{summaryInfo?.moodboardSummary?.total_products}}</small>)
+                            </h4>
+                            <h6 class="text-danger" *ngIf="summaryInfo?.moodboardSummary?.unassgined_units !=0">
+                                (Unassgined Units: {{summaryInfo?.moodboardSummary?.unassgined_units}}
+                                {{summaryInfo?.moodboardSummary?.unassgined_units > 1 ? 'Units' : 'Unit' }})
+                            </h6>
+                        </div>
+                    </div>
+                    <div class="summary-group-list">
+                        <ul>
+                            <li *ngFor="let summaryInfos of summaryInfo?.new_group_summary">
+                                <p>Group Name: {{summaryInfos?.group_name}}</p>
+                                <p [ngClass]="{'text-danger':summaryInfos?.added_products==0}">Total Products: {{summaryInfos?.added_products}}</p>
+                                <div *ngFor="let summaryInfos of summaryInfos?.moodboards">
+                                    <p [ngClass]="{'text-danger':summaryInfos?.added_items==0}">{{summaryInfos?.moodboard_name}} : {{summaryInfos?.added_items}}</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <table class="group-list-table icons-table mt-4 table-responsive">
+                        <thead>
+                            <th>Group Name</th>
+                            <th>MB Name</th>
+                            <th>Prod Name</th>
+                            <th>Image</th>
+                            <th>Supplier Name</th>
+                            <th>Inhabitr SKU </th>
+                            <th>Asset Price</th>
+                            <th>Buy Price</th>
+                            
+                            <th>Rent Budget/Mo/Unit</th>
+                            <th>Actual Rent/Mo/Unit</th>
+                            <th>Quantity</th>
+                            <th>Earnout Amount Difference/All Units</th>
+                            <th>Customer Presented Asset Amount/Month</th>
+                            <th>Customer Presented Rental/ Month</th>
+                            <th>Total Actual Rent For All Units</th>
+                            <th>Customer Presented Rent for All Units</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let summaryItem of summaryInfo?.moodboardItems">
+                                <td>{{summaryItem?.group_name}}</td>
+                                <td>{{summaryItem?.moodboard_name}}</td>
+                                <td>{{summaryItem?.product_name}}</td>
+                                <td>
+                                    <img src="{{summaryItem?.image}}" width="40px"/>
+                                   
+                                </td>
+                                <td>{{summaryItem?.supplier_name}}</td>
+                                <td>{{summaryItem?.sku}}</td>
+                                <td>${{summaryItem?.asset_value}}</td>
+                                <td>${{summaryItem?.buyPrice}}</td>
+                               
+                                <td>${{summaryItem?.rent_per_month}}</td>
+                                <td>${{summaryItem?.item_price}}</td>
+                                <td>{{summaryItem?.quantity}}</td>
+                                <td [ngClass]="{'text-danger':summaryItem?.earnout_amount<0 ,'text-success':summaryItem?.earnout_amount>0}">
+                                    {{summaryItem?.earnout_amount < 0 ? '-':''}} ${{(summaryItem?.earnout_amount+'').replace('-','')}}
+                                </td>
+                                <td>${{summaryItem?.customer_asset_budget_per_month}}</td>
+                                <td>${{summaryItem?.rent_per_month_customer}}</td>
+                                <td>${{summaryItem?.total}}</td>
+                                <td>${{summaryItem?.customer_total}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-width: 0 0 0 1px;text-align: right;">
+                                    Project Total Asset Price
+                                    <span class="latest-table-tooltip">
+                                        <i aria-hidden="true" class="fa fa-info"></i>
+                                        <span class="latest-table-tooltiptext"><span>Asset Price of Products</span></span></span>
+                     
+                                </td>
+                                <td style="padding: 10px 0 10px 0;">${{summaryInfo?.moodboardSummary?.total_asset_price }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-width: 0 0 0 1px;text-align: right;">
+                                    Project Total Buy Price
+                                    <span class="latest-table-tooltip">
+                                        <i aria-hidden="true" class="fa fa-info"></i>
+                                        <span class="latest-table-tooltiptext"><span>Buy Price of Products</span></span></span>
+                                </td>
+                                <td style="padding: 10px 0 10px 0;">${{summaryInfo?.moodboardSummary?.total_buy_price}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-width: 0 0 0 1px;text-align: right;">
+                                    Customer Presented Project Rent/Mo
+                                    <span class="latest-table-tooltip">
+                                        <i aria-hidden="true" class="fa fa-info"></i>
+                                        <span class="latest-table-tooltiptext"><span>Total Customer Rent of all Items / Lease length for all units</span></span></span>
+                                </td>
+                                <td style="padding: 10px 0 10px 0;">${{summaryInfo?.moodboardSummary?.total_rental_price_customer}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-width: 0 0 0 1px;text-align: right;">Project Rent Budget/Mo
+                                    <span class="latest-table-tooltip">
+                                        <i aria-hidden="true" class="fa fa-info"></i>
+                                        <span class="latest-table-tooltiptext"><span>Rent Budget including Freight and excluding earnout values</span></span></span>
+                                
+                                </td>
+                                <td style="padding: 10px 0 10px 0;">${{summaryInfo?.moodboardSummary?.total_rental_price}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-width: 0 0 0 1px;text-align: right;">Project Actual Rent/mo
+                                    <span class="latest-table-tooltip">
+                                        <i aria-hidden="true" class="fa fa-info"></i>
+                                        <span class="latest-table-tooltiptext"><span>Actual Rent including Freight and excluding earnout
+                                                values</span></span></span>
+                                </td>
+                                <td style="padding: 10px 0 10px 0;">${{summaryInfo?.moodboardSummary?.total_actual_rental_price }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-width: 0 0 0 1px;text-align: right;">Project Earnout Diff/Mo
+                                    <span class="latest-table-tooltip">
+                                        <i aria-hidden="true" class="fa fa-info"></i>
+                                        <span class="latest-table-tooltiptext"><span>
+                                            Project Rent Budget/Mo - Project Actual Rent/Mo </span></span></span>
+                                </td>
+                                <td style="padding: 10px 0 10px 0;" [ngClass]="{'text-danger':summaryInfo?.moodboardSummary?.total_earnout_amount<0 ,'text-success':summaryInfo?.moodboardSummary?.total_earnout_amount>0}">
+                                    {{summaryInfo?.moodboardSummary?.total_earnout_amount < 0 ? '-':''}} ${{(summaryInfo?.moodboardSummary?.total_earnout_amount+'').replace('-','') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-width: 0 0 0 1px;text-align: right;">Inhabitr Rent Budget
+                                    <span class="latest-table-tooltip">
+                                        <i aria-hidden="true" class="fa fa-info"></i>
+                                        <span class="latest-table-tooltiptext"><span>
+                                            Inhabitr Rent Budget over the Lease Length for all Units used for selecting products </span></span></span>
+                                </td>
+                                <td style="padding: 10px 0 10px 0;">${{summaryInfo?.moodboardSummary?.inhabitr_rent_budget }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-width: 0 0 0 1px;text-align: right;">Total Project Rent
+                                    <span class="latest-table-tooltip">
+                                        <i aria-hidden="true" class="fa fa-info"></i>
+                                        <span class="latest-table-tooltiptext"><span>
+                                            Actual Rent  over the Lease Length for all Units </span></span></span>
+                                </td>
+                                <td style="padding: 10px 0 10px 0;">${{summaryInfo?.moodboardSummary?.total_project_rent }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-width: 0 0 0 1px;text-align: right;">Inhabitr Estimated Earnout (<span class="label-color">{{summaryInfo?.moodboardSummary?.inhabitr_estimated_earnout_per}}%</span>)
+                                    <span class="latest-table-tooltip">
+                                        <i aria-hidden="true" class="fa fa-info"></i>
+                                        <span class="latest-table-tooltiptext"><span>
+                                            Overall Project Rent Budget * Earnout % </span></span></span>
+                                </td>
+                                <td style="padding: 10px 0 10px 0;">${{summaryInfo?.moodboardSummary?.inhabitr_estimated_earnout }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-width: 0 0 0 1px;text-align: right;"><b>Total Project Earnout Diff</b>
+                                    <span class="latest-table-tooltip ml-1">
+                                        <i aria-hidden="true" class="fa fa-info"></i>
+                                        <span class="latest-table-tooltiptext"><span>
+                                            Inhabitr Rent Budget - Total Project Rent </span></span></span>
+                                </td>
+                                <td style="padding: 10px 0 10px 0;" [ngClass]="{'text-danger':summaryInfo?.moodboardSummary?.total_project_earnout_diff<0 ,'text-success':summaryInfo?.moodboardSummary?.total_project_earnout_diff>0}">
+                                    {{summaryInfo?.moodboardSummary?.total_project_earnout_diff < 0 ? '-':''}} ${{(summaryInfo?.moodboardSummary?.total_project_earnout_diff+'').replace('-','') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" style="border-width: 0 0 0 1px;text-align: right;"><b>Actual Earnout Amount (<span  [ngClass]="{'text-danger':summaryInfo?.moodboardSummary?.inhabitr_actual_earnout<summaryInfo?.moodboardSummary?.inhabitr_estimated_earnout ,'text-success':summaryInfo?.moodboardSummary?.inhabitr_actual_earnout>summaryInfo?.moodboardSummary?.inhabitr_estimated_earnout}">{{(summaryInfo?.moodboardSummary?.inhabitr_actual_earnout_per)}} %</span>)</b>
+                                    <span class="latest-table-tooltip ml-1">
+                                        <i aria-hidden="true" class="fa fa-info"></i>
+                                        <span class="latest-table-tooltiptext"><span>
+                                            Inhabitr Estimated earnout  - Total Project Earnout Diff </span></span></span>
+                                </td>
+                                <td style="padding: 10px 0 10px 0;" [ngClass]="{'text-danger':summaryInfo?.moodboardSummary?.inhabitr_actual_earnout<summaryInfo?.moodboardSummary?.inhabitr_estimated_earnout ,'text-success':summaryInfo?.moodboardSummary?.inhabitr_actual_earnout>summaryInfo?.moodboardSummary?.inhabitr_estimated_earnout}">
+                                    {{summaryInfo?.moodboardSummary?.inhabitr_actual_earnout < 0 ? '-':''}} ${{(summaryInfo?.moodboardSummary?.inhabitr_actual_earnout+'').replace('-','') }}
+                                </td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    <div class="form-group configure-flex">
+                        <div class="unit-view-details-button">
+                            <button type="button" (click)="breadCrumbNavigataion('moodboards')">Back</button>
+                        </div>
+                        <div class="configure-button" *ngIf="isQuote_btnDisable">
+                            <button type="button" (click)="navigateQuotePage()">Open Quote</button>
+                        </div>
+                        <div class="configure-button" *ngIf="!isQuote_btnDisable">
+                            <button type="button" [disabled]="summaryInfo?.moodboardSummary?.total_prods_added_in_project !== summaryInfo?.moodboardSummary?.total_prods_in_project" (click)="quote()">Convert to Quote</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- summary table -->
+
+
+
+
+

@@ -1,0 +1,45 @@
+
+<div  id="content"  [class]="!showMenu?'active container page-content p-5 mt-3 ':'container page-content p-5 mt-3 '">
+        
+    <div class="container-fluid" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
+        (scrolled)="onScroll()" [scrollWindow]="true">
+   
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="row d-flex">
+                <a class="back-link " routerLink="/admin/products/list">Back to Products</a>
+                    <span><span class="control-label ml-4">search Keywords:</span> <span class="control-span ml-2">{{search}}</span></span>
+                    <!-- <span><span class="control-label ml-4">Total Products:</span> <span class="control-span ml-2">5</span></span> -->
+                </div>
+                <div class="row d-flex justify-content-center   " style='border-radius:5px;'>
+                    <div class="card my-3 shadow mx-2" style="width: 15rem;" *ngFor="let item of data">
+                        <div class="full-width image-block-grid" style="min-height: 120px;overflow:hidden;position: relative;">
+                            <span class="tag" *ngIf="item.isProcured >= 1">Published</span>
+                        <a id="{{item.product_id}}" class="details-link" routerLink= "/admin/products/view/{{item.product_id}}">
+                            <img class="img-responsive" src="{{item.product_sku_vartion.get_display_image[0]?.image_url.large}}" *ngIf="item.product_sku_vartion.get_display_image" title="{{item.product_name}}" prod-image>
+                            <span class="noProductetxt" *ngIf="!item.product_sku_vartion.get_display_image">Image not available</span>
+                        </a>
+                    </div>
+                        <div class="card-body pl-0">
+                            <div class="container pb-1 pr-0" >
+
+                                <div class="p-0 text-left  bold" ><strong class="font12" >
+                                    {{item.product_name | titlecase}}</strong></div>
+                                    <div class="p-0 text-left  bold" ><span class="ellipsis prd_title">Price:</span><strong class="font12" >
+                                       &nbsp; {{item.product_sku_vartion.asset_value | currency  }}</strong></div>
+
+                                <div class="p-0 text-left text-black bold">
+                                   <span class="ellipsis prd_title bold">Supplier:</span> <strong class="font12" >
+                                        {{item.product_sku_vartion.supplier_name  | titlecase}}</strong>
+                            </div>
+                            </div>
+                        </div>
+                      </div>
+                </div>
+                
+                <div class="text-center font14 text-muted" *ngIf="data.length === 0">No Data Found.</div>
+            </div>
+        </div>
+    
+    </div>
+</div>

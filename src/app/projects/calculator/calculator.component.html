@@ -1,0 +1,90 @@
+<section class="rent-asset-values">
+    <div class="container-fluid">
+        <div class="row justify-content-end">
+            <div class="col-md-5 calculator-bg">
+                <h5 (click)="calculator()">Asset Calculator</h5>
+                <div class="result-view" *ngIf="show">
+                    <div class="accordion" id="accordionExample">
+                        <div class="calculator-view">
+                          <div id="headingOne">
+                            <h6 class="mb-0 cursor" data-toggle="collapse"   data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                Get Asset Value
+                            </h6>
+                          </div>
+                          <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                            <form [formGroup]="assetFormCalulation">
+                                <div class="calculator-view">
+                                    <div class="row calculator-form-view">
+                                        <div class="form-group col-md-4">
+                                            <label for="mbName" class="control-label">Rent/mo</label>
+                                            <span class="dollar">$</span>
+                                            <input type="text" (keypress)="($event.charCode >= 48 && $event.charCode < 58)"  class="form-control padding-view custom-form-control"
+                                                formControlName="rent_mo_value" required />
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="mbName" class="control-label">Lease Length</label>
+                                            <input type="text" maxlength="2" [ngClass]="{'border-color':assetFormCalulation?.get('lease_length')?.hasError('ErrorMsg')}" (keypress)="($event.charCode >= 48 && $event.charCode < 58)"  class="form-control custom-form-control"
+                                            formControlName="lease_length" required/>
+                                            <div class="danger">
+                                                <span *ngIf="assetFormCalulation?.get('lease_length')?.hasError('ErrorMsg')">lease length less than 30</span>
+                                            </div>  
+                                        </div>
+                                        <div class="form-group col-md-4 asset-input">
+                                            <label for="mbName" class="control-label">Asset Value</label>
+                                            <span class="dollar">$</span>
+                                            <input type="text" readonly class="form-control custom-form-control padding-view"
+                                                formControlName="asset_value" />
+                                        </div>
+                                        <div class="col-md-12 calculate-button">
+                                            <button type="submit" (click)="getAssetCalulation()">Calculate Asset Value</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>  
+                          </div>
+                        </div>
+
+                        <div class="calculator-view">
+                          <div id="headingTwo">
+                                <h6 class="mb-0 cursor" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Get Rent Per Month
+                                </h6>
+                          </div>
+                          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                            <form [formGroup]="rentFormCalulation">
+                                <div class="calculator-view">
+                                    <div class="row calculator-form-view">
+                                        <div class="form-group col-lg-4">
+                                            <label for="mbName" class="control-label">Asset Value</label>
+                                            <span class="dollar">$</span>
+                                            <input type="text"  (keypress)="($event.charCode >= 48 && $event.charCode < 58)" class="form-control custom-form-control padding-view"
+                                                formControlName="asset_value" required />
+                                        </div>
+                                        <div class="form-group col-lg-4">
+                                            <label for="mbName" class="control-label">Lease Length</label>
+                                            <input type="text" maxlength="2" [ngClass]="{'border-color':rentFormCalulation?.get('lease_length')?.hasError('ErrorMsg')}" (keypress)="($event.charCode >= 48 && $event.charCode < 58)"  class="form-control custom-form-control"
+                                            formControlName="lease_length" required/>
+                                            <div class="danger">
+                                                <span *ngIf="rentFormCalulation?.get('lease_length')?.hasError('ErrorMsg')">lease length less than 30</span>
+                                            </div>  
+                                        </div>
+                                        <div class="form-group col-lg-4 asset-input">
+                                            <label for="mbName" class="control-label">Rent/mo</label>
+                                            <span class="dollar">$</span>
+                                            <input type="text" readonly class="form-control custom-form-control padding-view"
+                                                formControlName="rent_mo_value" />
+                                        </div>
+                                        <div class="col-md-12 calculate-button">
+                                            <button type="submit"  (click)="getRentCalulation()">Calculate Rent Per Month</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form> 
+                          </div>
+                        </div>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

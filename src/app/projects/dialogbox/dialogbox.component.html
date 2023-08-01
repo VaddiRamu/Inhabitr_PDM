@@ -1,0 +1,1076 @@
+<!-- Group add update popup -->
+
+<div *ngIf="groupData?.dialogType=='addGroupDialog'">
+    <div class="modal-header border-0 mt-3">
+        <h4 class="modal-title title-font text-center w-100 color">
+            {{groupData?.content}}
+        </h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true">
+                <img src="/assets/img/project/cross.png">
+            </span>
+        </span>
+    </div>
+    <ul class="unitpopup-budget">
+        <li>Inhabitr Target AV After Freight Deduction:${{groupData?.res?.project?.inhabitr_asset_budget}}</li>
+        <li>Inhabitr Rent Budget Per Month:${{groupData?.res?.project?.rent_per_month}}</li>
+        <li *ngIf="groupData?.leftOverBgt" [ngClass]="{'text-danger':leftOverBgt<0 ,'text-success':leftOverBgt>0}">
+            Leftover Inhabitr Budget:
+            {{leftOverBgt < 0 ? '-' :''}} ${{(leftOverBgt+'').replace('-','') | number: '1.0-0' }} </li>
+    </ul>
+    <div class="modal-body viewFilterHeading">
+        <form class="unitpopup-form" [formGroup]="unitGroup" (ngSubmit)="unitGropForm()">
+            <div class="row mt-3">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label for="mbName" class="control-label pl-2">Name of the Group</label>
+                        <input type="text" formControlName="group_name" class="form-control ml-2 custom-form-control" />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group earnout_input">
+                        <label for="mbName" class="control-label pl-2">Group Budget Percentage</label>
+                        <input type="text" maxlength="3" (keyup)="groupBudgetCalulation()"
+                            [ngClass]="{'border-color':unitGroup?.get('budget_percentage')?.hasError('percentage')}"
+                            formControlName="budget_percentage"
+                            class="form-control ml-2 custom-form-control input-dollar"
+                            (keypress)="($event.charCode >= 48 && $event.charCode < 58)" required /><span
+                            class="percentage">%</span>
+                        <div class="danger" *ngIf="unitGroup?.get('budget_percentage')?.hasError('percentage')">
+                            <span>Percentage should be less than 100 or equal to 100</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group dollar-symbol">
+                        <label for="mbName" class="control-label pl-2">Group Target AV</label>
+                        <span class="dollar">$</span><input type="number" formControlName="groupAssetBudget"
+                            class="form-control ml-2 custom-form-control input-dollar" readonly />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group dollar-symbol">
+                        <label for="mbName" class="control-label pl-2">Group Target Rent/Month</label>
+                        <span class="dollar">$</span><input type="number" formControlName="groupRentBudget"
+                            class="form-control ml-2 custom-form-control input-dollar" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center mt-3">
+                <div class="col-lg-6">
+                    <div class="form-group dollar-symbol">
+                        <label for="mbName" class="control-label pl-2">Unit Floor Plan Type</label>
+                        <select class="w-100 custom-selection-option" formControlName="floorplan_id">
+                            <option value="" disabled selected>Select Floor Plan
+                            </option>
+                            <option [value]="floortype?.sgid" *ngFor="let floortype of groupData?.res?.floor_plans">
+                                {{floortype?.floorplan_name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group dollar-symbol custom-ngselect-dropdown"
+                        [ngClass]="{'custom-overflow':selectedResult==true}">
+                        <label for="mbName" class="control-label pl-2">Assign/Remove Unit</label>
+                        <ng-multiselect-dropdown [settings]="IDropdownSettings" [data]="groupData?.units"
+                            (onSelect)="ItemSelect($event)" (onSelectAll)="selectAll($event)"
+                            (onDeSelectAll)="deselectAll($event)" (onDeSelect)="ItemDeSelect($event)"
+                            formControlName="units" class="popup-ngselect custom-font-size">
+                        </ng-multiselect-dropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="configure-button w-100">
+                    <button type="submit"
+                        [disabled]="!unitGroup.valid || unitGroup?.get('budget_percentage')?.hasError('percentage')">{{groupData?.button_text}}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Group add update popup -->
+
+<!-- group detele popup -->
+
+<div *ngIf="gpDeleteData?.dialogType=='deleteGroupDialog'">
+    <div class="modal-header configuremoodboard-popup">
+        <h4 class="modal-title title-font text-center w-100 color"></h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true" class="text-white">&times;</span>
+        </span>
+    </div>
+    <div class="modal-body configuremoodboard-popup-body">
+        <div class="delete-popup">
+            <h5 *ngIf="gpDeleteData?.res?.no_of_units">Are you sure you want delete "{{gpDeleteData?.res?.group_name}}"
+                "{{gpDeleteData?.res?.no_of_units}}Units" ?</h5>
+            <h5 *ngIf="!gpDeleteData?.res?.no_of_units">Are you sure you want delete ?</h5>
+            <button (click)="delete(gpDeleteData)">Yes</button>
+            <button class="no" (click)="activeModal.close('Close click')">No</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- group detele popup -->
+
+<!-- Group Budget Distribution popup -->
+
+<div *ngIf="groupDstdata?.dialogType=='groupBudgetDistribution'">
+    <div class="modal-header configuremoodboard-popup">
+        <h4 class="modal-title title-font">
+            <i class="fa fa-cog" aria-hidden="true"></i>{{groupDstdata?.content}}
+        </h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true" class="text-white">&times;</span>
+        </span>
+    </div>
+    <div class="modal-body configuremoodboard-popup-body">
+
+        <ul class="unitpopup-budget leftover">
+            <li>Inhabitr Target AV After Freight Deduction:${{groupDstdata?.res?.inhabitr_asset_budget}}</li>
+            <li>Inhabitr Rent Budget Per Month:${{groupDstdata?.res?.rent_per_month | number : '1.2-2'}}</li>
+        </ul>
+        <table class="configuremoodboard-table">
+            <th>Group Name</th>
+            <th>Floor Plan Type</th>
+            <th>Group Budget Percentage</th>
+            <th>Group Target AV</th>
+            <th>Group Target Rent/Month</th>
+            <th>Group Earnout</th>
+            <tbody>
+                <tr *ngFor="let groupDistributions of groupDistribution">
+                    <td>{{groupDistributions?.group_name}}</td>
+                    <td>{{groupDistributions?.floorplan_name}}</td>
+                    <td>
+                        <input type="text" maxlength="3" (keypress)="($event.charCode >= 48 && $event.charCode < 58)"
+                            required (change)="groupPercentageDistributionCalucation()"
+                            [(ngModel)]="groupDistributions.percentage_distribution"
+                            [ngModelOptions]="{standalone: true}" class="percentage-view">
+                    </td>
+                    <td>${{groupDistributions?.inhabitr_asset_budget | number : '1.2-2'}}</td>
+                    <td>${{groupDistributions?.rent_per_month | number : '1.2-2'}}</td>
+                    <td>${{groupDistributions?.earnout_amount | number : '1.2-2'}}</td>
+                </tr>
+                <tr>
+                    <td colspan="12" style="text-align: center;position: relative;left: 29%;">
+                        <div class="Partition">
+                            <p class="danger text-end m-0" [ngClass]="{'text-success':percentageValues==100}">Total
+                                {{percentageValues}}% out of 100%</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="text-center">
+            <div class="configure-button">
+                <button type="button" [disabled]="percentageValues!=100 || percentageValues>100"
+                    (click)="updateGpDst()">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Group Budget Distribution popup -->
+
+
+<!-- room type view details popup -->
+
+<div *ngIf="viewDetailsData?.dialogType=='viewDetailsPopup'">
+    <div class="modal-header">
+        <h5 class="modal-title title-font viewDetailsPopup-title">
+           {{viewDetailsData?.content}} <span class="add-button"><button (click)="exitMoodboard(viewDetailsData?.id_package,'group')"><img src="/assets/img/project/plus-square.png"
+            class="mr-2" width="30px" > Add to Group</button></span>
+        </h5>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true">&times;</span>
+        </span>
+    </div>
+    <div class="modal-body configuremoodboard-popup-body">
+        <div>
+            <table class="room-table">
+                <thead>
+                
+                        <th>Image</th>
+                        <th>Name and SKU</th>
+                        <th>Supplier SKU</th>
+                        <th>Asset Value</th>
+                        <th>Pricing Asset Value</th>
+                        <th>12/Mo Rent Price</th>
+                        <th>Qty</th>
+                        <th>Supplier</th>
+                        <th>Inventory</th>
+                        <th>Action</th>
+
+                </thead>
+                <tbody>
+                    <tr *ngFor="let autoPackage of  viewDetailsData?.res">
+                        <td>
+                            <img src="{{autoPackage?.image}}" width="50px" height="50px"/>
+                        </td>
+                        <td>
+                            <p class="m-0">{{autoPackage?.name}}</p>
+                            <p class="m-0">( {{autoPackage?.sku}} )</p>
+                        </td>
+                        <td>{{autoPackage?.supplier_sku ? autoPackage?.supplier_sku : '-'}}</td>
+                        <td>{{autoPackage?.asset_value}}</td>
+                        <td>{{autoPackage?.pricing_asset_value}}</td>
+                        <td>{{autoPackage?.sale_price}}</td>
+                        <td>{{autoPackage?.quantity}}</td>
+                        <td>{{autoPackage?.supplier}}</td>
+                        <td>{{autoPackage?.inventory}}</td>
+                        <td class="add-button">
+                            <button (click)="exitMoodboard(autoPackage,'moodboard')"><img src="/assets/img/project/plus-square.png"
+                                    class="mr-2" width="30px"> Add to Moodboard</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- room type view details popup -->
+
+
+<!-- exit popup result -->
+
+<div *ngIf="exitMbData?.dialogType=='existMbDetailsPopup'">
+    <div class="modal-header border-0">
+        <h4 class="modal-title title-font text-center w-100 color">
+            <span>Select a Moodboard </span>
+        </h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true">
+                <img src="/assets/img/project/cross.png">
+            </span>
+        </span>
+    </div>
+    <div class="modal-body viewFilterHeading text-center">
+        <div>
+            <label for="mbName">Add product to the following Moodboard:</label>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default copy-dropdown-button dropdown-toggle" data-toggle="dropdown">
+                {{showMoodboardCopyId ? showMoodboardCopyId?.moodboard_name : 'Select Moodboard' }} <span
+                    class="caret"></span>
+            </button>
+            <ul class="dropdown-menu scrollable-menu" role="menu">
+                <li *ngFor="let moodboardCounts of exitMbData?.res"
+                    [ngClass]="{'moodbaord-active':moodboardCounts?.sgid==showMoodboardCopyId?.sgid}">
+                    <a (click)="moodboardCopyId(moodboardCounts)">
+                        {{moodboardCounts?.moodboard_name}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="row justify-content-center pt-3 pb-4">
+            <div class="add-button">
+                <button type="submit" (click)="addMoodboard()">Add</button>
+            </div>
+            <div class="cancel-button">
+                <button type="button" (click)="activeModal.close('Close click')">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- exit popup result -->
+
+
+<!-- mb bgt distribution -->
+
+<div *ngIf="mdBgtDistCont?.dialogType=='updateMbPerDist'">
+    <div class="modal-header configuremoodboard-popup">
+        <h4 class="modal-title title-font  w-100 color">
+            {{(mdBgtDistCont?.resp?.unit_group?.group_name).replace('-','')}} - {{mdBgtDistCont?.content}}
+        </h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true" class="text-white">&times;</span>
+        </span>
+    </div>
+    <div class="modal-body configuremoodboard-popup-body">
+        <ul class="unitpopup-budget">
+            <li>Group Target AV After Freight:${{mdBgtDistCont?.resp?.unit_group?.inhabitr_asset_budget}}</li>
+            <li>Group Target AV Rent/Month:${{mdBgtDistCont?.resp?.unit_group?.rent_per_month}}</li>
+            <li>Group Earnout <span class="latest-table-tooltip">
+                <i aria-hidden="true" class="fa fa-info"></i>
+                <span class="latest-table-tooltiptext"><span>For the all the units for 12 months</span></span></span> :${{mdBgtDistCont?.resp?.unit_group?.earnout_amount}}</li>
+        </ul>    
+        <table class="configuremoodboard-table">
+            <th>Moodboard Name</th>
+            <th>Room Type</th>
+            <th>Percentage</th>
+            <th><b>MB Asset Budget/Unit</b></th>
+            <th><b>MB Rent Budget/Month/ Unit</b></th>
+            <th><b>MB Earnout/Unit</b> 
+                <span class="latest-table-tooltip">
+                    <i aria-hidden="true" class="fa fa-info"></i>
+                    <span class="latest-table-tooltiptext"><span>Per Unit for 12 Months</span></span></span>
+            </th>
+            <tbody> 
+                <tr *ngFor="let percentageDistributions of mdBgtDistCont?.resp?.result">
+                    <td>{{percentageDistributions?.moodboard_name}} </td>
+                    <td>{{percentageDistributions?.room_type_name}}</td>
+                    <td>
+                        <input type="text" maxlength="3" (keypress)="($event.charCode >= 48 && $event.charCode < 58)"  required [ngClass]="{'border-class':percentageDistributions.percentage_distribution==0}"   (change)="percentageDistributionCalucation()" [(ngModel)]="percentageDistributions.percentage_distribution"  [ngModelOptions]="{standalone: true}" class="percentage-view">
+                    </td>
+                    <td>${{percentageDistributions?.inhabitr_asset_budget | number : '1.2-2'}}</td>
+                    <td>${{percentageDistributions?.rent_per_month | number : '1.2-2'}}</td>
+                    <td>${{percentageDistributions?.earnout_amount | number : '1.2-2'}}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border-right: 0px;"> <button (click)="addMbPopup()" class="custom-selection-option">
+                        <i aria-hidden="true" class="fa fa-plus pr-2 pl-0"></i>Add a Moodboard</button></td>
+                    <td colspan="12" style="text-align: left;border-left: 0px;">
+                        <div class="Partition">
+                            <p  class="danger text-end m-0" [ngClass]="{'text-success':percentageValues==100}">Total {{percentageValues}}% out of 100%</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+       
+        <div class="text-center">
+            <div class="add-button">
+                <button type="button" [disabled]="isDisableButton" (click)="updatePercentageDistribution()">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- mb bgt distribution -->
+
+
+<!-- create moodboard -->
+
+<div *ngIf="createmdIn?.dialogType=='createmd'">
+    <div class="modal-header border-0">
+        <h4 class="modal-title title-font text-center w-100 color">
+            <span>{{createmdIn?.content}}</span>
+        </h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true">
+                <img src="/assets/img/project/cross.png">
+            </span>
+        </span>
+    </div>
+    <ul class="unitpopup-budget">
+        <li>Group Inhabitr Target AV After Freight:${{createmdIn?.gpProject?.inhabitr_asset_budget}}</li>
+        <li>Group Inhabitr Rent Budget Per Month:${{createmdIn?.gpProject?.rent_per_month}}</li>
+    </ul>
+    <div class="modal-body viewFilterHeading text-center">
+        <form class="unitpopup-form" [formGroup]="latestcreatMoodboard">
+            <div class="row mt-1">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="mbName" class="control-label pl-2">Name of  Moodboard</label>
+                        <input type="text" formControlName="latest_moodboard_name" class="form-control ml-2 custom-form-control" />
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group dollar-symbol">
+                        <label for="mbName" class="control-label pl-2">Room Type</label>
+                        <select class="w-100 custom-selection-option" formControlName="latest_room_type" (change)="selectRoom($event)">
+                            <option value="" disabled selected>Select Room
+                            </option>
+                            <option value="{{room?.sgid}}" *ngFor="let room of roomType">{{room?.type_name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4 include-product">
+                    <div class="form-group dollar-symbol">
+                        <label for="mbName" class="control-label pl-2">Included Products</label>
+                        <span class="dollar"><i aria-hidden="true" class="fa fa-plus"></i></span>
+                        <button class="w-100 custom-selection-option" (click)="categoryPopUp('createmdOp')">Add Categories</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="add-button">
+                    <button type="submit" [disabled]="!latestcreatMoodboard.valid" (click)="creatMoodboardLatestForm()">Submit</button>
+                </div>
+                <div class="cancel-button">
+                    <button type="button" (click)="activeModal.close('Close click')">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- create moodboard -->
+
+<!-- category popup -->
+
+<div *ngIf="categoryIn?.dialogType=='category'">
+    <div class="modal-header border-0">
+        <h4 class="modal-title title-font text-center w-100 color">
+            <span>{{categoryIn?.content}}</span>
+        </h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true">
+                <img src="/assets/img/project/cross.png">
+            </span>
+        </span>
+    </div>
+    <div class="modal-body moodboardProducts">
+        <div class="row">
+            <div class="col-lg-3" >
+                <div class="border-left-view">
+                    <!-- <h6>LIVING ROOM FURNITURE</h6> -->
+                    <ul class="list-unstyled">
+                        <li *ngFor='let category of categoryIn?.categoryList;let i=index'>
+                            <label *ngIf="i<28">
+                                <input type="checkbox" 
+                                (click)="getSelectedCategory(category,categoryIn?.type)"
+                                [attr.checked]="category.parent ? 'checked' : null"> 
+                                {{category?.name}}
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3" >
+                <div class="border-left-view">
+                    <!-- <h6>LIVING ROOM FURNITURE</h6> -->
+                    <ul class="list-unstyled">
+                        <li *ngFor='let category of categoryIn?.categoryList;let i=index'>
+                            <label *ngIf="i>=28 && i<56">
+                                <input type="checkbox" 
+                                (click)="getSelectedCategory(category,categoryIn?.type)"
+                                [attr.checked]="category.parent ? 'checked' : null"
+                                > {{category?.name}}
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3" >
+                <div class="border-left-view">
+                    <!-- <h6>LIVING ROOM FURNITURE</h6> -->
+                    <ul class="list-unstyled">
+                        <li *ngFor='let category of categoryIn?.categoryList;let i=index'>
+                            <label *ngIf="i>=56 && i<84">
+                                <input type="checkbox" 
+                                (click)="getSelectedCategory(category,categoryIn?.type)"
+                                [attr.checked]="category.parent ? 'checked' : null"> 
+                                {{category?.name}}
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3" >
+                <div>
+                    <!-- <h6>LIVING ROOM FURNITURE</h6> -->
+                    <ul class="list-unstyled">
+                        <li *ngFor='let category of categoryIn?.categoryList;let i=index'>
+                            <label *ngIf="i>=84 && i<112">
+                                <input type="checkbox"
+                                 (click)="getSelectedCategory(category,categoryIn?.type)"
+                                 [attr.checked]="category.parent ? 'checked' : null"> 
+                                 {{category?.name}}
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <div class="add-button category">
+                <button type="button" data-modal="dismiss" 
+                (click)="addMoodboardItems(categoryIn?.categoryList,categoryIn?.type)">Add to Moodboard</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- category popup -->
+
+
+<!-- edit mb -->
+
+<div *ngIf="updatemdIn?.dialogType=='EditMb'">
+    <div class="modal-header border-0 mt-3">
+        <h4 class="modal-title title-font text-center w-100 color">
+           {{updatemdIn?.resp?.moodboard_info?.moodboard_name}} - Moodboard Product Budget Distribution ({{updatemdIn?.resp?.unit_group?.group_name}})
+        </h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true">
+                <img src="/assets/img/project/cross.png">
+            </span>
+        </span>
+    </div>
+    <ul class="unitpopup-budget">
+        <li>Group Inhabitr Target AV After Freight:$ {{updatemdIn?.resp.unit_group?.inhabitr_asset_budget}}</li>
+        <li>Group Inhabitr Rent Budget Per Month:$ {{updatemdIn?.resp.unit_group?.rent_per_month}}</li>
+        <li>Group Earnout  <span class="latest-table-tooltip">
+            <i aria-hidden="true" class="fa fa-info"></i>
+            <span class="latest-table-tooltiptext"><span>for All Units across lease lenght </span></span></span>
+:$ {{updatemdIn?.resp.unit_group?.earnout_amount}}</li>
+    </ul>
+    <div class="modal-body viewFilterHeading">
+        <form class="unitpopup-form" [formGroup]="creatMoodboard" (ngSubmit)="creatMoodboardForm()">
+            <div class="row justify-content-center mt-1 pt-1">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label for="mbName" class="control-label pl-2">Name of Moodboard</label>
+                        <input type="text" formControlName="moodboard_name" class="form-control ml-2 custom-form-control" />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group earnout_input">
+                        <label for="mbName" class="control-label pl-2">Budget Percentage</label>
+                        <input type="number" formControlName="budget_percentage"
+                            class="form-control ml-2 custom-form-control input-dollar" readonly/><span
+                            class="percentage">%</span>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group dollar-symbol">
+                        <label for="mbName" class="control-label pl-2">Moodboard Budget</label>
+                        <span class="dollar">$</span><input type="number" formControlName="mb_budget"
+                            class="form-control ml-2 custom-form-control input-dollar" readonly />
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group dollar-symbol">
+                        <label for="mbName" class="control-label pl-2">Rent Per Month</label>
+                        <span class="dollar">$</span><input type="number" formControlName="rent_per_month"
+                            class="form-control ml-2 custom-form-control input-dollar" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center mt-1 pt-1">
+                <div class="col-lg-3">
+                    <div class="form-group dollar-symbol">
+                        <label for="mbName" class="control-label pl-2">Earnout</label>
+                        <span class="dollar">$</span><input type="number" formControlName="earnout"
+                            class="form-control ml-2 custom-form-control input-dollar" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3 pt-3" >
+                <div class="col-md-12">
+                    <div class="configure-product-view">
+                        <h6>Configure Product Budget Breakup</h6>
+                        <table class="product-quantity-table" *ngIf="configureProducts?.length>0">
+                            <th>Category</th>
+                            <th>Qty</th>
+                            <th>Percentage</th>
+                            <th>Asset Budget</th>
+                            <th>Rent Budget Per Month</th>
+                            <th>Earnout/Unit </th>
+                            <th>Action</th>
+                            <tbody>
+                                <tr *ngFor="let configureProduct of configureProducts">
+                                    <td>{{configureProduct?.name ? configureProduct?.name : configureProduct?.category_name}}</td>
+                                    <td class="text-center">
+                                        <span class="quantity">{{configureProduct?.lenght}}
+                                            <span class="ml-1 fa fa-minus pointer"  (click)="updateQty(configureProduct,'-')"></span>
+                                            <span>{{configureProduct.quantity}}</span>
+                                            <span class="mr-1 fa fa-plus pointer" (click)="updateQty(configureProduct,'+')"></span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <input type="text" maxlength="3" (keypress)="($event.charCode >= 48 && $event.charCode < 58)"  required [ngClass]="{'border-class':configureProduct.percentage==0}" (change)="percentage()" [(ngModel)]="configureProduct.percentage"  [ngModelOptions]="{standalone: true}" class="percentage-view">
+                                        
+                                    </td>
+                                    <td> ${{configureProduct?.inhabitr_asset_budget | number : '1.2-2'}}</td>
+                                    <td>${{configureProduct?.rent_per_month | number : '1.2-2'}}</td>
+                                    <td>${{configureProduct?.earnout_amount | number : '1.2-2'}}</td>
+                                    <td> <span class="pl-3 cursor" (click)="deleteDistribution(configureProduct,'configProduct',updatemdIn?.mbId)"><img src="/assets/img/project/trash-2.png" width="18px"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        
+                                        <button class="custom-selection-option" (click)="categoryPopUp('updatemdOp')">
+                                            <i aria-hidden="true" class="fa fa-plus"></i>
+                                            Add Categories
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <div class="quantity-text">
+                                            <p>Total Quantity: {{totalQuantity}}</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="Partition"> 
+                                            <p [ngClass]="{'text-success':percentageValues==100}">Total {{percentageValues | number : '1.2-2'}}% out of 100%</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="add-button">
+                    <button type="submit" [disabled]='isDisableButton'>Submit</button>
+                </div>
+                <div class="cancel-button">
+                    <button type="button" (click)="activeModal.close('Close click')">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<!-- edit mb -->
+
+
+<!-- Add Product / Configure Moodboard percentage breakup -->
+
+<div *ngIf="addItemIn?.dialogType=='addItem'">
+    <div class="modal-header configuremoodboard-popup">
+        <h4 class="modal-title title-font">
+            <i class="fa fa-cog" aria-hidden="true"></i>{{addItemIn?.content}}
+        </h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true" class="text-white">&times;</span>
+        </span>
+    </div>
+    <div class="modal-body configuremoodboard-popup-body">
+        <table class="configuremoodboard-table">
+            <th>Category</th>
+            <th>Qty</th>
+            <th>Percentage</th>
+            <tbody>
+                <tr *ngFor="let configureProduct of configureProducts">
+                    <td>{{configureProduct?.category_name ? configureProduct?.category_name : configureProduct?.name}}</td>
+                    <td class="text-center">
+                        <span class="quantity">
+                            <span class="ml-1 fa fa-minus pointer"  (click)="updateQty(configureProduct,'-')"></span>
+                            <span>{{configureProduct.quantity}}</span>
+                            <span class="mr-1 fa fa-plus pointer" (click)="updateQty(configureProduct,'+')"></span>
+                        </span>
+                    </td>
+                    <td>
+                        <input type="text" maxlength="3" (keypress)="($event.charCode >= 48 && $event.charCode < 58)"  required [ngClass]="{'border-class':configureProduct.percentage==''}"  (change)="percentage()" [(ngModel)]="configureProduct.percentage"  [ngModelOptions]="{standalone: true}" class="percentage-view">
+                        <span class="cursor ml-3" (click)="deleteDistribution(configureProduct,'configProduct',addItemIn?.mbId)">
+                            <img src="/assets/img/project/trash-2.png" width="18px">
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                            <button class="custom-selection-option" (click)="categoryPopUp('addItemOp')">
+                                <i aria-hidden="true" class="fa fa-plus"></i> Add Categories</button>
+                    </td>
+                    <td>
+                        <div class="quantity-text">
+                            <p>Total Quantity: {{totalQuantity}}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="Partition"> 
+                            <p [ngClass]="{'text-success':percentageValues==100}">Total {{percentageValues | number : '1.2-2'}}% out of 100%</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-center">
+            <div class="add-button" (click)="updateItems()">
+                <button type="button" [disabled]="isDisableButton" >Update</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Add Product / Configure Moodboard percentage breakup -->
+
+
+<!-- How would you like to add a Moodboard? -->
+
+<div *ngIf="mbOptIn?.dialogType=='mbOptDialog'">
+    <div class="modal-header border-0">
+        <h4 class="modal-title title-font text-center w-100 color">
+           <span>{{mbOptIn?.content}}</span>
+        </h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true">
+                <img src="/assets/img/project/cross.png">
+            </span>
+        </span>
+    </div>
+    <div class="modal-body viewFilterHeading d-flex justify-content-center">
+        <ul class="moodboardOptionsPopup-view">
+            <li (click)="mbOptionView('create')">
+                <img src="assets/img/project/plus-square.png"> <span>Add a new Moodboard</span>
+            </li>
+            <li (click)="mbOptionView('copy')">
+                <img src="assets/img/project/copy.png"> <span>Copy an existing Moodboard</span>
+            </li>
+            <li (click)="mbOptionView('autopackage')">
+                <img src="assets/img/project/sofa.png"> <span>Add an Autopackage</span>
+            </li>
+            <li>
+                <img src="assets/img/project/plus-square.png"> <span>Add Moodboard using Design GPT</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- How would you like to add a Moodboard? -->
+
+
+<!-- Copy an existing Moodboard -->
+
+<div *ngIf="copyIn?.dialogType=='copyDialog'">
+    <div class="modal-header border-0">
+        <h4 class="modal-title title-font text-center w-100 color">
+           <span>Copy an existing Moodboard</span>
+        </h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true">
+                <img src="/assets/img/project/cross.png">
+            </span>
+        </span>
+    </div>
+    <div class="modal-body viewFilterHeading text-center">
+        <div>
+            <label for="mbName">Select a Moodboard to copy</label>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default copy-dropdown-button dropdown-toggle" data-toggle="dropdown">
+                {{showMoodboardCopyId ? showMoodboardCopyId?.moodboard_name : 'Select Moodboard' }} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu scrollable-menu" role="menu">
+                <li *ngFor="let moodboardCounts of copyIn?.res" [ngClass]="{'moodbaord-active':moodboardCounts?.sgid==showMoodboardCopyId?.sgid}">
+                    <a (click)="moodboardCopyId(moodboardCounts)">
+                        {{moodboardCounts?.moodboard_name}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="row justify-content-center pt-3 pb-4">
+            <div class="add-button">
+                <button type="submit" (click)="copyUpdate()">Submit</button>
+            </div>
+            <div class="cancel-button">
+                <button type="button" (click)="activeModal.close('Close click')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Copy an existing Moodboard -->
+
+<!-- Un-Assigned Units -->
+<div *ngIf="unassignIn?.dialogType=='unassignDialog'">
+    <div class="modal-header configuremoodboard-popup">
+        <h4 class="modal-title title-font text-center w-100 color"></h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true" class="text-white">&times;</span>
+        </span>
+    </div>
+    <div class="modal-body configuremoodboard-popup-body">
+        <div class="delete-popup">
+                <h5 class="text-danger">{{unassignIn.content}}</h5>
+                <h5>Do you still want to Proceed ?</h5>
+            <button (click)="unassignNxtStep()">Yes</button>
+            <button class="no" (click)="activeModal.close('Close click')">No</button>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Un-Assigned Units -->
+
+
+<!-- filter dialog  -->
+
+<div *ngIf="filterDataIp?.dialogType=='filterDialog'">
+    <div class="modal-header filter-header border-0">
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true">
+                <img src="/assets/img/project/cross.png">
+            </span>
+        </span>
+        <div class="row">
+            <div class="col-lg-5 d-flex">
+                <div class="filter-img-view">
+                    <img src="{{filterDataIp?.res?.category_icon}}"/> <span> Add {{filterDataIp?.res?.category_name}}</span>
+                </div>
+                <div class="inspirations-img-view" *ngIf="imgUrl">
+                    <img class="img-thumbnail" src="{{imgUrl}}"/>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="row filter-row">
+                    <div class="col-lg-8 filter-border">
+                        <div>
+                            <ul class="filter-radio-list">
+                                <li>
+                                    <input type="radio" name="group1" [checked]="clientFilter == 'all' ? true : false" (change)="selectedOption('all')"> <span>All</span>
+                                </li>
+                                <li *ngIf="filterDataIp?.swapId">
+                                    <input type="radio" name="group1" [checked]="clientFilter == '' ? true : false"> <span>RA</span>
+                                </li>
+                                <!-- <li *ngIf="filterDataIp?.swapId">
+                                    <input type="radio" name="group1" [checked]="clientFilter == 'RA' ? true : false" (change)="selectedOption('RA')"> <span>RA</span>
+                                </li> -->
+                                <li>
+                                    <input type="radio" name="group1" [checked]="clientFilter == 'project' ? true : false" (change)="selectedOption('project')"> <span>Added to Earlier Projects</span>
+                                </li>
+                                <li>
+                                    <input type="radio" name="group1" [checked]="clientFilter == 'inspiration' ? true : false" (change)="selectedOption('inspiration')"><span> Link for Inspirations</span>
+                                </li>
+                            </ul>
+                            <ul class="blue-list">
+                                <li>
+                                    <input type="radio" name="group1" [checked]="clientFilter == 'blueSku' ? true : false"  (change)="selectedOption('blueSku')"><span> Blue SKU's</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="row blue-sku-row" *ngIf="clientFilter=='project'">
+                            <div class="col-lg-8 p-0">
+                                <select class="w-100 custom-selection-option newList" [(ngModel)]="clientNameValue" (change)="onChange($event,'clientName')">
+                                    <option value="" disabled selected>Select a Client Name
+                                    </option>
+                                    <option value="">All</option>
+                                    <option  value="{{client}}" *ngFor="let client of filterInfo?.item_data?.client_name">{{client}}</option>
+                                </select>
+                            </div>    
+                        </div>
+                        <div class="row blue-sku-row" *ngIf="clientFilter=='inspiration'">
+                            <div class="col-lg-12 p-0">
+                                <div class="d-flex">
+                                    <div class="inspirations-view">
+                                        <input type="file" id="img" (change)="onChange($event,'file')"  style="display:none;" name="avatar" accept="image/png, image/jpeg">
+                                        <label for="img"><img src="/assets/img/project/file-icon.png">{{this.fileElement?.name ? this.fileElement?.name : 'Choose File'}} </label>
+                                    </div>
+                                    <button [disabled]="isLoading" class="upload-button" (click)="uploadImage()">Upload Image</button>
+                                </div>
+                            </div>    
+                        </div>
+                        <div class="row clent-name1" *ngIf="clientFilter=='filter'">
+                            <!-- Design Type -->
+                            <div class="col-lg-5">
+                                <div class="dollar-symbol">
+                                    <label for="mbName" class="control-label pl-2 m-0">Supplier({{filterInfo?.suppliers?.length}})</label>
+                                    <ng-multiselect-dropdown (onSelect)="supplierSelect($event)"  (onDeSelect)="supplierDeSelect($event)"
+                                    [settings]="supplierListSettings" 
+                                    [data]="filterInfo?.suppliers" class="popup-ngselect newList"
+                                    >
+                                </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                
+                            <div class="col-lg-5">
+                                <div class="dollar-symbol">
+                                    <label for="mbName" class="control-label pl-2 m-0">Design Type</label>
+                                    <ng-multiselect-dropdown (onSelect)="onDesignSelect($event)"  (onDeSelect)="onDesignDeSelect($event)"
+                                    [settings]="designTypeSettings" 
+                                    [data]="filterInfo?.design_type" class="popup-ngselect newList"
+                                    >
+                                </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row blue-sku-row" *ngIf="clientFilter=='blueSku'">
+                            <div class="col-lg-8 p-0">
+                                <select class="w-100 custom-selection-option newList" [(ngModel)]="blueSkuValue" (change)="onChange($event,'blueSKu')">
+                                    <option value="" disabled selected>Sku Segments
+                                    </option>
+                                    <!-- <option value="">All</option> -->
+                                    <option  value="{{blue?.sgid}}" *ngFor="let blue of blueSKu">{{blue?.name}}</option>
+                                </select>
+                            </div>    
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="filter-search-view">
+                            <span>
+                                <i aria-hidden="true" class="fa fa-search"></i>
+                            </span>
+                            <input type="text" placeholder="Search Products" class="form-control input-view">
+                        </div>
+                        <div class="pt-3 text-center">
+                            <b>ALL</b><label class="switch">
+                                <input type="checkbox" [checked]="clientFilter == 'filter' ? true : false" (change)="checkCheckBoxvalue($event)">
+                                <span class="slider round"></span>
+                            </label><b>FILTER</b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body configuremoodboard-popup-body">
+        <div class="showing-products">
+            <p> Showing {{filterInfo?.product?.length}} of {{filterInfo?.total_products}} {{filterDataIp?.res?.category_name}} </p>
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="popup-moodboard-list">
+                    <h6>Rent Budget:</h6>
+                    <span class="rent_budget">
+                        <span class="ml-1 fa fa-minus pointer" (click)="itemchange(filterInfo?.item_data,'-')"></span>
+                        <span class="inc"><input (change)="itemchange($event,'all')" value="{{filterInfo?.item_data?.item_rent_per_month}}"></span>
+                        <span class="mr-1 fa fa-plus pointer" (click)="itemchange(filterInfo?.item_data,'+')"></span>
+                    </span>
+                </div>
+                <div class="popup-moodboard-list">
+                    <h6>Item Asset Value per Qty:</h6>
+                    <p>{{filterInfo?.item_data?.item_asset_value}}</p>
+                </div>
+                <div class="popup-moodboard-list">
+                    <h6>Item Asset Value Range:</h6>
+                    <p>{{filterInfo?.item_data?.asset_value_range}}</p>
+                </div>
+                <div class="popup-moodboard-list mt-4" *ngIf="filterInfo?.item_data?.size?.length">
+                    <p class="m-0">
+                        <b>Filters</b>
+                    </p>
+                    <hr style="margin: 7px 12px 16px 0px">
+                    <p class="m-0">Size</p>
+                    <div class="popup-moodboard-list-select">
+                        <select [(ngModel)]="sizeAttrId" (ngModelChange)="onChange($event ,'size')">
+                            <option value="" disabled selected>Select a Size</option>
+                            <option [ngValue]="">All</option>
+                            <option *ngFor="let size of filterInfo?.item_data?.size" [ngValue]="size?.sgid" >{{size?.attribute_value}}</option>
+                        </select>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-lg-10">
+                <div>
+                    <div class="row filter-scroll">
+                        <div class="col-lg-3 mb-3" *ngFor="let product of filterInfo?.product">
+                            <div class="card filter-custom-card">
+                                <img class="card-img-top" src="{{product?.image}}" alt="Card image cap">
+                                <div class="card-body p-0">
+                                    <p class="card-title text-center"><b>{{product?.ProductName}}</b></p>
+                                    <ul class="filter-card-list">
+                                        <li>Asset Value: ${{product?.AssetValue}}</li>
+                                        <li>Rent Price: ${{product?.RentPrice}}/mo</li>
+                                        <li>Buy Price: ${{product?.BuyPrice}}</li>
+                                        <li>Supplier Name: {{product?.SupplierName}}</li>
+                                        <li>Inventory Qty: {{product?.InventoryQty}}</li>
+                                        <li>Dimensions: {{product?.Dimension}}</li>
+                                    </ul>
+                                </div>
+                                <div class="custom-overlay"></div>
+                                <div class="custom-overlay-button">
+                                    <div class="add-button">
+                                        <button type="button" (click)="addItemsToMoodboard(product,'moodboard')">Add to Moodboard</button>
+                                    </div>
+                                    <div class="add-button" *ngIf="product?.dashboard_data_count > 0">
+                                        <button type="button" (click)="addItemsToMoodboard(product,'dashboard')">Dashboard Details View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 *ngIf="!filterInfo?.product?.length" class="mt-5"style="margin-left: 22rem!important">No result found based on given criteria</h6>
+                    </div>
+                    <div class="row" *ngIf="filterInfo?.total_products !==filterInfo?.product?.length">
+                        <div class="col-md-12 add-button text-center">
+                            <button (click)="loadMoreProducts()">Load More</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div *ngIf="inspResult?.length">
+                    <div class="row filter-scroll">
+                        <div class="col-lg-3" *ngFor="let insp of inspResult">
+                            <div class="custom-card">
+                                <div>
+                                    <img src="{{insp?.thumbnail}}"/>
+                                </div>
+                            </div>    
+                        </div>
+                    </div>
+                </div>     -->
+            </div>
+        </div>
+       
+    </div>
+</div>
+
+
+
+<!-- filter dialog  -->
+
+
+<!-- dashboard dailog -->
+<div *ngIf="dashboardDataIp?.dialogType=='dashboardDialog'">
+    <div class="modal-header filter-header border-0">
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true">
+                <img src="/assets/img/project/cross.png">
+            </span>
+        </span>
+        <div class="row">
+            <div class="col-lg-12 d-flex dashboard">
+                <div class="filter-img-view">
+                    <img src="{{dashboardDataIp?.res?.productDetail?.image}}"/> 
+                    <span>{{dashboardDataIp?.res?.productDetail?.product_name}} 
+                        (SKU: {{dashboardDataIp?.res?.productDetail?.product_sku}}
+                        Asset Value: {{dashboardDataIp?.res?.productDetail?.asset_value}}
+                        No. of Time Used In Units: {{dashboardDataIp?.res?.productDetail?.used_in_unit}}
+                        No. of Times Used In Orders:  {{dashboardDataIp?.res?.productDetail?.used_in_order}}  ) </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+        <table class="detailspopup-table table-responsive">
+            <thead>
+                <tr>
+                <th>Project Name</th>
+                <th>Location </th>
+                <th>Order Date</th>
+                <th>Item Rent Amount</th>
+                <th>Item Asset Value</th>
+                <th>Unit Rent Amount</th>
+                <th>Unit Buy Amount</th>
+                <th>Unit Qty</th>
+                <th>Order Rent Amount</th>
+                <th>Order Buy Amount</th>
+                <th>Order Qty</th>    
+                <th>Client Name</th>
+                <th style="width: 20%;">Order Number </th> 
+                </tr>
+                
+            </thead>
+            <tbody style="word-break: break-all;">
+                <tr *ngFor="let skuDetails of dashboardDataIp?.res?.skuDetail">
+                    <td style="word-break: break-all;">{{skuDetails?.project_name ? skuDetails?.project_name : '-'}}</td>
+                    <td>{{skuDetails?.location}}</td>
+                    <td>{{skuDetails?.order_date}}</td> 
+                    <td>${{skuDetails?.sale_price | number: '1.0-0'}}</td> 
+                    <td>${{skuDetails?.asset_value | number: '1.0-0'}}</td> 
+                    <td>
+                        {{skuDetails?.unit_rent_amount < 0 ? '-':''}} ${{(skuDetails?.unit_rent_amount+'').replace('-','') | number: '1.0-0'}}
+                    </td>
+                    <td>${{skuDetails?.unit_buy_amount | number: '1.0-0'}}</td>
+                    <td>{{skuDetails?.unit_total_qty}}</td>
+                    <td>${{skuDetails?.order_rent_amount | number: '1.0-0'}}</td>
+                    <td>${{skuDetails?.order_buy_amount | number: '1.0-0'}}</td>
+                    <td>{{skuDetails?.order_total_qty}}</td>
+                    <td>{{skuDetails?.client_name}}</td>
+                    <td style="width: 20%;">{{skuDetails?.order_reference}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-center">
+            <div class="add-button">
+                <button type="button" (click)="backToDashboardPopup()">Back</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- dashboard dailog -->

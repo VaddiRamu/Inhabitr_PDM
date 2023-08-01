@@ -1,0 +1,20 @@
+.container-fluid {
+    max-width: 700px;
+}
+/* .card-header:first-child {
+    border-bottom: 2px solid;
+    border-bottom-color: #ffc107;
+} */
+.form-control {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+}
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: none !important;
+    outline: 0;
+    box-shadow: none !important;
+    border-bottom: 2px solid #ffc107;
+}

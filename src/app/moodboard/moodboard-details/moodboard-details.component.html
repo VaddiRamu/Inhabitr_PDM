@@ -1,0 +1,2626 @@
+<ng-template #createQuotes let-modal>
+  <div class="modal-header prod-modal">
+    <h4 class="modal-title font12" id="modal-basic-title">Create New Quotes</h4>
+    <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </span>
+  </div>
+  <div class="modal-body lightbg">
+    <app-modal-form aria-label="Close" (OnSubmit)="modal.dismiss('Cross click')"></app-modal-form>
+  </div>
+</ng-template>
+
+<ng-template #detailsmodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title font12" id="modal-basic-title">
+      {{ productName }} - {{ productId }}
+    </h4>
+    <span class="close pointer" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </span>
+  </div>
+  <div class="modal-body lightbg">
+    <div class="container-fluid">
+      <div class="row d-flex">
+        <div class="col-sm-6 col-md-5 col">
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="row">
+                <div class="bg-white overflow-img">
+                  <!-- <pre> {{ variationImages | json }} </pre> -->
+                  <div *ngFor="let image of variationImages; let i = index" class="m-2">
+                    <div class="card" style="border: none">
+                      <img [ngClass]="{'my_class': skunumberarray === i}"
+                        class="img-thumbnail"
+                        (click)="activeImage(i)"
+                        src="{{ image?.default_images[0]?.image_url?.large }}"
+                      />
+                      <div class="card-body p-0">
+                        <p class="text-center mb-0">{{ image.inhabitr_sku }}</p>
+                        <p class="mb-0">
+                          <span class="text-left mr-2">
+                            <!-- <ng-container *ngFor="let inv of image.warehouse_location_new;">
+                                      <span>
+                                          I - {{ inv.non_assigned_inv }}
+                                      </span>
+                                  </ng-container> -->
+    
+                            <span>
+                              I - {{ sumTotal(image.warehouse_location_new) }}
+                            </span>
+                          </span>
+                          <span class="text-right">S -
+                            {{
+                            sumSUpplierTotal(image.warehouse_location_new)
+                            }}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-8 bg-white">
+              <div class="card rounded border-0">
+                <div class="card-image clearfix text-center py-3">
+                  <img src="{{ displayImage }}" alt="{{ productName }}" style="height: 300px" title="{{ productName }}"
+                    class="img_prodinfo-width" />
+                </div>
+              </div>
+            </div>
+          </div>
+         
+          <div class="row mt-3 bg-white">
+            <div class="overflow-img">
+                <div *ngFor='let image of defaultImages;  let i = index' class="m-2">
+                    <div class="card" style="border: none;">
+                        <img class="img-thumbnail" (click)="activeImage1(i)"
+                            src="{{image?.image_url?.large}}">
+                        <div class="card-body p-0">
+                            <p class="text-center mb-0">{{image.inhabitr_sku}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+         
+          <div class="text-center mt-2">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="row pl-3" style="text-align: left; padding: 10px 0px">
+                  <div class="col-md-12" style="padding-left: 0px">
+                    <span *ngIf="categoryname !== 'Virtual Product' && btnType1 == 0">
+                      <input type="radio" name="type" id="rent" value="0" [(ngModel)]="btnType1" />
+                      <span class="pl-2">Rent</span>
+                    </span>
+                    <span class="pl-5" *ngIf="btnType1 == 1">
+                      <input type="radio" name="type" class="" id="buy" value="1" [(ngModel)]="btnType1" />
+                      <span class="pl-2">Buy</span>
+                    </span>
+
+                    <!-- ================================ -->
+                    <span *ngIf=" btnType1 == 2">
+                      <input type="radio" name="type1" id="rent" value="0" [(ngModel)]="btnType12" />
+                      <span class="pl-2">Rent</span>
+
+                      <span class="pl-5">
+                        <input type="radio" name="type1" class="" id="buy" value="1" [(ngModel)]="btnType12" />
+                        <span class="pl-2">Buy</span>
+                      </span>
+                    </span>
+
+                    <span class="pl-5">
+                      <span class="pl-2">Qty:</span>
+                      <span class="pl-2 cursor-pointer" (click)="decreaseQty()">-</span>
+                      <span class="pl-2">{{ commonQty }}</span>
+                      <span class="pl-2 cursor-pointer" (click)="increaseQty()">+</span>
+                      <input type="hidden" name="commonQty" id="commonQty" value="{{ commonQty }}" />
+                    </span>
+                  </div>
+                </div>
+                <!-- <h6 class="text-center ">Available SKUs</h6>
+                <div class="col-md-7 float-left">
+                  <select style="width: 200px;margin: auto;" name="" class="form-control" id=""
+                    [(ngModel)]="skunumberarray" (change)="activeImage($event.target.value)">
+                    <option *ngFor="let item of variationImages; let i = index" value="{{i}}">
+                      <span *ngIf="item.is_ops_db===true">{{item.inhabitr_sku}}</span>
+                    </option>
+                  </select>
+                </div> -->
+                <!-- <div class="col-md-5 float-left">
+                  <label for="Qty" class="text-left float-left pr-2">Qty:</label>
+                  <select class="w-80 pr-5 pb-1 rounded float-left" name="moodboard_qty" id="moodboard_qty">
+                      <option value="1" selected>1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                      <option value="13">13</option>
+                      <option value="14">14</option>
+                      <option value="15">15</option>
+                  </select>
+                </div> -->
+              </div>
+            </div>
+
+            <br />
+            <!-- <h6 class="text-center ">Add SKU {{skunumber}} to {{moodboardname}} Moodboard</h6> -->
+            <input hidden style="width: 200px; margin: auto" type="text" readonly class="form-control"
+              [(ngModel)]="skunumber" />
+            <button href="javascript:void(0)" data-bs-dismiss="modal" class="add-floor-link btn add-btn" (click)="hybrid()">
+              Add to Moodboard
+            </button>
+            <!-- <p style="margin-top: 10px;" *ngIf="!showAuth">Product sku can be added to your owned moodboard</p> -->
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-7 col">
+          <div class="p-3 bg-white">
+            <!-- <table class="table tablee border-none m-0 p-0">
+            <tbody>
+                <tr>
+                    <td>Product Name: </td>
+                    <td  class="font-weight-bold">{{productName}}</td>
+                </tr>
+                <tr>
+                    <td>Supplier Name:</td>
+                    <td  class="font-weight-bold">{{supplierName}}</td>
+                </tr>
+                <tr>
+                    <td>Supplier Price:</td>
+                    <td  class="font-weight-bold" *ngIf='!(supplierPrice == null)'>{{ supplierPrice | currency }}</td>
+                    <td  class="font-weight-bold" *ngIf='(supplierPrice == null)'>-</td>
+                </tr>
+                <tr>
+                    <td>Category:</td>
+                    <td  class="font-weight-bold">{{categoryname}}</td>
+                </tr>
+                <tr>
+                    <td>Inhabitr Asset Price:</td>
+                    <td  class="font-weight-bold">{{inhabitrPrice | currency}}</td>
+                    <td>Rent Price/{{12}} month:</td>
+                    <td  class="font-weight-bold">{{rentPrice | currency}}</td>
+                </tr>
+                <tr>
+                    <td>Warehouse Location:</td>
+                    <td  class="font-weight-bold">{{warehouseLocation}}</td>
+                </tr>
+                <tr>
+                    <td>Inventory Qty: </td>
+                    <td  class="font-weight-bold"><span *ngIf="is_inventoryCount==0">{{quantity}}</span><span *ngIf="is_inventoryCount==1">{{invQuantity}}</span></td>
+                </tr>
+                <tr>
+                    <td>Source Type:</td>
+                    <td  class="font-weight-bold">{{sourcetype }}</td>
+                </tr>
+                <tr>
+                    <td>Supplier SKU#:</td>
+                    <td  class="font-weight-bold">{{supplierSKU}}</td>
+                </tr>
+                <tr>
+                    <td>Inhabitr SKU# </td>
+                    <td  class="font-weight-bold">{{inhabitrSKU}}</td>
+                </tr>
+
+            </tbody>
+        </table> -->
+            <table class="table border-none m-0">
+              <tbody>
+                <tr>
+                  <td>Product Name:</td>
+                  <td class="font-weight-bold">{{ productName }}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>{{ attribute }}</td>
+                </tr>
+                <tr>
+                  <td>Supplier Name:</td>
+                  <td class="font-weight-bold">
+                    {{ supplierName | titlecase }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Category:</td>
+                  <td class="font-weight-bold">
+                    {{ categoryname }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Asset Price:</td>
+                  <td class="font-weight-bold">
+                    {{ inhabitrPrice | currency }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Buy Price</td>
+                  <td class="font-weight-bold">
+                    {{ buyPrice | currency }}
+                  </td>
+                  <!-- <span class="font-weight-bold" style="margin-left: 15px;">{{buyPrice | currency}}</span> -->
+                </tr>
+                <tr>
+                  <td>Buy Used Price</td>
+                  <td class="font-weight-bold">
+                    {{ buyUsedPrice | currency }}
+                  </td>
+                  <!-- <span class="font-weight-bold" style="margin-left: 15px;">{{buyPrice | currency}}</span> -->
+                </tr>
+                <tr>
+                  <td style="width: 200px">Rent Price/{{ 12 }} month:</td>
+                  <td class="font-weight-bold">{{ rentPrice | currency }}</td>
+                </tr>
+                <tr>
+                  <td>Rent Duration:</td>
+                  <td class="font-weight-bold" style="width: 200px">
+                    <div class="range-slider">
+                      <!-- <label class="rentDuration" style="margin-left:-30%"> <b style="margin-left: -81px;">Rent
+                          Duration:</b></label> -->
+                      <input class="range-slider__range" type="range" value="12" min="1" max="36"
+                        (change)="updateRent($event)" />
+                      <span class="range-slider__value">{{ monthNums }}</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <table border="1" style="
+                        width: 100%;
+                        margin-top: 11px;
+                        font-size: 13px;
+                        margin-bottom: 11px;
+                      ">
+                      <thead>
+                        <tr>
+                          <th><span>Warehouse</span></th>
+                          <th style="white-space: nowrap">
+                            Inventory
+                            <i style="margin-left: 25px; cursor: pointer" (click)="getInventeryqty()"
+                              class="fa fa-refresh" aria-hidden="true"></i>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody *ngFor="let prod of warehouseLocations; let i = index">
+                        <tr *ngIf="prod.is_inhabitr_warehouse == 'Y'">
+                          <td style="white-space: nowrap">
+                            <span>
+                              <!-- <span
+                                            *ngIf="prod.is_inhabitr_warehouse=='N'">Inhabitr Storage</span> -->
+                              <span *ngIf="prod.is_inhabitr_warehouse == 'Y'">{{
+                                prod.warehouse_name | titlecase
+                                }}</span>
+                            </span>
+                          </td>
+                          <td>
+                            <div>
+                              <span (mouseover)="
+                                  invpopupModelShow(prod.warehouse_id)
+                                " (mouseout)="invpopupModelHide()">
+                                <u style="cursor: pointer">{{
+                                  prod.non_assigned_inv
+                                  ? prod.non_assigned_inv
+                                  : 0
+                                  }}</u>
+                              </span>
+                              <!-- <span
+                                            *ngIf="is_inventoryCount===1"
+                                            (mouseover)="invpopupModelShow()"
+                                            (mouseout)="invpopupModelHide()">{{TotalInv}}</span> -->
+                            </div>
+                          </td>
+                        </tr>
+                        <tr *ngIf="prod.is_inhabitr_warehouse == 'N'">
+                          <td>
+                            <span style="white-space: nowrap">
+                              <!-- <span
+                                        *ngIf="prod.is_inhabitr_warehouse=='Y'">Storage</span> -->
+                              <span *ngIf="prod.is_inhabitr_warehouse == 'N'">{{
+                                prod.warehouse_name | titlecase
+                                }}</span>
+                            </span>
+                          </td>
+                          <td>
+                            <span (mouseover)="invpopupModelShow(prod.warehouse_id)" (mouseout)="invpopupModelHide()">{{
+                              prod.supplier_quantity
+                              ? prod.supplier_quantity
+                              : 0
+                              }}</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tr>
+                        <td><b>Total</b></td>
+                        <td>{{ totalQtyOfSku }}</td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td>
+                    <div class="tooltiptext" id="invpopup">
+                      <table border="1" style="
+                          width: 100%;
+                          margin-top: 11px;
+                          font-size: 13px;
+                          margin-bottom: 11px;
+                        ">
+                        <tr>
+                          <td style="width: 50%">Assigned Inv:</td>
+                          <td class="font-weight-bold">
+                            <span>{{ AssignedInv }}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Unassigned Inv:</td>
+                          <td class="font-weight-bold">
+                            <!-- <span *ngIf="is_inventoryCount==0">{{unassignedquantity}}</span> -->
+                            <span>{{ invQuantity }}</span>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>B2B Storage:</td>
+                          <td class="font-weight-bold">
+                            <span>{{ B2bstorage }}</span>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Source Type:</td>
+                  <td class="font-weight-bold">{{ sourcetype }}</td>
+                </tr>
+                <tr>
+                  <td>Supplier SKU:</td>
+                  <td class="font-weight-bold">
+                    {{ supplierSKU | uppercase }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Inhabitr SKU:</td>
+                  <td class="font-weight-bold">
+                    {{ inhabitrSKU | uppercase }}
+                  </td>
+                </tr>
+                <tr>
+                  <td *ngIf="isOPsDb">Last updated in Ops:</td>
+                  <td class="font-weight-bold" *ngIf="isOPsDb">
+                    {{ updateOps | date: "MM-dd-yy" }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="accordion mt-2" id="accordionExample">
+            <div class="card border-0">
+              <div class="card-header border-0 bg-white" id="headingOne" data-toggle="collapse"
+                data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <h2 class="mb-0">
+                  <button class="btn acc-dropdown bg-white desc" type="button">
+                    Description
+                  </button>
+                </h2>
+              </div>
+
+              <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                  <p>{{ description }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion mt-2" id="accordionExample2">
+            <div class="card border-0">
+              <div class="card-header border-0 bg-white" id="heading2" data-toggle="collapse" data-target="#collapse2"
+                aria-expanded="true" aria-controls="collapse2">
+                <h2 class="mb-0">
+                  <button class="btn acc-dropdown desc" type="button">
+                    Features
+                  </button>
+                </h2>
+              </div>
+
+              <div id="collapse2" class="collapse" aria-labelledby="heading2" data-parent="#accordionExample2">
+                <div class="card-body">
+                  <p>{{ features }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<div class="modal" id="floorPlanModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="">Add Floor Plans</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row d-flex justify-content-around mt-0 pb-2">
+            <div class="col-6 control-label mt-2 text-dark">
+              <span class="">Floor Plan Name*</span>
+            </div>
+            <div class="col-6 pr-0 text-right">
+              <input type="text" class="form-control float-right rounded-0" [(ngModel)]="floorPlanName" />
+            </div>
+          </div>
+          <div class="row d-flex justify-content-around mt-0 pb-2">
+            <div class="col-6 control-label mt-2 text-dark">
+              <span class="">Floor Plan Types</span>
+            </div>
+            <div class="col-6 pr-0 text-right">
+              <div class="dropdown text-center position-relative">
+                <button class="
+                    btn btn-white
+                    dropdown-toggle
+                    custom-toggle
+                    border
+                    position-relative
+                    w-100
+                    text-left
+                    rounded-0
+                  " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
+                  {{ selectedFloorPlanType}}
+                </button>
+                <div class="dropdown-menu" style="width: 70%" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" *ngFor="let floor of floorTypesList" (click)="selectFloorTypes(floor)"
+                    href="javascript:void(0)">
+                    {{ floor.name }}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-around mt-0 pb-2">
+            <div class="col-6 control-label mt-2 text-dark">
+              <span class="">No. of Units*</span>
+            </div>
+            <div class="col-6 pr-0 text-right">
+              <input type="number" class="form-control float-right rounded-0" id="" [(ngModel)]="floorPlanUnit" />
+            </div>
+          </div>
+
+          <div class="row d-flex justify-content-center mt-0 pb-2">
+            <div>
+              <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn" data-dismiss="modal"
+                [disabled]="!floorPlanName && !floorPlanUnit" (click)="addFloorPlans()">
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal" id="productmodal" tabindex="-1" role="dialog" aria-labelledby="productmodal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title font12" id="modal-basic-title">
+          {{ productName }} - {{ productId }}
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body lightbg">
+        <div class="container-fluid">
+          <div class="row d-flex">
+            <div class="col-sm-5 col-md-5 col">
+              <div class="card rounded border-0 ml-2">
+                <div class="card-image clearfix text-center">
+                  <img src="{{ displayImage }}" alt="{{ productName }}" style="height: 147px" title="{{ productName }}"
+                    class="img_prodinfo-width" />
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-7 col-md-7 col">
+              <div class="p-3 bg-white">
+                <table class="table border-none m-0">
+                  <tbody>
+                    <tr>
+                      <td>Product Name:</td>
+                      <td class="font-weight-bold">{{ productName }}</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <div [ngStyle]="{
+                            'overflow-x':
+                              multipleskuattribute == '' ? 'auto' : 'none',
+                            height: multipleskuattribute == '' ? '0px' : '93px'
+                          }">
+                          {{ multipleskuattribute }}
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>Supplier Asset Price:</td>
+
+                      <td class="font-weight-bold">
+                        {{ supplierPrice | currency }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Inhabitr Asset Price:</td>
+                      <td class="font-weight-bold">
+                        {{ inhabitrPrice | currency }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Buy Price</td>
+                      <td class="font-weight-bold">
+                        {{ buyPrice | currency }}
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>Inhabitr Warehouse Location:</td>
+                      <td class="font-weight-bold">
+                        <span *ngIf="sourcetype !== 'API'">{{
+                          warehouseLocation
+                          }}</span>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>Supplier Inv Qty:</td>
+                      <td class="font-weight-bold">
+                        <span>{{ SupplierInv ? SupplierInv : 0 }}</span>
+
+                        <!-- <span *ngIf="is_inventoryCount==0 ">{{quantity}}</span>
+                        <span *ngIf="sourcetype==='API'">{{invQuantity}}</span>
+                    <span *ngIf="is_inventoryCount==1 && sourcetype!=='API'">{{invQuantity}}</span> -->
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Inhabitr Inv Qty:</td>
+                      <td class="font-weight-bold">
+                        <span>{{ TotalInv ? TotalInv : 0 }}</span>
+                        <!-- <span *ngIf="is_inventoryCount==0 ">{{quantity}}</span>
+                        <span *ngIf="sourcetype==='API'">{{invQuantity}}</span>
+                    <span *ngIf="is_inventoryCount==1 && sourcetype!=='API'">{{invQuantity}}</span> -->
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Supplier SKU:</td>
+                      <td class="font-weight-bold">
+                        {{ supplierSKU | uppercase }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Inhabitr SKU:</td>
+                      <td class="font-weight-bold">
+                        {{ inhabitrSKU | uppercase }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row d-flex justify-content-center mt-0 pb-2">
+              <div style="display: flex; margin-left: 40px">
+                <button *ngIf="showAuth" type="button" class="btn btn-sm btn-success font12 p-0 m-1 px-1 btn-grey"
+                  (click)="addtoMoodboard(productid)">
+                  <i class="fa fa-plus"></i>
+                </button>
+                <a (click)="getItem(productid, detailsmodal)" class="pointer" style="
+                    text-decoration: underline;
+                    color: #007bff;
+                    margin-left: 106px;
+                  " data-dismiss="modal">Click for more details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="mbModalFloor" tabindex="-1" role="dialog" aria-labelledby="unitModalFloorLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 750px" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="">Add {{ modalTitle }}</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row d-flex justify-content-around mt-0 pb-2">
+            <div class="col-4 control-label mt-2 text-dark">
+              <label for="radio-2" class="radio-button-click-target modalLabel">
+                Select FloorPlan
+              </label>
+            </div>
+            <div class="col-6 pr-0 text-right">
+              <div class="dropdown text-center position-relative">
+                <button class="
+                    btn btn-white
+                    dropdown-toggle
+                    custom-toggle
+                    border
+                    position-relative
+                    text-left
+                    rounded-0
+                    dropdownMenuButton1
+                  " type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
+                  {{ selectedFloorPlan }}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <a class="dropdown-item" *ngFor="let fType of floorPlanList" (click)="selectFloorType(fType)"
+                    href="javascript:void(0)">{{ fType.floorname }}</a>
+                </div>
+              </div>
+            </div>
+            <div class="row radio-btn">
+              <input type="radio" name="optradio" id="radio-21" value="1" class="radio-button" (click)="isAllUnit(1)" />
+              <label for="radio-21" class="radio-button-click-target radio-btn-lbl">
+                <span class="radio-button-circle"></span>All Units
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              </label>
+              <input type="radio" name="optradio" id="radio-31" class="radio-button" value="0" (click)="isAllUnit(0)" />
+              <label for="radio-31" class="radio-button-click-target">
+                <span class="radio-button-circle"></span>Selected Unit
+              </label>
+            </div>
+            <div class="col-12">
+              <div class="row d-flex justify-content-start p-2">
+                <div *ngFor="let unit of fpUnitList" [ngClass]="{ 'allow-click': isSelectedAll ? true : false }"
+                  (click)="selectUnitsForPlans(unit)" class="
+                    px-3
+                    py-2
+                    mx-1
+                    my-1
+                    border
+                    position-relative
+                    add-unit-mb
+                  ">
+                  U{{ unit.unit }}
+                  <span aria-hidden="true" [ngClass]="{ 'fa-check': unit.isActive ? true : false }"
+                    class="px-2 pb-1 cross-close fa"></span>
+                </div>
+              </div>
+            </div>
+            <br />
+          </div>
+
+          <div class="row d-flex justify-content-center mt-0 pb-2">
+            <div>
+              <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn" data-dismiss="modal"
+                (click)="addmoodbaordinFloorPlan()">
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="container-fluid" *ngIf="isUnitTab">
+          <!-- <div class="col-12"  *ngIf="isUnitTab">
+                <div class="row d-flex justify-content-center " style="height:89px" *ngIf='nodatafoundUnit'>
+                    <div class="d-flex flex-column ml-2" *ngIf='nodatafoundUnit'>No Unit found. Please add Unit.</div>
+
+
+                </div>
+                <div class="row d-flex justify-content-start" >
+
+
+                    <div class="px-4 py-3 ml-2  mb-2 border unit-view"  *ngFor ='let unit of unitWOPlans'    (click)='selectUnitsWithoutFloorPlan(unit)' >U{{unit.unit}} <span  aria-hidden="true"  [ngClass]="{'fa-check':(unit.isActive) ? true : false}" class="fa-check px-2 pb-1 cross-close fa "></span></div>
+
+                </div>
+            </div> -->
+
+          <div class="col-12">
+            <div class="row d-flex justify-content-start p-2">
+              <div *ngFor="let unit of unitWOPlans" [ngClass]="{ 'allow-click': isUnitSelectedAll ? true : false }"
+                (click)="selectUnitsWithoutFloorPlan(unit)"
+                class="px-3 py-2 mx-1 my-1 border position-relative add-unit-mb">
+                U{{ unit.unit }}
+                <span aria-hidden="true" [ngClass]="{ 'fa-check': unit.isActive ? true : false }"
+                  class="px-2 pb-1 cross-close fa"></span>
+              </div>
+              <!--  <div *ngFor='let unit of fpUnitList' [ngClass]="{'allow-click': isUnitSelectedAll ? true : false}"   (click)='selectUnitsForPlans(unit)'    class="px-3 py-2 mx-1 my-1 border position-relative add-unit-mb">U{{unit.unit}} <span  aria-hidden="true"  [ngClass]="{'fa-check':(unit.isActive) ? true : false}" class="px-2 pb-1 cross-close fa "></span></div> -->
+            </div>
+          </div>
+          <br />
+
+          <div class="row radio-btn">
+            <input type="radio" name="optradio1" id="radiounit-1" value="1" class="radio-button"
+              (click)="isAllUnitWtihoutFP(1)" />
+            <label for="radiounit-1" class="radio-button-click-target radio-btn-lbl">
+              <span class="radio-button-circle"></span>All Units
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </label>
+            <input type="radio" name="optradio1" id="radiounit-2" class="radio-button" value="0"
+              (click)="isAllUnitWtihoutFP(0)" />
+            <label for="radiounit-2" class="radio-button-click-target">
+              <span class="radio-button-circle"></span>Selected Unit
+            </label>
+          </div>
+
+          <div class="row d-flex justify-content-center mt-0 pb-2">
+            <div>
+              <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn" data-dismiss="modal"
+                (click)="addwithoutFloorPlanUnits()">
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #addToQuote let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="">Add/Select Quote</h4>
+    <span class="close pointer" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </span>
+  </div>
+
+  <div class="row d-flex justify-content-around mt-0 p-3">
+    <div class="col-md-8 p-0 pull-left"> 
+      <div class="control-label text-dark"
+        (click)="createQuotesPopUp(createQuotes)">
+        <a class="underline mt-4" style="cursor:pointer;">
+          <img src="/assets/img/addButton.svg"></a>
+      </div>
+      <button class="
+                btn btn-white
+                dropdown-toggle
+                custom-toggle
+                border
+                position-relative
+                custom-toggle
+                text-left
+                dropdwon
+              " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">
+        <span *ngIf="quoteTypeId == 'NOT FOUND'">{{
+          quoteTypeName
+          }}</span>
+        <span *ngIf="quoteTypeId != 'NOT FOUND'">{{ quoteTypeId }}-{{ quoteTypeName }}</span>
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" *ngIf="isquote">
+        <a class="dropdown-item" *ngFor="let qType of quoteTypes" (click)="selectQuoteType(qType)"
+          href="javascript:void(0)">{{ qType.sgid }}-{{ qType.name }}</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12 float-left" style="margin-left: 364px">
+    <button type="button" *ngIf="floorPlanList?.length<=0" class="border btn btn-light px-3 mr-3 mb-3 btn-55"
+      data-toggle="modal" data-target="#floorPlanModel" (click)="modal.dismiss('Cross click')">Add to Quote</button>
+
+    <button *ngIf="floorPlanList?.length>0" class="border btn btn-light px-3 mr-3 mb-3 btn-55" data-toggle="modal"
+      data-target="#mbModalFloor" data-dismiss="modal" (click)="modal.dismiss('Cross click')">Add to Quote</button>
+  </div>
+</ng-template>
+
+<div class="moodboardPopup">
+  <ng-template #moodboardModal let-modal>
+    <div class="modal-header custom-modal-header">
+      <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'sort'">
+        Sort By
+      </h4>
+      <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'category'">
+        Categories
+      </h4>
+      <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'supplier'">
+        Suppliers
+      </h4>
+      <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'ware'">
+        Warehouse
+      </h4>
+      <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'price'">
+        Asset Price Range
+      </h4>
+      <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'inv'">
+        Inventory
+      </h4>
+      <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'loc'">
+        Location
+      </h4>
+      <h4 class="modal-title font14" id="modal-basic-title" *ngIf="modalVal === 'cityContent'">City</h4>
+      <h4 class="modal-title font14" id="modal-basic-title" *ngIf="modalVal === 'warehouseContent'">Warehouse</h4>
+      <h4 class="modal-title font12" id="modal-basic-title" *ngIf="modalVal === 'attributes' || modalVal === 'noAttr'">
+        Attributes
+      </h4>
+      <span>
+        <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </span>
+        <button data-toggle="tooltip" *ngIf="modalVal === 'inv'" [disabled]="assetInvStatus" data-placement="bottom"
+          title="Submit" type="button" class="btn btn-success mr-2 float-right"
+          (click)="checkFilter(); modal.dismiss('Cross click')">
+          Submit
+        </button>
+
+        <button data-toggle="tooltip" *ngIf="modalVal != 'price' && modalVal != 'inv' && modalVal !='cityContent' && modalVal !='warehouseContent'" data-placement="bottom"
+          title="Submit" type="button" class="btn btn-success mr-2 float-right"
+          (click)="checkFilter(); modal.dismiss('Cross click')">
+          Submit
+        </button>
+
+        <button data-toggle="tooltip" *ngIf="modalVal === 'price'" [disabled]="assetfilterstatus"
+          data-placement="bottom" title="Submit" type="button" class="btn btn-success mr-2 float-right"
+          (click)="checkFilter(); modal.dismiss('Cross click')">
+          Submit
+        </button>
+      </span>
+    </div>
+    <div class="modal-body">
+      <div class="row col-md-12" style="text-decoration: underline; color: #ffc000" *ngIf="modalVal === 'ware'">
+        <div class="col-md-6 pointer">
+          <h6 (click)="getWarehouse()">Delivery Partner Warehouse</h6>
+        </div>
+        <div class="col-md-6 pointer">
+          <h6 (click)="getSupplierPartner()">Supplier Partner Warehouses</h6>
+        </div>
+      </div>
+      <div class="dialogContent listOverFlow" *ngIf="modalVal === 'category'">
+        <ul ng-if="categories.length > 0" class="align-categories">
+          <div class="col-md-3">
+            <span *ngFor="
+                let category of categoryList | orderBy: 'name':false;
+                let i = index
+              ">
+              <li flex="100" *ngIf="i < 25">
+                <!-- <span> {{ category.name | titlecase }}</span> -->
+                <label class="category-container">{{ category.name | titlecase }}
+                  <input type="checkbox" (click)="getSelectedCategory(category, modalVal)"
+                    [attr.checked]="category.selected ? 'checked' : null" name="checkbox" />
+                  <span class="checkmark"></span>
+                  &nbsp;({{category?.count}})
+                </label>
+              </li>
+            </span>
+          </div>
+          <!-- <span (click)="filterItems(category, modalVal);modal.dismiss('Cross click')"> {{ category.name }}</span> -->
+          <div class="col-md-3">
+            <span *ngFor="let category of categoryList | orderBy: 'name':false;let i = index">
+              <li flex="100" *ngIf="i >= 25 && i < 50">
+                <!-- <span> {{ category.name | titlecase }}</span> -->
+                <label class="category-container">{{ category.name | titlecase }}
+                  <input type="checkbox" (click)="getSelectedCategory(category, modalVal)"
+                    [attr.checked]="category.selected ? 'checked' : null" name="checkbox" />
+                  <span class="checkmark"></span>
+                  &nbsp;({{category?.count}})
+                </label>
+              </li>
+            </span>
+          </div>
+          <div class="col-md-3">
+            <span *ngFor="
+                let category of categoryList | orderBy: 'name':false;
+                let i = index
+              ">
+              <li flex="100" *ngIf="
+              i >= 50 && i < 75
+                ">
+                <!-- <span> {{ category.name | titlecase }}</span> -->
+                <label class="category-container">{{ category.name | titlecase }}
+                  <input type="checkbox" (click)="getSelectedCategory(category, modalVal)"
+                    [attr.checked]="category.selected ? 'checked' : null" name="checkbox" />
+                  <span class="checkmark"></span>
+                  &nbsp;({{category?.count}})
+                </label>
+              </li>
+            </span>
+          </div>
+          <div class="col-md-3">
+            <span *ngFor="
+                let category of categoryList | orderBy: 'name':false;
+                let i = index
+              ">
+              <li flex="100" *ngIf="
+              i >= 75
+                ">
+                <!-- <span> {{ category.name | titlecase }}</span> -->
+                <label class="category-container">{{ category.name | titlecase }}
+                  <input type="checkbox" (click)="getSelectedCategory(category, modalVal)"
+                    [attr.checked]="category.selected ? 'checked' : null" name="checkbox" />
+                  <span class="checkmark"></span>
+                  &nbsp;({{category?.count}})
+                </label>
+              </li>
+            </span>
+          </div>
+        </ul>
+      </div>
+      <div *ngIf="modalVal === 'attributes'">
+        <ul ng-if="categories.length > 0" class="align-categories">
+          <div class="col-md-12">
+            <div *ngFor="let attribute of attributesLists; let i = index">
+              <li flex="100" *ngIf="i < 10" class="attrdisplay">
+                <!-- <div style="display: flex;"> -->
+
+                <label style="width: 110px">{{ attribute.name | titlecase }}
+                  <!-- <input type="checkbox" (click)="getSelectedCategory(attribute, modalVal);modal.dismiss('Cross click')"
+                    [attr.checked]="attribute.selected ? 'checked' : null" name="checkbox"> -->
+                  <!-- <span class="checkmark"></span> -->
+                </label>
+                <select class="form-control" style="
+                    width: calc(100% - 150px);
+                    display: inline-block;
+                    margin-bottom: 20px;
+                  " (change)="
+                    getSelectedattributes($event, attribute, modalVal, i)
+                  ">
+                  <option>-Select {{ attribute.name | titlecase }}-</option>
+                  <option *ngFor="let attr of attribute.attribute_list" [selected]="attr.selected == true"
+                    value="{{ attr.sgid }}@{{ attr.attribute_value }}">
+                    {{ attr.attribute_value }}
+                  </option>
+                </select>
+                <!-- </div> -->
+                <!-- <span (click)="filterItems(category, modalVal);modal.dismiss('Cross click')"> {{ category.name | titlecase }} ({{category.count}})</span> -->
+              </li>
+            </div>
+          </div>
+        </ul>
+      </div>
+      <div class="dialogContent listOverFlow" *ngIf="modalVal === 'supplier'">
+        <ul ng-if="categories.length > 0" class="align-categories">
+          <div class="col-md-3">
+            <!-- <span *ngFor="let sup of supplierList | orderBy: 'name':false;let i = index">
+              <li flex="100" *ngIf="i < supplierList.length / 4">
+                <label class="category-container">{{ sup.name | titlecase }}
+                  <input type="checkbox" (click)="getSelectedCategory(sup, modalVal)"
+                    [attr.checked]="sup.selected ? 'checked' : null" name="checkbox" />
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </span> -->
+            <ng-container *ngIf="!countOfCategorys?.length">
+               <span *ngFor="let sup of supplierList | orderBy: 'name':false;let i = index">
+              <li flex="100" *ngIf="i <13">
+                <label class="category-container">{{ sup.name | titlecase }}
+                  <input type="checkbox" (click)="getSelectedCategory(sup, modalVal)"
+                    [attr.checked]="sup.selected ? 'checked' : null" name="checkbox" />
+                  <span class="checkmark"></span>
+                  ({{sup.count}})
+                </label>
+              </li>
+            </span>
+            </ng-container>
+            <ng-container *ngIf="countOfCategorys?.length">
+              <span *ngFor="let sup of countOfCategorys | orderBy:'name':false; let i = index">
+                <li flex="100" *ngIf="i <13">
+                  <label class="category-container">{{sup?.supplier_name | titlecase }}
+                    <input type="checkbox" (click)="getSelectedCategory(sup, modalVal)"
+                      [attr.checked]="sup.selected ? 'checked': null" name="checkbox">
+                    <span class="checkmark"></span>
+                   ({{sup.total_product }})
+                  </label>
+                </li>
+              </span>
+            </ng-container>
+          </div>
+
+
+
+          <div class="col-md-3">
+            <!-- <span *ngFor="let sup of supplierList | orderBy: 'name':false;let i = index">
+              <li flex="100" *ngIf="i >= supplierList.length / 4 &&i < supplierList.length / 4 + supplierList.length / 4">
+                <label class="category-container">{{ sup.name | titlecase }}
+                  <input type="checkbox" (click)="getSelectedCategory(sup, modalVal)"
+                    [attr.checked]="sup.selected ? 'checked' : null" name="checkbox" />
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </span> -->
+            <ng-container *ngIf="!countOfCategorys?.length">
+              <span *ngFor="let sup of supplierList | orderBy: 'name':false;let i = index">
+             <li flex="100" *ngIf="i>=13 && i<26">
+               <label class="category-container">{{ sup.name | titlecase }}
+                 <input type="checkbox" (click)="getSelectedCategory(sup, modalVal)"
+                   [attr.checked]="sup.selected ? 'checked' : null" name="checkbox" />
+                 <span class="checkmark"></span>
+                 ({{sup.count}})
+               </label>
+             </li>
+           </span>
+           </ng-container>
+           <ng-container *ngIf="countOfCategorys?.length">
+             <span *ngFor="let sup of countOfCategorys | orderBy:'name':false; let i = index">
+               <li flex="100" *ngIf="i>=13 && i<26">
+                 <label class="category-container">{{sup?.supplier_name | titlecase }}
+                   <input type="checkbox" (click)="getSelectedCategory(sup, modalVal)"
+                     [attr.checked]="sup.selected ? 'checked': null" name="checkbox">
+                   <span class="checkmark"></span>
+                  ({{sup.total_product }})
+                 </label>
+               </li>
+             </span>
+           </ng-container>
+          </div>
+
+          <div class="col-md-3">
+            <!-- <span *ngFor="let sup of supplierList | orderBy: 'name':false;let i = index">
+              <li flex="100" *ngIf="i >= supplierList.length / 4 + supplierList.length / 4 &&i <supplierList.length / 4 +supplierList.length / 4 +supplierList.length / 4">
+                <label class="category-container">{{ sup.name | titlecase }}
+                  <input type="checkbox" (click)="getSelectedCategory(sup, modalVal)"
+                    [attr.checked]="sup.selected ? 'checked' : null" name="checkbox" />
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </span> -->
+            <ng-container *ngIf="!countOfCategorys?.length">
+              <span *ngFor="let sup of supplierList | orderBy: 'name':false;let i = index">
+             <li flex="100" *ngIf="i>=26 && i<39">
+               <label class="category-container">{{ sup.name | titlecase }}
+                 <input type="checkbox" (click)="getSelectedCategory(sup, modalVal)"
+                   [attr.checked]="sup.selected ? 'checked' : null" name="checkbox" />
+                 <span class="checkmark"></span>
+                 ({{sup.count}})
+               </label>
+             </li>
+           </span>
+           </ng-container>
+           <ng-container *ngIf="countOfCategorys?.length">
+             <span *ngFor="let sup of countOfCategorys | orderBy:'name':false; let i = index">
+               <li flex="100" *ngIf="i>=26 && i<39">
+                 <label class="category-container">{{sup?.supplier_name | titlecase }}
+                   <input type="checkbox" (click)="getSelectedCategory(sup, modalVal)"
+                     [attr.checked]="sup.selected ? 'checked': null" name="checkbox">
+                   <span class="checkmark"></span>
+                  ({{sup.total_product }})
+                 </label>
+               </li>
+             </span>
+           </ng-container>
+          </div>
+
+          <div class="col-md-3">
+            <ng-container *ngIf="!countOfCategorys?.length">
+              <span *ngFor="let sup of supplierList | orderBy: 'name':false;let i = index">
+             <li flex="100" *ngIf="i>=39">
+               <label class="category-container">{{ sup.name | titlecase }}
+                 <input type="checkbox" (click)="getSelectedCategory(sup, modalVal)"
+                   [attr.checked]="sup.selected ? 'checked' : null" name="checkbox" />
+                 <span class="checkmark"></span>
+                 ({{sup.count}})
+               </label>
+             </li>
+           </span>
+           </ng-container>
+           <ng-container *ngIf="countOfCategorys?.length">
+             <span *ngFor="let sup of countOfCategorys | orderBy:'name':false; let i = index">
+               <li flex="100" *ngIf="i>=39">
+                 <label class="category-container">{{sup?.supplier_name | titlecase }}
+                   <input type="checkbox" (click)="getSelectedCategory(sup, modalVal)"
+                     [attr.checked]="sup.selected ? 'checked': null" name="checkbox">
+                   <span class="checkmark"></span>
+                  ({{sup.total_product }})
+                 </label>
+               </li>
+             </span>
+           </ng-container>
+          </div>
+        </ul>
+      </div>
+      <div class="dialogContent listOverFlow" *ngIf="modalVal === 'ware'">
+        <div *ngIf="onlyWarehouseFlag && !supplierPartnerFlag">
+          <ul ng-if="categories.length > 0" class="align-categories">
+            <div class="col-md-3">
+              <span *ngFor="
+                  let ware of warehouseList | orderBy: 'warehouse_name':false;
+                  let i = index
+                ">
+                <li flex="100" *ngIf="i < warehouseList.length / 4">
+                  <!-- <span> {{ category.name | titlecase }}</span> -->
+                  <label class="category-container">{{ ware.warehouse_name | titlecase }}
+                    <input type="checkbox" (click)="getSelectedCategory(ware, modalVal)"
+                      [attr.checked]="ware.selected ? 'checked' : null" name="checkbox" />
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </span>
+            </div>
+            <div class="col-md-3">
+              <span *ngFor="
+                  let ware of warehouseList | orderBy: 'warehouse_name':false;
+                  let i = index
+                ">
+                <li flex="100" *ngIf="
+                    i >= warehouseList.length / 4 &&
+                    i < warehouseList.length / 4 + warehouseList.length / 4
+                  ">
+                  <!-- <span> {{ category.name | titlecase }}</span> -->
+                  <label class="category-container">{{ ware.warehouse_name | titlecase }}
+                    <input type="checkbox" (click)="getSelectedCategory(ware, modalVal)"
+                      [attr.checked]="ware.selected ? 'checked' : null" name="checkbox" />
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </span>
+            </div>
+            <div class="col-md-3">
+              <span *ngFor="
+                  let ware of warehouseList | orderBy: 'warehouse_name':false;
+                  let i = index
+                ">
+                <li flex="100" *ngIf="
+                    i >= warehouseList.length / 4 + warehouseList.length / 4 &&
+                    i <
+                      warehouseList.length / 4 +
+                        warehouseList.length / 4 +
+                        warehouseList.length / 4
+                  ">
+                  <!-- <span> {{ category.name | titlecase }}</span> -->
+                  <label class="category-container">{{ ware.warehouse_name | titlecase }}
+                    <input type="checkbox" (click)="getSelectedCategory(ware, modalVal)"
+                      [attr.checked]="ware.selected ? 'checked' : null" name="checkbox" />
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </span>
+            </div>
+            <div class="col-md-3">
+              <span *ngFor="
+                  let ware of warehouseList | orderBy: 'warehouse_name':false;
+                  let i = index
+                ">
+                <li flex="100" *ngIf="
+                    i >=
+                    warehouseList.length / 4 +
+                      warehouseList.length / 4 +
+                      warehouseList.length / 4
+                  ">
+                  <!-- <span> {{ category.name | titlecase }}</span> -->
+                  <label class="category-container">{{ ware.warehouse_name | titlecase }}
+                    <input type="checkbox" (click)="getSelectedCategory(ware, modalVal)"
+                      [attr.checked]="ware.selected ? 'checked' : null" name="checkbox" />
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </span>
+            </div>
+          </ul>
+        </div>
+        <div *ngIf="!onlyWarehouseFlag && supplierPartnerFlag">
+          <ul ng-if="categories.length > 0" class="align-categories">
+            <div class="col-md-3">
+              <span *ngFor="
+                  let ware of supplierPartnerList
+                    | orderBy: 'warehouse_name':false;
+                  let i = index
+                ">
+                <li flex="100" *ngIf="i < supplierPartnerList.length / 4">
+                  <!-- <span> {{ category.name | titlecase }}</span> -->
+                  <label class="category-container">{{ ware.warehouse_name | titlecase }}
+                    <input type="checkbox" (click)="getSelectedCategory(ware, modalVal)"
+                      [attr.checked]="ware.selected ? 'checked' : null" name="checkbox" />
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </span>
+            </div>
+            <div class="col-md-3">
+              <span *ngFor="
+                  let ware of supplierPartnerList
+                    | orderBy: 'warehouse_name':false;
+                  let i = index
+                ">
+                <li flex="100" *ngIf="
+                    i >= supplierPartnerList.length / 4 &&
+                    i <
+                      supplierPartnerList.length / 4 +
+                        supplierPartnerList.length / 4
+                  ">
+                  <!-- <span> {{ category.name | titlecase }}</span> -->
+                  <label class="category-container">{{ ware.warehouse_name | titlecase }}
+                    <input type="checkbox" (click)="getSelectedCategory(ware, modalVal)"
+                      [attr.checked]="ware.selected ? 'checked' : null" name="checkbox" />
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </span>
+            </div>
+            <div class="col-md-3">
+              <span *ngFor="
+                  let ware of supplierPartnerList
+                    | orderBy: 'warehouse_name':false;
+                  let i = index
+                ">
+                <li flex="100" *ngIf="
+                    i >=
+                      supplierPartnerList.length / 4 +
+                        supplierPartnerList.length / 4 &&
+                    i <
+                      supplierPartnerList.length / 4 +
+                        supplierPartnerList.length / 4 +
+                        supplierPartnerList.length / 4
+                  ">
+                  <!-- <span> {{ category.name | titlecase }}</span> -->
+                  <label class="category-container">{{ ware.warehouse_name | titlecase }}
+                    <input type="checkbox" (click)="getSelectedCategory(ware, modalVal)"
+                      [attr.checked]="ware.selected ? 'checked' : null" name="checkbox" />
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </span>
+            </div>
+            <div class="col-md-3">
+              <span *ngFor="
+                  let ware of supplierPartnerList
+                    | orderBy: 'warehouse_name':false;
+                  let i = index
+                ">
+                <li flex="100" *ngIf="
+                    i >=
+                    supplierPartnerList.length / 4 +
+                      supplierPartnerList.length / 4 +
+                      supplierPartnerList.length / 4
+                  ">
+                  <label class="category-container">{{ ware.warehouse_name | titlecase }}
+                    <input type="checkbox" (click)="getSelectedCategory(ware, modalVal)"
+                      [attr.checked]="ware.selected ? 'checked' : null" name="checkbox" />
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </span>
+            </div>
+          </ul>
+        </div>
+      </div>
+      <div class="dialogContent listOverFlow" *ngIf="modalVal === 'sort'">
+        <ul>
+          <li flex="100">
+            <span (click)="sortBy(true); modal.dismiss('Cross click')">Publish</span>
+          </li>
+          <li flex="100">
+            <span (click)="sortBy(false); modal.dismiss('Cross click')">Unpublish</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="dialogContent listOverFlow" *ngIf="modalVal === 'inv'">
+        <ul class="inv-block">
+          <div style="display: flex">
+            <div class="asset">
+              <label>Minimum Quantity</label> &nbsp;
+              <input type="text" class="form-control custom-form-control" (change)="MinvaluechanageInv($event)"
+                [(ngModel)]="selectedminvalInv" id="selectedminvalInv" />
+            </div>
+            <!-- <div class="asset" style="margin-left: 19px;" ><label>Max Value :</label>  &nbsp;
+            <input type="text" class="form-control" [(ngModel)]="selectedmaxvalInv" (change)="MaxvaluechanageInv($event)" id="selectedmaxvalInv">
+          </div> -->
+          </div>
+          <br />
+          <div style="text-align: center">
+            <ng-container *ngFor="let ina of inventoryAttr; let i = index">
+              <label class="label-custom">
+                <input type="radio" name="checkbox" id="{{ 'wave' + i }}" (click)="getInvSelect(ina, i)"
+                  [attr.disabled]="ina.disable ? 'disabled' : null" [attr.checked]="ina.selected ? 'checked' : null" />
+                &nbsp;{{ ina.DisplayName }} &nbsp;&nbsp;
+              </label>
+            </ng-container>
+          </div>
+        </ul>
+      </div>
+
+      <div class="dialogContent" *ngIf="modalVal === 'price'">
+        <ul>
+          <div style="display: flex">
+            <div class="asset">
+              <label>Min Value:&nbsp;&nbsp;$&nbsp;&nbsp;</label>
+              <input type="number" class="form-control" min="0"  id="selectedminval"
+              oninput="validity.valid||(value='')" /><!--(keyup)="Minvaluechanage($event)"-->
+            </div>
+            <div class="asset" style="margin-left: 19px">
+              <label>Max Value :&nbsp;&nbsp;$&nbsp;&nbsp;</label>
+              <input type="number" class="form-control" min="0" (keyup)="Maxvaluechanage($event)" id="selectedmaxval"
+              oninput="validity.valid||(value='')" />
+            </div>
+          </div>
+        </ul>
+      </div>
+
+      <div class="dialogContent listOverFlow" *ngIf="modalVal === 'loc'">
+        <ul ng-if="location.length > 0" class="align-categories">
+          <div class="col-md-3">
+            <span *ngFor="let loc of location | orderBy:'warehouse_name':false; let i = index">
+              <li flex="100" *ngIf="i < 10">
+                <label class="category-container">{{ loc.warehouse_name | titlecase }} 
+                  <input type="checkbox" (click)="getSelectedCategory(loc, modalVal);"
+                    [attr.checked]="loc.selected ? 'checked' : null" name="checkbox">
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </span>
+          </div>
+          
+          <div class="col-md-3">
+            <span *ngFor="let loc of location | orderBy:'warehouse_name':false; let i = index">
+              <li flex="100" *ngIf="i >= 10 && i < 20">
+                <label class="category-container">{{ loc.warehouse_name | titlecase }} 
+                  <input type="checkbox" (click)="getSelectedCategory(loc, modalVal);"
+                    [attr.checked]="loc.selected ? 'checked' : null" name="checkbox">
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </span>
+          </div>
+      
+      
+          <div class="col-md-3">
+            <span *ngFor="let loc of location | orderBy:'warehouse_name':false; let i = index">
+              <li flex="100" *ngIf="i >= 20 && i < 30">
+                <label class="category-container">{{ loc.warehouse_name | titlecase }} 
+                  <input type="checkbox" (click)="getSelectedCategory(loc, modalVal);"
+                    [attr.checked]="loc.selected ? 'checked' : null" name="checkbox">
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </span>
+          </div>
+      
+     
+          <div class="col-md-3">
+            <span *ngFor="let loc of location | orderBy:'warehouse_name':false; let i = index">
+              <li flex="100" *ngIf="i >= 30">
+                <label class="category-container">{{ loc.warehouse_name | titlecase }} 
+                  <input type="checkbox" (click)="getSelectedCategory(loc, modalVal);"
+                    [attr.checked]="loc.selected ? 'checked' : null" name="checkbox">
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </span>
+          </div>
+       
+        <!-- <ul ng-if="location.length > 0">
+          <li flex="100" *ngFor="let loc of location | orderBy: 'warehouse_name':false">
+            <span (click)="filterItems(loc, modalVal); modal.dismiss('Cross click')">
+              {{ loc.warehouse_name }}</span>
+          </li>
+        </ul> -->
+      </ul>
+      </div>
+      <div  class="dialogContent text-center" *ngIf="modalVal === 'cityContent'">
+        <h5>Can not select city if warehouse is selected </h5>
+      </div>
+      <div  class="dialogContent text-center" *ngIf="modalVal === 'warehouseContent'">
+        <h5>Can not select warehouse if city is selected  </h5>
+      </div>
+      <!-- <button data-toggle="tooltip" data-placement="bottom" title="Submit" type="button"
+       class="btn btn-success mr-2 float-right" (click)="checkFilter();modal.dismiss('Cross click')" style="margin-top: 25px;">
+       Submit
+   </button>  -->
+    </div>
+  </ng-template>
+</div>
+
+<div id="content" class="container-fluid MOODBOARD">
+  <div class="wrapper bg-white" *ngIf="!showMBForm && !showCreateForm">
+    <div class="mb-banner">
+        <div class="mb-banner-left" fxLayoutGap="3rem">
+          <div  class="textleft mb-2">
+            <span class="mb-banner-left-text h1">MOODBOARD</span><br>
+        </div>
+            <div class="mb-banner-icon">
+                <img src="assets/img/moodboard1.svg" alt="iconAltTxt" />
+            </div>
+        </div>
+        <div class="mb-banner-right">
+            <div class="row d-flex justify-content-between pl-4 pt-2 m-0" *ngIf="!showMBForm && !showCreateForm">
+              <div class="col-8">
+                <div class="row mt-2">
+                  <div class="col-4 col-md-4 mt-2">
+                    <span class="control-label">Moodboard# </span><span class="bcrum-data">{{
+                      moodboardDetails?.moodboard.sgid
+                      }}</span>
+                  </div>
+                  <div class="col-4 col-md-4 mt-2">
+                    <span class="control-label">Moodboard Name: </span><span class="bcrum-data">{{
+                      moodboardDetails?.moodboard.boardname
+                      }}</span>
+                  </div>
+                  <div class="col-4 col-md-4 mt-2">
+                    <span class="control-label">Moodboard Type: </span><span class="bcrum-data">{{
+                      moodboardDetails?.moodboard.moodboard_type_name
+                      }} &nbsp;&nbsp;{{moodboardDetails?.moodboard.mb_type_detail}}</span>
+                  </div>
+                </div>
+        
+                <div class="row mt-2">
+                  <div class="col-4 col-md-4 mt-2">
+                    <span class="control-label">Company Name: </span><span class="bcrum-data">{{
+                      moodboardDetails?.moodboard.company_name
+                      }}</span>
+                  </div>
+                  <div class="col-4 col-md-4 mt-2">
+                    <span class="control-label">Project Name: </span><span class="bcrum-data">{{
+                      moodboardDetails?.moodboard.project_name
+                      }}</span>
+                  </div>
+                  <div class="col-4 col-md-4 mt-2">
+                    <span class="control-label">City: </span><span class="bcrum-data">{{ moodboardDetails?.moodboard.city }}
+                    </span>
+                  </div>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-6 col-md-4 mt-2">
+                    <span class="control-label">State: </span><span class="bcrum-data">{{ moodboardDetails?.moodboard?.states?.name }}
+                    </span>
+                  </div>
+                  <div class="col-6 col-md-8 mt-2" *ngIf="moodboardDetails?.moodboard.zipcode">
+                    <span class="control-label">Zipcode: </span><span
+                      class="bcrum-data">{{moodboardDetails?.moodboard.zipcode}}</span>
+                  </div>
+                </div>
+                <div class="row mt-2 ml-1  justify-content-between align-items-center">
+                  <div class="row justify-content-end pr-3" >
+                    <span data-toggle="tooltip" data-placement="bottom" class="pr-4" title="Share this Moodboard"
+                      type="button" (click)="share(shareMb)"><i class="fa fa-share-alt share-mb shadow font-15 shareBtn" aria-hidden="true"></i>
+                    </span>
+                    <span class="pr-4" data-toggle="tooltip" data-placement="bottom" title="Create Copy Moodboard" type="button"
+                      (click)="showCopyForm()"><i class="fa fa-files-o create-mb shadow font-15 shareBtn" aria-hidden="true"></i>
+                    </span>
+                    <span data-toggle="tooltip" [ngClass]="{'cursor-none':moodboardDetails?.moodboard?.project_builder_id !==null}" *ngIf="showAuth" class="pr-4" data-placement="bottom" title="Edit this Moodboard"
+                      type="button" (click)="editMB()"><i class="fa fa-pencil-square-o edit-mb shadow font-15 shareBtn" aria-hidden="true"></i>
+                    </span>
+                  </div>
+                  <div class="row mt-3" *ngIf="moodboardDetails?.moodboard?.project_builder_id !==null">
+                    <div class="col-md-12">
+                      <p class="text-danger m-0">This Moodboard is owned by user  {{moodboardDetails?.moodboard?.user_name | titlecase}}  and locked for other users. </p>
+                      <p class="text-danger m-0">Please Create a copy to Customize this Moodboard</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+              <ng-container *ngFor="let item of moodbTypesImg; let i = index">
+                <div class="card moodboard_type_card mt-4" *ngIf="item.value == moodboardDetails?.moodboard.moodboard_type_name">
+                  <img mat-card-image src="{{ item.imageSrc }}" alt="{{ item.value }}" class="mbImg" />
+                  <div class="card-content">
+                    <div>
+                      <div class="textAlign">{{ item.value }}</div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              </div>
+              <ng-template #shareMb let-modal style="width:65%;">
+                <div class="modal-header prod-modal">
+                  <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                  </span>
+                </div>
+                <h4 class="modal-title font12" id="modal-basic-title">To share the Moodboard, please enter an email address :
+                </h4>
+                <input type="email" [(ngModel)]="emailAdd" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                  placeholder="Enter email" style="width: 300px;margin-bottom: 20px !important;margin: 0 auto;">
+                <div fxLayoutAlign="center center" style="text-align: center;padding-bottom: 20px;">
+                  <button class="btn btn-primary" color="accent" (click)="shareMd()">
+                    Submit
+                  </button>
+                </div>
+              </ng-template>
+            </div>
+           
+        </div>
+    </div>
+    <ng-content [select]="footer"></ng-content>
+</div>
+  <!-- <div class="bg-white col-12 mt-5">
+    <div class="row d-flex justify-content-between p-3" *ngIf="!showMBForm && !showCreateForm">
+      <div class="col">
+        <div class="row">
+          <div class="col-6 col-md-3 mt-2 mt-md-0 text-left pl-0 pr-0">
+            <span class="control-label">Moodboard# </span><span class="bcrum-data">{{
+              moodboardDetails?.moodboard.sgid
+              }}</span>
+          </div>
+          <div class="col-6 col-md-3 mt-2 mt-md-0 text-left pl-0 pr-0">
+            <span class="control-label">Moodboard Name: </span><span class="bcrum-data">{{
+              moodboardDetails?.moodboard.boardname
+              }}</span>
+          </div>
+          <div class="col-6 col-md-3 mt-2 mt-md-0 text-left pl-0 pr-0">
+            <span class="control-label">Moodboard Type: </span><span class="bcrum-data">{{
+              moodboardDetails?.moodboard.moodboard_type_name
+              }} &nbsp;&nbsp;{{moodboardDetails?.moodboard.mb_type_detail}}</span>
+          </div>
+          <div class="col-6 col-md-3 mt-2 mt-md-0 text-left pl-0 pr-0">
+            <span class="control-label">Company Name: </span><span class="bcrum-data">{{
+              moodboardDetails?.moodboard.company_name
+              }}</span>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-6 col-md-3 mt-2 mt-md-0 text-left pl-0 pr-0">
+            <span class="control-label">Project Name: </span><span class="bcrum-data">{{
+              moodboardDetails?.moodboard.project_name
+              }}</span>
+          </div>
+          <div class="col-6 col-md-3 mt-2 mt-md-0 text-left pl-0 pr-0">
+            <span class="control-label">City: </span><span class="bcrum-data">{{ moodboardDetails?.moodboard.city }}
+            </span>
+          </div>
+          <div class="col-6 col-md-3 mt-2 mt-md-0 text-left pl-0 pr-0">
+            <span class="control-label">State: </span><span class="bcrum-data">{{ moodboardDetails?.moodboard?.states?.name }}
+            </span>
+          </div>
+          <div class="col-6 col-md-3 mt-2 mt-md-0 text-left pl-0 pr-0" *ngIf="moodboardDetails?.moodboard.zipcode">
+            <span class="control-label">Zipcode: </span><span
+              class="bcrum-data">{{moodboardDetails?.moodboard.zipcode}}</span>
+          </div>
+        </div>
+      </div>
+      <ng-template #shareMb let-modal style="width:65%;">
+        <div class="modal-header prod-modal">
+          <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </span>
+        </div>
+        <h4 class="modal-title font12" id="modal-basic-title">To share the Moodboard, please enter an email address :
+        </h4>
+        <input type="email" [(ngModel)]="emailAdd" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+          placeholder="Enter email" style="width: 300px;margin-bottom: 20px !important;margin: 0 auto;">
+        <div fxLayoutAlign="center center" style="text-align: center;padding-bottom: 20px;">
+          <button class="btn btn-primary" color="accent" (click)="shareMd()">
+            Submit
+          </button>
+        </div>
+      </ng-template>
+      <div class="row justify-content-end pr-3" >
+        <span data-toggle="tooltip" data-placement="bottom" class="pr-3" title="Share this Moodboard"
+          type="button" (click)="share(shareMb)"><i class="fa fa-share-alt share-mb shadow" aria-hidden="true"></i>
+        </span>
+        <span class="pr-3" data-toggle="tooltip" data-placement="bottom" title="Create Copy Moodboard" type="button"
+          (click)="showCopyForm()"><i class="fa fa-files-o create-mb shadow" aria-hidden="true"></i>
+        </span>
+        <span data-toggle="tooltip" *ngIf="showAuth" class="pr-3" data-placement="bottom" title="Edit this Moodboard"
+          type="button" (click)="editMB()"><i class="fa fa-pencil-square-o edit-mb shadow" aria-hidden="true"></i>
+        </span>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="row mt-5 m-0" *ngIf="showMBForm">
+    <div class="col">
+      <form [formGroup]="moodboardForm" (ngSubmit)="onSubmit()">
+        <div class="container-fluid">
+          <div class="row d-flex justify-content-center boxWidth">
+            <div class="col-12 col-md-8 col-lg-8 col-xl-8 bg-white border pr-4 new_board">
+              <label for="mbType" class="control-label pl-2 pt-2">Moodboard Type</label>
+              <div class="btn-group mainGroup" role="group" aria-label="Basic mixed styles example">
+                <ng-container *ngFor="let mbdType of moodbTypess">
+                  <button type="button" class="btn-light btnGroup"(click)="selectMoodbType(mbdType)" formControlName="mb_type_detail" 
+                  [ngClass]="{'selected':mbdType?.type_id == moodboardTypeId  }" value="{{mbdType?.type_id}}">
+                    <div>
+                      <img width="100px" height="100px" src="{{mbdType.imageSrc}}" alt="{{mbdType.value}}">
+                    </div> 
+                    <div fxLayout="row" class="text image-center" fxLayoutGap="1rem" fxLayoutAlign="start center">
+                      <div fxLayout="row" class="text-lable"> {{mbdType.value}}</div>
+                    </div>                                     
+                  </button>
+                </ng-container>
+              </div>
+              <div class="row d-flex mt-3">
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="mbName" class="control-label pl-2">Moodboard Name<span class="text-danger">*</span></label>
+                  <input type="text" class="form-control ml-2" id="mbName" required formControlName="moodboard_name"
+                    placeholder="Required" />
+                </div>
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="cRef" class="control-label pl-2">State<span class="text-danger">*</span></label>
+                  <ng-select [items]="stateList" class="ml-2" bindLabel="name" formControlName="state"
+                    [(ngModel)]="selectedState" placeholder="Select State" (change)="onChangeState($event)">
+                  </ng-select>
+                </div>
+              </div>
+
+              <div class="row d-flex justify-content-between mt-4">
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="mbType" class="control-label pl-2">City<span class="text-danger">*</span></label>
+                  <input type="text" class="form-control ml-2" formControlName="city" />
+                </div>
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="mbName" class="control-label pl-2">Zipcode(Optional) </label>
+                  <input type="text" required class="form-control ml-2" id="mbName" formControlName="zipcode"
+                    placeholder="Enter Zipcode" />
+                </div>
+              </div>
+              <div class="row justify-content-between mt-4">
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <div class="add-button">
+                    <div>
+                      <label for="mbType" class="control-label pl-2">Company Name</label>
+                      <span class="text-danger">*</span>
+                    </div>
+                    <a (click)="onToggleAddButton()"><small><i class="fa fa-plus-circle pr-1"></i>Create New Company</small></a>
+                  </div>
+                  <div class="pl-2">
+                    <select *ngIf="!addCompany" (change)="onChangeCompany()" formControlName="company_name"
+                      class="form-control">
+                      <option *ngFor="let company of companyList" [value]="company.company">
+                        {{ company.company }}
+                      </option>
+                    </select>
+                    <input type="text" *ngIf="addCompany" class="form-control" id="mbName"
+                      formControlName="newCompanyName" placeholder="Enter Company Name" />
+                  </div>
+                </div>
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <div class="add-button">
+                      <div>
+                        <label for="mbName" class="control-label pl-2">Project Name </label>
+                          <span class="text-danger">*</span>
+                      </div>
+                      <a (click)="toggleAddButtonProject()"><small><i class="fa fa-plus-circle pr-1"></i>Create New Project</small></a>
+                  </div>
+                  
+                  <select *ngIf="!addProject" (change)="selectProject($event)" formControlName="project_id"
+                    class="form-control">
+                    <option *ngFor='let project of projectList' [value]="project.sgid">{{project.project}}</option>
+                  </select>
+
+                  <input type="text" class="form-control ml-2" id="mbName" *ngIf="addProject"
+                    formControlName="project_name" placeholder="Enter Project Name" />
+                </div>
+              </div>
+              <div class="d-flex justify-content-center mb-3">
+                <button type="submit" class="
+                    border
+                    btn btn-light
+                    mt-2
+                    px-3
+                    add-btn
+                    align-item-center
+                    mr-2
+                  " >
+                  Update
+                </button>
+                <button type="button" class="
+                    border
+                    btn btn-light
+                    mt-2
+                    px-3
+                    add-btn
+                    align-item-center
+                    mr-2
+                  " (click)="hideForms()">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row mt-5 m-0" *ngIf="showCreateForm">
+    <div class="col">
+      <form [formGroup]="createMoodboardForm" (ngSubmit)="createMoodboard()">
+        <div class="container-fluid">
+          <div class="row d-flex justify-content-center boxWidth">
+            <div class="col-12 col-md-8 col-lg-8 col-xl-8 bg-white border pr-4 new_board">
+              <label for="mbType" class="control-label pl-2 pt-2">Moodboard Type<span
+                class="text-danger bold">*</span></label>
+              <div class="btn-group mainGroup" role="group" aria-label="Basic mixed styles example">
+                <ng-container *ngFor="let mbdType of moodbTypess">
+                  <button type="button" class="btn-light btnGroup"(click)="selectMoodbType(mbdType)" formControlName="mb_type_detail" 
+                  [ngClass]="{'selected':mbdType?.type_id == moodboardTypeId  }" value="{{mbdType?.type_id}}">
+                    <div>
+                      <img width="100px" height="100px" src="{{mbdType.imageSrc}}" alt="{{mbdType.value}}">
+                    </div> 
+                    <div fxLayout="row" class="text image-center" fxLayoutGap="1rem" fxLayoutAlign="start center">
+                      <div fxLayout="row" class="text-lable"> {{mbdType.value}}</div>
+                    </div>                                     
+                  </button>
+                </ng-container>
+              </div>
+              <div class="row d-flex mt-3">
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="mbName" class="control-label pl-2">Moodboard Name<span
+                    class="text-danger bold">*</span></label>
+                  <input type="text" class="form-control ml-2" id="mbName" required formControlName="moodboard_name"
+                    placeholder="Required" />
+                </div>
+                 <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="cRef" class="control-label pl-2">State<span
+                    class="text-danger bold">*</span></label>
+                  <ng-select [items]="stateList" class="ml-2" bindLabel="name" formControlName="state"
+                    [(ngModel)]="selectedState" placeholder="Select State" (change)="onChangeState($event)">
+                  </ng-select>
+                </div>
+              </div>
+
+              <div class="row d-flex justify-content-between mt-4">
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="mbType" class="control-label pl-2">City<span
+                    class="text-danger bold">*</span></label>
+                  <input type="text" class="form-control ml-2" formControlName="city" />
+                </div>
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="mbName" class="control-label pl-2">Zipcode(Optional)</label>
+                  <input type="text" required class="form-control ml-2" id="mbName" formControlName="zipcode"
+                    placeholder="Enter Zipcode" />
+                </div>
+              </div>
+              <div class="row justify-content-between mt-4">
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <div class="add-button">
+                    <div>
+                      <label for="mbType" class="control-label pl-2">Company Name</label>
+                      <span class="text-danger">*</span>
+                    </div>
+                    <a (click)="toggleAddButton()"><small><i class="fa fa-plus-circle pr-1"></i>Create New Company</small></a>
+                  </div>
+                  <div class="pl-2">
+                    <select *ngIf="!addCompany" (change)="selectCompany()" formControlName="company_name"
+                      class="form-control">
+                      <option *ngFor="let company of companyList" [value]="company.company">
+                        {{ company.company }}
+                      </option>
+                    </select>
+                    <input type="text" *ngIf="addCompany" class="form-control" id="mbName"
+                      formControlName="newCompanyName" placeholder="Enter Company Name" />
+                  </div>
+                </div>
+                <div class="form-group mb-2 col-12 col-md-6">
+                  <label for="mbName" class="control-label pl-2">Project Name </label><span class="text-danger">*</span>
+                  <input type="text" class="form-control ml-2" id="mbName" required formControlName="project_name"
+                    placeholder="Enter Project Name" />
+                </div>
+              </div>
+
+               
+
+              <div class="d-flex justify-content-center mb-3">
+                <button type="submit" class="
+                    border
+                    btn btn-light
+                    mt-2
+                    add-btn
+                    align-item-center
+                    mr-2
+                    text-center
+                  ">
+                  Create
+                </button>
+                <button type="button" class="
+                    border
+                    btn btn-light
+                    mt-2
+                    add-btn
+                    align-item-center
+                    text-center
+                  " (click)="hideForms()">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="container bg-white mb-5 pb-3" id="contentToConvert" *ngIf="showAllData">
+  <div class="row m-0">
+    <div class="col-md-2 project-select-option" *ngIf="moodboardDetails?.moodboard?.project_builder_id !==null">
+      <label for="mbName" class="control-label pl-2">Project</label>
+      <select  (change)="nagivateToProject($event)" onfocus='this.size=2;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+        <option value="" hidden selected>Select a Project</option>
+        <option value="{{moodboardDetails.moodboard?.project_builder_id}}">Project {{moodboardDetails.moodboard?.project_builder_id}}</option>
+      </select>
+    </div>
+    <ul class="mymoodboard-view">
+      <li><a (click)="moodboardProduct('myMoodboard')" [ngClass]="{'mymooboard-active':showMoodBoard=='myMoodboard'}">MY MOODBOARD</a></li>
+      <li [ngClass]="{'cursor-none':moodboardDetails?.moodboard?.project_builder_id !==null}"><a (click)="moodboardProduct('addProducts')" [ngClass]="{'mymooboard-active':showMoodBoard=='addProducts'}">ADD PRODUCTS</a></li>
+    </ul>
+  </div> 
+  <div class="container-fluid mb-4 pt-3 mt-2" *ngIf="!hideOnPrint && showMoodBoard=='addProducts'">
+    <div class="
+        row
+        filters
+        bg-light
+        d-flex
+        justify-content-center
+        align-content-center
+        mb-4
+      ">
+      <div class="col text-center" (click)="resetFilter1()">
+        <span [class.menuactive]="
+            !selectedCategory.name &&
+            !publishVal &&
+            !selectedSupplier.name &&
+            !selectedWarehouse.name
+          ">All</span>
+      </div>
+      <div class="col text-center" (click)="checkIsWareHouseSelect(moodboardModal)">
+        <span [class.menuactive]="selectedCategory.name">City</span>
+      </div>
+      <div class="col text-center" *ngIf="
+          !(
+            loggedUserInfo.supplier_id != null && loggedUserInfo.supplier_id > 0
+          )
+        " (click)="checkIsLocatoionSelect(moodboardModal)">
+        <span [class.menuactive]="selectedWarehouse.name" *ngIf="
+            !(
+              loggedUserInfo.supplier_id != null &&
+              loggedUserInfo.supplier_id > 0
+            )
+          ">Warehouse</span>
+        <!-- <span [class.menuactive]="selectedWarehouse.name"  *ngIf="!(loggedUserInfo.supplier_id== null && loggedUserInfo.supplier_id>0)">Location</span> -->
+      </div>
+      <div *ngIf="
+          !(
+            loggedUserInfo.supplier_id != null && loggedUserInfo.supplier_id > 0
+          )
+        " class="col text-center" (click)="open(moodboardModal, 'supplier')">
+        <span [class.menuactive]="selectedSupplier.name">Suppliers</span>
+      </div>
+
+      <div class="col text-center" (click)="open(moodboardModal, 'category')">
+        <span [class.menuactive]="selectedCategory.name">Categories</span>
+      </div>
+      <div class="col text-center" *ngIf="categorySel === true" (click)="open(moodboardModal, 'attributes')">
+        <span [class.menuactive]="selectedCategory.name">Attributes</span>
+      </div>
+      <div class="col text-center" *ngIf="categorySel === false" (click)="alertforcategory()">
+        <span [class.menuactive]="selectedCategory.name">Attributes</span>
+      </div>
+      <div class="col text-center" (click)="open(moodboardModal, 'price')">
+        <span [class.menuactive]="selectedCategory.name">Asset Price</span>
+      </div>
+      <div class="col text-center" (click)="open(moodboardModal, 'inv')">
+        <span [class.menuactive]="selectedCategory.name">Inventory</span>
+      </div>
+      <div class="col text-center dropdown-toggle" href="#" id="publishDropdown" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        <span [class.menuactive]="selectedCategory.name">Publish Status</span>
+      </div>
+      <div class="dropdown-menu publishDropdown" aria-labelledby="publishDropdown" style="width: 13%">
+        <div class="col dropdown-item" (click)="getPublishStatusFilter('register_with_ops')">
+          <span [class.menuactive]="selectedCategory.name">Published to Inhabitr.com</span>
+        </div>
+        <div class="col dropdown-item" (click)="getPublishStatusFilter('unregister_from_ops')">
+          <span [class.menuactive]="selectedCategory.name">Not Published to Inhabitr.com</span>
+        </div>
+        <div class="col dropdown-item" (click)="getPublishStatusFilter('publish_to_saffron')">
+          <span [class.menuactive]="selectedCategory.name">Publish to Saffron</span>
+        </div>
+        <div class="col dropdown-item" (click)="getPublishStatusFilter('unpublish_to_saffron')">
+          <span [class.menuactive]="selectedCategory.name">Not published in Saffron</span>
+        </div>
+      </div>
+     
+      <div *ngIf="
+          loggedUserInfo.supplier_id != null && loggedUserInfo.supplier_id > 0
+        " class="col text-center" (click)="open(moodboardModal, 'loc')">
+        <span [class.menuactive]="selectedWarehouse.name">Location</span>
+      </div>
+    </div>
+  </div>
+  <div class="row pull-right" *ngIf="showMoodBoard=='addProducts'">
+    <button type="button" class="btn btn-secondary mr-2" (click)="resetFilter1()" *ngIf="
+        selectedProductFilters1?.length ||
+        publishStatus?.length ||
+        attributenames?.length ||
+        selectedPriceRangeList?.length ||
+        invMinVal
+      ">
+      Clear
+    </button>
+  </div>
+  <div class="d-flex pt-3 pb-3">
+    <div class="row mt-2" *ngIf="selectedProductFilters1 && showMoodBoard=='addProducts'" style="margin-left: 0%">
+      <div *ngFor="let product of selectedProductFilters1">
+        <span class="badge badge-secondary p-2 pointer mr-2 mb-2"
+          (click)="getSelectedCategory(product, product.type, 'rm')">
+          <span *ngIf="product.warehouse_name">{{
+            product.warehouse_name | titlecase
+            }}</span>
+            <span *ngIf="product.supplier_name">{{product.supplier_name| titlecase }}</span>
+          <span *ngIf="product.name">{{ product.name | titlecase }}</span>
+          <span>&nbsp;<i class="fa fa-close"></i></span></span>
+      </div>
+    </div>
+    <div  class="row mt-2" *ngIf="publishStatus && showMoodBoard=='addProducts'" style="margin-left: 1%">
+      <span class="badge badge-secondary p-2 pointer mr-2 mb-2" (click)="getPublishStatusFilter('remove')">
+        <span>{{ publishStatus | titlecase }}</span>
+        <span>&nbsp;<i class="fa fa-close"></i></span></span>
+    </div>
+    <div class="row mt-2" *ngIf="selectedPriceRangeList && showMoodBoard=='addProducts'" style="margin-left: 1%">
+      <div *ngFor="let price of selectedPriceRangeList">
+        <span class="badge badge-secondary p-2 pointer mr-2 mb-2" (click)="getPriceRangeList(price, 'remove')">
+          <span *ngIf="price.start && price.end">${{ price.start }} - ${{ price.end }}</span>
+          <span *ngIf="price.start && !price.end">${{ price.start }}</span>
+          <span *ngIf="!price.start && price.end">${{ price.end }}</span>
+          <span>&nbsp;<i class="fa fa-close"></i></span>
+        </span>
+      </div>
+    </div>
+
+    <div class="row mt-2" *ngIf="invMinVal && showMoodBoard=='addProducts'" style="margin-left: 1%">
+      <div>
+        <!-- <span class="badge badge-secondary p-2 pointer mr-2 mb-2" (click)="resetFilter()"> -->
+        <span class="badge badge-secondary p-2 pointer mr-2 mb-2" (click)="removeInventory()">
+          <span>Inv: {{ invMinVal }}</span>
+          <span>&nbsp;<i class="fa fa-close"></i></span></span>
+      </div>
+    </div>
+  </div>
+ 
+
+  <div class="row" *ngIf="!hideOnPrint">
+    <!-- <form class="search_form ml-auto" (submit)='search()' > -->
+    <div class="col-md-12 input-group" style="margin-bottom: 10px;display: flex;justify-content: center;" *ngIf="showMoodBoard=='addProducts'">
+      <div class="col-md-4">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" style="font-family: cursive" placeholder="Search Products" aria-label="Recipient's username"
+          [(ngModel)]="searchproduct" (keyup.enter)="getSearchItems()" aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <button (click)="getSearchItems()" class="btn btn-outline-secondary" type="button"> Search</button>
+          </div>
+        </div>
+        <ng-container>
+          <label style="margin-top: 10px;">
+            <input type="radio" name="food" (ngModelChange)="onChangeOf($event)" value="prod_name"
+              [(ngModel)]="InventorySelected" name="checkbox">&nbsp;&nbsp;Products Name
+            &nbsp;&nbsp;
+          </label>
+          <label style="margin-top: 10px;">
+            <input type="radio" name="food" (ngModelChange)="onChangeOf($event)" value="supplier_sku"
+              [(ngModel)]="InventorySelected" name="checkbox">&nbsp;&nbsp;Supplier SKU
+            &nbsp;&nbsp;
+          </label>
+          <label style="margin-top: 10px;">
+            <input type="radio" name="food" (ngModelChange)="onChangeOf($event)" value="inhabitr_sku"
+              [(ngModel)]="InventorySelected" name="checkbox">&nbsp;&nbsp;Inhabitr SKU
+            &nbsp;&nbsp;
+          </label>
+        </ng-container>
+      </div>
+      <div class="col-md-6">
+        <ul class="filter-range">
+          <li> <input type="radio" name="type" (ngModelChange)="onChange($event)" value="1" [(ngModel)]="btnType1"
+            name="checkbox1">&nbsp;&nbsp;Buy</li>
+          <li><input type="radio" name="type" (ngModelChange)="onChange($event)" value="0" [(ngModel)]="btnType1"
+            name="checkbox1">&nbsp;&nbsp;Rent</li>
+          <li> <input type="radio" name="type" (ngModelChange)="onChange($event)" value="2" [(ngModel)]="btnType1"
+            name="checkbox1">&nbsp;&nbsp;Hybrid</li>
+            <li *ngIf="!rentTotalMonths"> <input class="range-slider__range" type="range" value="12" min="1" checked max="36"
+              (change)="updateRent1($event)" />
+            <span class="range-slider__value">{{ monthNums1 }} &nbsp;Months</span></li>
+            <li *ngIf="rentTotalMonths"><input class="range-slider__range" type="range"
+              [(value)]="moodboardDetails?.moodboard_items[0].months" min="1" checked max="36"
+              (change)="updateRent1($event)" />
+            <span class="range-slider__value">{{ moodboardDetails?.moodboard_items[0].months }} &nbsp;Months</span></li>
+        </ul>
+      </div>
+    </div>
+    <!-- </form> -->
+    <div class="col-xl-10 m-auto pb-4" *ngIf="showMoodBoard=='addProducts'">
+      <!-- <pre> {{ data | json }} </pre> -->
+      <div class="card">
+        <div class="card-header">
+          <span>Furniture</span>
+          <div class="noInventory" *ngIf="noInventorySelected">
+            (<span [innerHTML]="noInventorySelected"></span>)
+          </div>
+        </div>
+        <div *ngIf="newLoader" style="text-align: center;padding:10px 0">
+          <h5>Loading...</h5>
+        </div>
+        <h6 class="text-center py-3" *ngIf="disMsg">{{disMsg}}</h6>
+        <!-- <div *ngIf="data?.length==0" style="text-align: center;padding:10px 0">
+          <h5>No Data Found</h5>
+        </div> -->
+        <div class="card-body products-max-height" *ngIf="!newLoader">
+          <div class="form-row">
+            <div class="col-3 mb-2 position-relative d-flex" *ngFor="let prod of data">
+              <span class="text-white position-absolute px-2 py-1"
+                style="z-index: 100; background: #6c757d; font-size: 10px">
+                <span>{{prod.supplier_quantity}}</span>
+                <!-- <span>{{
+                  sumTotal(prod.product_sku_vartion.warehouse_location_new)
+                }}</span> -->
+                <!-- <span *ngIf="prod.is_inhabitr_warehouse=='Y'">{{prod.sum_inhabitr_quantity}}</span> -->
+                <!-- <span
+                    *ngIf="prod.product.is_inventoryCount==0 ">{{prod.quantity}}</span> -->
+                <!-- <span class="font12"
+                    *ngIf="prod.product_sku_vartion.supplier_name==='JoyBird'">
+                    {{prod.product.inventoryCount}}</span> -->
+                <!-- <span
+                    *ngIf="prod.product.is_inventoryCount==1 && prod.product_sku_vartion.supplier_name!=='JoyBird' ">{{prod.product.inventoryCount}}</span> -->
+              </span>
+              <div class="shadow border p-0">
+                <img class="images-item" (click)="getItem(prod.product_id, detailsmodal)" src="{{
+                    prod.product_sku_vartion.get_display_image[0]?.image_url
+                      .large
+                  }}" />
+                <div class="text-center">
+                  <!-- <button *ngIf="showAuth" type="button" class="btn btn-sm btn-success font12 p-0 m-1 px-1 btn-grey"
+                      (click)="addtoMoodboard(prod);"> <i class="fa fa-plus"></i>
+                    </button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="data?.length==0">No Data Found</div>
+          <div class="row" *ngIf="newLoaderMoreButton">
+            <div class="col text-center">
+              <button type="button" class="btn btn-secondary pointer" (click)="loadMore()">
+                Load More
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12" *ngIf="showMoodBoard=='myMoodboard'" [ngClass]="{'cursor-none':moodboardDetails?.moodboard?.project_builder_id !==null}">
+      <div class="row">
+        <div class="col-md-6">
+          <ul class="filter-range1">
+            <li> <input type="radio" name="type" (ngModelChange)="onChange($event)" value="1" [(ngModel)]="btnType1"
+              name="checkbox1">&nbsp;&nbsp;Buy</li>
+            <li><input type="radio" name="type" (ngModelChange)="onChange($event)" value="0" [(ngModel)]="btnType1"
+              name="checkbox1">&nbsp;&nbsp;Rent</li>
+            <li> <input type="radio" name="type" (ngModelChange)="onChange($event)" value="2" [(ngModel)]="btnType1"
+              name="checkbox1">&nbsp;&nbsp;Hybrid</li>
+              <li *ngIf="!rentTotalMonths"> <input class="range-slider__range" type="range" value="12" min="1" checked max="36"
+                (change)="updateRent1($event)" />
+              <span class="range-slider__value">{{ monthNums1 }} &nbsp;Months</span></li>
+              <li *ngIf="rentTotalMonths"><input class="range-slider__range" type="range"
+                [(value)]="moodboardDetails?.moodboard_items[0].months" min="1" checked max="36"
+                (change)="updateRent1($event)" />
+              <span class="range-slider__value">{{ moodboardDetails?.moodboard_items[0].months }} &nbsp;Months</span></li>
+          </ul>
+        </div>
+        <ul class="moodboard-summary col-md-6 float-end">
+          <li onClick="document.getElementById('summary').scrollIntoView();"><u>Moodboard Summary</u></li>
+        </ul>
+      </div>
+    </div>
+    <!-- <div [ngClass]="{ 'col-xl-8': !hideOnPrint, 'col-xl-12': hideOnPrint }" style="padding-left: 0%"> -->
+    <div class="col-xl-11 m-auto" *ngIf="showMoodBoard=='myMoodboard'">
+      <div class="card">
+        <div class="card-header">
+          <span class="mr-3 font-weight-bold">{{
+            moodboardDetails?.moodboard.boardname
+            }}</span>
+          <span>
+            No. of Products:
+            <span class="font-weight-bold">{{
+              moodboardDetails?.moodboard.is_moodboard_item_count
+              }}</span></span>
+        </div>
+        <div class="card-body max-height" [ngClass]="{'cursor-none':moodboardDetails?.moodboard?.project_builder_id !==null}">
+          <!-- <img class="images-item" (click)="getImgPolaroid($event)" src="https://www.foagroup.com/media/catalog/product/cache/1/image/040ec09b1e35df139433887a97daa66f/f/o/foa7882d-1.jpg "> -->
+
+          <div class="form-row">
+            <div class="col-md-2 mr-4 mb-3 border">
+                <div class="addProduct-img" (click)="moodboardProduct('addProducts')">
+                  <ul>
+                    <li><img src="assets/img/addProduct.svg"></li>
+                    <li>ADD PRODUCT</li>
+                  </ul>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 mr-4 mb-3 border" *ngFor="
+                let prod of moodboardDetails?.moodboard_items;
+                let i = index
+              ">
+              <div class="p-0 position-relative">
+                <div style="float: left" *ngIf="prod.is_inhabitr_warehouse == 'N'">
+                  <b>{{ prod.sum_supplier_quantity }}</b>
+                </div>
+                <div style="float: left" *ngIf="prod.is_inhabitr_warehouse == 'Y'">
+                  <b>{{ prod.sum_inhabitr_quantity }}</b>
+                </div>
+                <!-- <div style="float: left;"> Qty:<b>{{prod.qty}}</b></div> -->
+                <!-- <div class="float-left"><span class="text-muted font12">Qty: </span> &nbsp;<span class="font-weight-bold">{{prod.qty}}</span></div> -->
+                <div class="row mr-2" style="flex-direction: row-reverse">
+                  <span (click)="removeProduct(prod)" *ngIf="showAuth" class="text-right mt-2 pr-1 ml-2"><i
+                      class="fa fa-trash pointer"></i></span>
+                  <span [ngSwitch]="prod.button_type" class="align-inv mt-2">
+                    <span *ngSwitchCase="0" class="text-warning">Rent</span>
+                    <span *ngSwitchCase="1" class="text-primary">Buy</span>
+                    <span *ngSwitchDefault></span>
+                  </span>
+                  <p *ngIf="prod?.variation?.status == 0" style="margin-top: 7px;margin-right: 42px;font-weight: 500;">Discontinued</p>
+                </div>
+                <img class="board-images-item" src="{{ prod.imagee }}" />
+                <div class="py-1 px-1 mb-3">
+                  <span class="">
+                    <span class="ml-1 font-10">
+                      <span class="fa fa-minus pointer" *ngIf="!hideOnPrint && showAuth"
+                        (click)="decreaseQuantity(prod,null)"></span>
+                    </span>
+                    <span class="">
+                      <span class="position-absolute ml-2 px-2 py-1 font-10" style="
+                          z-index: 100;
+                          background: lightgrey;
+                          color: black;
+                        ">{{ prod.qty }}</span>
+                    </span>
+                    <span class="font-10" style="margin-left: 2.3rem !important">
+                      <span class="fa fa-plus pointer" *ngIf="!hideOnPrint && showAuth"
+                        (click)="increaseQuantity(prod,null)"></span>
+                    </span>
+                    <!-- <span *ngIf="prod.variation.product.is_inventoryCount==0">{{prod.variation.quantity}}</span>
+                        <span class="font-weight-bold" *ngIf="prod.variation.product.is_inventoryCount==1 ">{{prod.variation.product.inventoryCount}}</span> -->
+                    <!-- <span class="font-weight-bold"
+                        *ngIf="prod.supplier_name==='JoyBird'">
+                        {{prod.variation.product.inventoryCount}}</span> -->
+                  </span>&nbsp;&nbsp;
+                  <!-- <span style="float: right;">MB Count: <span  *ngIf="prod_id===prod.product_id"><b>{{moodboard_count}}</b></span></span>          </div> -->
+                  <span style="float: right">
+                    <span class="text-muted font10">SKU:</span> &nbsp;<span class="font-weight-bold"
+                      style="font-size: 8px"><b *ngIf="prod.variation?.is_ops_db === null">{{
+                        prod.variation?.sku | uppercase
+                        }}</b><b *ngIf="prod.variation?.is_ops_db === true">{{
+                        prod.variation?.inhabitr_sku | uppercase
+                        }}</b></span></span>
+                </div>
+                <!-- <div style="float: left;"> SKU:<b>{{prod.variation.sku}}</b></div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5" [ngClass]="{'cursor-none':moodboardDetails?.moodboard?.project_builder_id !==null}">
+        <div class="col-md-12 mb-4">
+          <div class="col-md-6 p-0 pull-left create-new-quote" *ngIf="showAuth">
+            <div class="col-md-6 p-0 pull-left render-div">
+              <button *ngIf="showAuth && floorPlanList?.length<=0" href="javascript:void(0)"
+                class="border btn btn-light mb-2 rounded-0 mb-btn" data-toggle="modal" data-target="#floorPlanModel"
+                id="floorPlan" [disabled]="quotesNodataFound" (click)="floorPlanModel()">
+                Add to Quote
+              </button>
+              <button *ngIf="showAuth && floorPlanList?.length>0" href="javascript:void(0)"
+                class="border btn btn-light mb-2 rounded-0 mb-btn" data-toggle="modal" id="floorPlan"
+                (click)="selectOrcreate(addToQuote)"
+                [disabled]="quotesNodataFound">
+                Add to Quote
+              </button>
+            </div>
+          </div>
+
+          <div class="col-md-6 pull-right" style="padding: 0px">
+            <div class="col text-right gen-pdf" style="padding: 0px">
+              <button data-placement="bottom" [disabled]="
+                  moodboardDetails?.moodboard.is_moodboard_item_count === 0
+                " type="button" class="btn btn-success mb-2 mb-md-0 rounded-0 mb-btn" *ngIf="showAuth"
+                (click)="generateMBPDF()">
+                Generate Moodboard PDF</button>&nbsp;
+              <button data-placement="bottom" [disabled]="
+                  moodboardDetails?.moodboard.is_moodboard_item_count === 0
+                " type="button" style="width: 211px !important" class="btn btn-success mb-2 mb-md-0 rounded-0 mb-btn"
+                *ngIf="showAuth" (click)="captureScreen()">
+                Generate Moodboard Quote PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container bg-white mt-4" id="summary" *ngIf="showAllData && showMoodBoard=='myMoodboard'">
+  <div class="container-fluid-table bg-white table-center p-1 mt-3" [ngClass]="{'cursor-none':moodboardDetails?.moodboard?.project_builder_id !==null}">
+    <div class="col-xl-12">
+      <div class="container-fluid p-1">
+        <div class="row font-weight-bold moodboard-summary-title mt-5">
+          <h5 class="pl-3"><u>Moodboard Summary</u></h5>
+        </div>
+
+        <div class="row ml-1">
+          <div class="col-6 col-md-2 mt-2 mt-md-0 text-left pl-0 pr-0">
+            <span class="control-label">Customer City: </span><span class="bcrum-data">{{
+              moodboardDetails?.moodboard.city
+              }}</span>
+          </div>
+          <div class="col-6 col-md-2 mt-2 mt-md-0 text-left pl-0 pr-0">
+            <span class="control-label">Zipcode: </span><span class="bcrum-data">{{
+              moodboardDetails?.moodboard.zipcode
+              }}</span>
+          </div>
+        </div>
+
+        <div>
+          <!-- <pre> {{ moodboardDetails.moodboard_items | json }} </pre> -->
+          <table class="table table-bordered edit-table bg-white" id="mainTable">
+            <thead>
+              <tr>
+                <th scope="col" style="vertical-align: middle"></th>
+                <th scope="col" style="vertical-align: middle">SKU</th>
+                <th scope="col" style="vertical-align: middle">Image</th>
+                <th scope="col" style="vertical-align: middle">Product Name</th>
+                <th scope="col" style="vertical-align: middle; text-align: center">
+                  Type
+                </th>
+                <th scope="col" style="vertical-align: middle">
+                  Supplier Name
+                </th>
+                <th scope="col" style="vertical-align: middle">
+                  Warehouse Location
+                </th>
+                <th scope="col" style="vertical-align: middle">
+                  Inventory Level
+                </th>
+                <th scope="col" style="vertical-align: middle">Quantity</th>
+                <th scope="col" style="vertical-align: middle">Asset Value</th>
+                <th scope="col" style="vertical-align: middle">$ Buy Price</th>
+                <!-- <th scope="col" style="vertical-align:middle">$ Discount/ Month</th> -->
+                <!-- <th scope="col" style="vertical-align:middle">% B2B Discount/ Month</th> -->
+                <th scope="col" style="vertical-align: middle">
+                  Rental Price&nbsp;/ Month
+                </th>
+                <th scope="col" style="vertical-align: middle">Months</th>
+                <th scope="col" style="vertical-align: middle">Total</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="
+                  let prod of moodboardDetails?.moodboard_items;
+                  let i = index
+                ">
+                <th scope="row" class="text-center">{{ i + 1 }}</th>
+                <td>{{ prod.sku | uppercase }}</td>
+                <td scope="col pointer">
+                  <img src="{{ prod.imagee }}" alt="{{ prod.name }}" (click)="getItem(prod.product_id, detailsmodal)"
+                    class="table_img" />
+                </td>
+                <td class="text-center">{{ prod.name | titlecase }}</td>
+                <ng-container [ngSwitch]="prod.button_type">
+                  <td class="text-center">
+                    <div class="text-center text-white text-warning mr-4 ml-4" *ngSwitchCase="0">
+                      Rent
+                    </div>
+                    <div class="text-center text-primary text-white mr-4 ml-4" *ngSwitchCase="1">
+                      Buy
+                    </div>
+                    <div class="text-danger" *ngSwitchDefault>NA</div>
+                    <p *ngIf="prod?.variation?.status == 0" style="margin-top: 7px;margin-right: 5px;font-weight: 500;">Discontinued</p>
+                  </td>
+                </ng-container>
+
+                <td class="text-center">
+                  {{ prod.supplier_name | titlecase }}
+                </td>
+                <td class="text-center">{{ prod.warehouse_name }}</td>
+                <td class="text-center">
+                  <!-- <span *ngIf="prod.is_inhabitr_warehouse=='N'">{{prod.sum_supplier_quantity}}</span>
+                  <span *ngIf="prod.is_inhabitr_warehouse=='Y'">{{prod.sum_inhabitr_quantity}}</span> -->
+                  <span *ngIf="
+                      prod.variation?.product?.is_inventoryCount == 0 &&
+                      prod.variation?.product?.source !== 'API'
+                    ">{{ prod.variation?.is_inventory_qty }}</span>
+                  <span *ngIf="prod.variation?.product?.source === 'API'">{{
+                    prod.variation?.product?.inventoryCount
+                    }}</span>
+                  <span *ngIf="
+                      prod.variation?.product?.is_inventoryCount == 1 &&
+                      prod.variation?.product?.source !== 'API'
+                    ">{{ prod.variation?.product?.inventoryCount }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="ml-1">
+                    <span class="fa fa-minus pointer" *ngIf="!hideOnPrint && showAuth"
+                      (click)="decreaseQuantity(prod,null)"></span>
+                  </span>
+                  <span class="inc">
+                    <span>{{ prod.qty }}</span>
+                  </span>
+                  <span class="mr-1">
+                    <span class="fa fa-plus pointer" *ngIf="!hideOnPrint && showAuth"
+                      (click)="increaseQuantity(prod,null)"></span>
+                  </span>
+                </td>
+                <td class="text-center">
+                  {{
+                  prod.variation?.pricing_asset_value
+                  | currency: "USD":"symbol":"1.2-2"
+                  }}
+                </td>
+                <td class="text-center">
+                  <ng-container [ngSwitch]="prod.button_type">
+                    <ng-container *ngSwitchCase="1">
+                      {{ prod.buy_price | currency: "USD":"symbol":"1.2-2" }}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="0">
+                      <span class="text-danger">NA</span>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      <span class="text-danger">NA</span>
+                    </ng-container>
+                  </ng-container>
+                </td>
+                <td class="text-center">
+                  <ng-container [ngSwitch]="prod.button_type">
+                    <ng-container *ngSwitchCase="0">
+                      {{ prod.sale_price | currency: "USD":"symbol":"1.2-2" }}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="1">
+                      <span class="text-danger">NA</span>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      <span class="text-danger">NA</span>
+                    </ng-container>
+                  </ng-container>
+                </td>
+                <td>
+                  <span class="d-flex">
+                    <ng-container [ngSwitch]="prod.button_type">
+                      <ng-container *ngSwitchCase="0">
+                        <span class="ml-1">
+                          <span class="fa fa-minus pointer" *ngIf="!hideOnPrint && showAuth"
+                            (click)="decreaseMonth(prod,prod.months)"></span>
+                        </span>
+                        <span class="inc">
+                          {{prod.months}}
+                        </span>
+                        <span class="mr-1">
+                          <span class="fa fa-plus pointer" *ngIf="!hideOnPrint && showAuth"
+                            (click)="increaseMonth(prod,prod.months)"></span>
+                        </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="1">
+                        <span class="text-danger">NA</span>
+                      </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        <span class="text-danger">NA</span>
+                      </ng-container>
+                    </ng-container>
+                  </span>
+                </td>
+                <td class="text-center">
+                  {{ prod.total | currency: "USD":"symbol":"1.2-2" }}
+                </td>
+              </tr>
+              <tr>
+                <!-- <td *ngIf="hideOnPrint"></td> -->
+                <td colspan="13" class="text-right font-weight-bold border-0">Sub Total</td>
+                <td class="text-center">{{updatedMbDetails?.moodboard.sub_total| currency: "USD":"symbol":"1.2-2"}}</td>
+              </tr>
+              <tr *ngIf="updatedMbDetails?.moodboard.buy_price != null">
+                <td colspan="13" class="text-right font-weight-bold border-0">Buy Total</td>
+                <td class="text-center">{{updatedMbDetails?.moodboard.buy_price| currency: "USD":"symbol":"1.2-2"}}</td>
+              </tr>
+              <tr *ngIf="updatedMbDetails?.moodboard.monthly_rent != null">
+                <td colspan="13" class="text-right font-weight-bold border-0">
+                  Monthly Rent
+                </td>
+                <td class="text-center">
+                  {{
+                    updatedMbDetails?.moodboard.monthly_rent
+                  | currency: "USD":"symbol":"1.2-2"
+                  }}
+                </td>
+              </tr>
+             
+              <tr>
+                <td colspan="13" class="text-right font-weight-bold border-0">
+                  Delivery Fee
+                </td>
+                <td class="text-center">
+                  {{
+                    updatedMbDetails?.moodboard.delivery_fee
+                  | currency: "USD":"symbol":"1.2-2"
+                  }}
+                </td>
+              </tr>
+              <!-- <tr>
+                <td colspan="13" class="text-right font-weight-bold  border-0">Pickup Fee</td>
+                <td class="text-center">{{moodboardDetails?.moodboard.pickup_fee | currency:"USD":"symbol":"1.2-2"}}
+                </td>
+              </tr> -->
+              <tr>
+                <td colspan="13" class="text-right font-weight-bold border-0">
+                  Taxes ({{ updatedMbDetails?.moodboard?.tax_amount > 0 ?
+                    updatedMbDetails?.moodboard?.states?.sale_tax_rate : 0
+                  }}%)
+                </td>
+                <td class="text-center">
+                  {{
+                    updatedMbDetails?.moodboard.tax_amount
+                  | currency: "USD":"symbol":"1.2-2"
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td colspan="13" class="text-right font-weight-bold border-0">
+                  Total
+                </td>
+                <td class="text-center">
+                  {{
+                    updatedMbDetails?.moodboard.net_total
+                  | currency: "USD":"symbol":"1.2-2"
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td colspan="13" class="text-right font-weight-bold border-0">
+                  Total Asset Value
+                </td>
+                <td class="text-center">
+                  {{ updatedMbDetails?.moodboard?.asset_value | currency: "USD":"symbol":"1.2-2" }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- pdf end -->
+    <div class="col-lg-12 public_history" *ngIf="showAuth">
+      <div>
+        <input type="checkbox" class="checkbox" [(ngModel)]="MoodboardPublic" (change)="changeStatus()" id="checkbox-2" />
+        <label for="checkbox-2" class="checkbox-click-target">
+          <span class="checkbox-box"></span><span class="position-relative" style="top: 3px">Public</span>
+        </label>
+      </div>
+      <div class="history_public"  (click)="historyResult()">History
+        <i class="tooltip fa fa-info-circle" aria-hidden="true">
+        <span class="tooltiptext">Click to check the Moodboard edit History</span></i>
+      </div>
+      <!-- <div class="history_public">
+        <span class="tooltip" (click)="historyResult()">History</span>
+          <span class="tooltiptext">Click to check the Moodboard edit History</span>
+      </div> -->
+    </div>
+    <div class="row col-md-12 mt-2">
+     
+      <div class="col p-3 mb-4 text-center">
+        <button *ngIf="
+            !hideOnPrint &&
+            moodboardDetails?.moodboard_items.length > 0 &&
+            showAuth
+          " data-placement="bottom" type="button" class="btn btn-success px-5" (click)="saveQuote()">
+          Save</button>&nbsp;&nbsp;
+      </div>
+    </div>
+  </div>
+
+  <!-- add quote -->
+
+  <!-- add quote end -->
+
+  <table id="userInfoTable" style="display: none">
+    <tbody>
+      <tr>
+        <td align="right">Moodboard Id</td>
+        <td>{{ moodboardDetails?.moodboard.sgid }}</td>
+      </tr>
+      <tr>
+        <td align="right">Moodboard Name</td>
+        <td>{{ moodboardDetails?.moodboard.boardname }}</td>
+      </tr>
+      <tr>
+        <td align="right">Moodboard Type</td>
+        <td>{{ moodboardDetails?.moodboard.moodboard_type_name }} &nbsp; {{ moodboardDetails?.moodboard.mb_type_detail}}</td>
+      </tr>
+      <tr>
+        <td align="right">No. of Products</td>
+        <td>{{ moodboardDetails?.moodboard.is_moodboard_item_count }}</td>
+      </tr>
+      <tr>
+        <td align="right">Company Name</td>
+        <td>{{ moodboardDetails?.moodboard.company_name }}</td>
+      </tr>
+      <tr>
+        <td align="right">City</td>
+        <td>{{ moodboardDetails?.moodboard.city }}</td>
+      </tr>
+      <tr>
+        <td align="right">Project</td>
+        <td>{{ moodboardDetails?.moodboard.project_name }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered edit-table bg-white" id="printImage" style="display: none">
+    <tbody>
+      <tr *ngFor="let rowData of imagePDFData">
+        <td *ngFor="let prod of rowData" scope="col pointer">
+          <img src="{{ prod.image }}" class="table_img" />
+      <tr class="productName">
+        {{
+        prod.name | uppercase
+        }}
+      </tr>
+      <tr class="productName">
+        {{
+        prod.name | uppercase
+        }}
+        <td class="productDesc">
+          &nbsp;<strong>Dimension:</strong>&nbsp; {{ prod.dimension }}
+        </td>
+      </tr>
+      </td>
+      </tr>
+    </tbody>
+  </table>
+ 
+
+</div>
+ <!-- history data -->
+ <div class="container" *ngIf="publicHistoryResultTable">
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <div>
+        <table class="table table-bordered edit-table bg-white">
+          <th class="text-center align-middle">Orginal User Name</th>
+          <th class="text-center align-middle">Other User Name</th>
+          <th class="text-center align-middle">Changed Type</th>
+          <th class="text-center align-middle">History Result</th>
+          <tr *ngFor="let PublicHistoryLists of PublicHistoryList" infiniteScroll
+          [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" [scrollWindow]="true">
+            <td class="text-center align-middle">{{PublicHistoryLists?.org_user_name | titlecase}}</td>
+            <td class="text-center align-middle">{{PublicHistoryLists?.other_user_name | titlecase}}</td>
+            <td  *ngIf="PublicHistoryLists?.changed_type != 'updated_mb_type'" class="text-center align-middle" >{{(PublicHistoryLists?.changed_type).replace('_', ' ') | titlecase}}</td>
+            <td *ngIf="PublicHistoryLists?.changed_type == 'updated_mb_type'" class="text-center align-middle">{{(PublicHistoryLists?.changed_type).replace('updated_mb_type', 'updated mb type') | titlecase}}</td>
+            <td>
+
+              <ul class="list-unstyled text-center" *ngIf="PublicHistoryLists?.changed_type !='updated_input'">
+                <li> Product Name: {{PublicHistoryLists?.input_names?.product_name}}</li>
+                <li>sku: {{PublicHistoryLists?.input_names?.sku}}</li>
+                <li *ngIf="PublicHistoryLists?.input_names?.button_type==0">Type: Rent</li>
+                <li *ngIf="PublicHistoryLists?.input_names?.button_type==1">Type: Buy</li>
+                <li *ngIf="PublicHistoryLists?.input_names?.month">Month: {{PublicHistoryLists?.input_names?.month}}</li>
+                <li *ngIf="PublicHistoryLists?.input_names?.quantity">Quantity: {{PublicHistoryLists?.input_names?.quantity}}</li>
+                <li *ngIf="PublicHistoryLists?.input_names?.original">Quantity: {{PublicHistoryLists?.input_names?.original}}</li>
+                <li *ngIf="PublicHistoryLists?.input_names?.updated">Updated Quantity: {{PublicHistoryLists?.input_names?.updated}}</li>
+              </ul>
+              <ng-container *ngIf="PublicHistoryLists?.changed_type =='updated_input'">
+                <ul class="list-unstyled text-center" *ngFor="let item of PublicHistoryLists.input_names">
+                  <ng-container *ngFor="let obj of item | keyvalue" >
+                    <li *ngIf="obj.key != 'userid'">
+                      <p class="m-0"> Input Name: {{obj.key}} </p>
+                      <p class="m-0"> Orginal: {{obj?.value?.original}} </p>
+                      <p class="m-0"> Updated: {{obj.value?.update}} </p>
+                    </li>
+                    </ng-container>
+                </ul>
+              </ng-container>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="history">
+        <button  (click)="navigationBack()">Back</button>
+      </div>
+    </div>
+  </div>
+ </div>
+
+
+<!-- history data -->

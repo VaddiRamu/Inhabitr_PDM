@@ -1,0 +1,1251 @@
+<section class="product_details_section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="navbar">
+                    <nav aria-label="breadcrumb " class="nav-breadcrumb">
+                        <ol class="breadcrumb bg-transparent p-0">
+                            <li class="breadcrumb-item"><a routerLink="/admin/dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a routerLink='/admin/products/list'>Products</a></li>
+                            <li class="breadcrumb-item"><a>{{productName}}</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div id="content" [class]="!showMenu?'active container p-0 page-content ':'container  page-content p-0'"
+                    *ngIf="itemInfo">
+                    <div class="row">
+                        <div class="col-lg-4 slider-image">
+                            <div class="row d-flex bg-white overflow-img">
+                                <div *ngFor='let image of variationImages;  let i = index' class="m-2">
+                                    <div class="card" style="border: none;">
+                                        <img class="img-thumbnail" (click)="activeImage(i)" [ngClass]="{'image-active':activeIndex==i}"
+                                            src="{{image?.default_images[0]?.image_url?.large}}">
+                                        <div class="card-body p-0">
+                                            <p class="text-center mb-0" *ngIf="image.inhabitr_sku !=''">Inh Sku&nbsp;-&nbsp;{{image.inhabitr_sku}}</p>
+                                            <p class="mb-0">
+                                                <span class="text-left mr-4">
+
+                                                    <!-- <ng-container *ngFor="let inv of image.warehouse_location_new;">
+                                                                         <span>
+                                                                                I - {{ inv.non_assigned_inv }}
+                                                                            </span>
+                                                                        </ng-container> -->
+
+                                                    <span> I - {{ sumTotal(image.warehouse_location_new) }} </span>
+                                                </span>
+                                                <span class="text-right">S - {{
+                                                    sumSUpplierTotal(image.warehouse_location_new) }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="card prod-card rounded border-0 ml-2">
+                                <div class="card-image clearfix text-center">
+                                    <img src="{{displayImage}}" alt="{{productName}}" style="height:300px;"
+                                        title="{{productName}}" class="img_prodinfo-width">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12 bg-white overflow-img1">
+                            <div *ngFor='let image of defaultImages;  let i = index' class="m-2">
+                                <div class="card" style="border: none;">
+                                    <img class="img-thumbnail" (click)="activeImage1(i)" [ngClass]="{'image-active':displayImage==image?.image_url?.large}"
+                                        src="{{image?.image_url?.large}}">
+                                    <div class="card-body p-0">
+                                        <p class="text-center mb-0">{{image.inhabitr_sku}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 p-0">
+                            <div class="accordion mt-2" id="accordionExample">
+                                <div class="card border-0">
+                                    <div class="card-header border-0 bg-white" id="headingOne" data-toggle="collapse"
+                                        data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        <h2 class="mb-0">
+                                            <button class="btn acc-dropdown bg-white desc pr-1" type="button">
+                                                <span>Description</span>
+                                            </button>
+                                            <a href="javascript:void(0)" class="edit-content" data-toggle="modal"
+                                                data-target="#exampleModal"
+                                                (click)="this.editDescription = true; 
+                                                                                    this.editFeatures = false; this.editDimension = false; this.editProduct = false; 
+                                                                                    this.editInhabitrPrice = false; this.editProductBuyPrice = false; this.editAttr = false">
+                                                <!-- <i class="fa fa-pencil-square-o editIcon mr-3"
+                                                    aria-hidden="true"></i> -->
+                                                </a>
+                                        </h2>
+                                    </div>
+                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                        data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            {{description}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion mt-2" id="accordionExample2">
+                                <div class="card border-0">
+                                    <div class="card-header border-0 bg-white" id="heading2" data-toggle="collapse"
+                                        data-target="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                                        <h2 class="mb-0">
+                                            <button class="btn acc-dropdown desc pr-1" type="button">
+                                                <span> Features</span>
+                                            </button>
+                                            <a href="javascript:void(0)" class="edit-content" data-toggle="modal"
+                                                data-target="#exampleModal"
+                                                (click)="this.editDescription = false; 
+                                                                                    this.editFeatures = true; this.editDimension = false; this.editProduct = false; 
+                                                                                    this.editInhabitrPrice = false; this.editProductBuyPrice = false; this.editAttr = false">
+                                                <!-- <i class="fa fa-pencil-square-o editIcon mr-3"
+                                                    aria-hidden="true"></i> -->
+                                                </a>
+                                        </h2>
+                                    </div>
+                                    <div id="collapse2" class="collapse" aria-labelledby="heading2"
+                                        data-parent="#accordionExample2">
+                                        <div class="card-body">
+                                            {{features}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion mt-2" id="accordionExample3">
+                                <div class="card border-0">
+                                    <div class="card-header border-0 bg-white" id="heading3" data-toggle="collapse"
+                                        data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                                        <h2 class="mb-0">
+                                            <button class="btn acc-dropdown desc pr-1" type="button">
+                                                <span>Dimensions</span>
+                                            </button>
+                                            <a href="javascript:void(0)" class="edit-content" data-toggle="modal"
+                                                data-target="#exampleModal"
+                                                (click)="this.editDescription = false; 
+                                                                                    this.editFeatures = false; this.editDimension = true; this.editProduct = false; 
+                                                                                    this.editInhabitrPrice = false; this.editProductBuyPrice = false; this.editAttr = false">
+                                                <!-- <i class="fa fa-pencil-square-o editIcon mr-3"
+                                                    aria-hidden="true"></i> -->
+                                                </a>
+                                        </h2>
+                                    </div>
+
+                                    <div id="collapse3" class="collapse" aria-labelledby="heading3"
+                                        data-parent="#accordionExample3">
+                                        <div class="card-body" [innerHTML]="dimension">
+                                            <!-- {{dimension}} -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="bg-white" style="padding:25px 0 25px 60px;">
+                    <table class="table border-none">
+                        <tbody>
+                            <tr>
+                                <td style="white-space: nowrap;"><a href="javascript:void(0)" data-toggle="modal"
+                                        data-target="#exampleModal"
+                                        (click)="this.editProduct = true; this.editInhabitrPrice = false; 
+                                                            this.editProductBuyPrice = false; this.editDescription = false;
+                                                            this.editFeatures = false; this.editDimension = false; this.editAttr = false">
+                                        <i class="fa fa-pencil-square-o editIcon mr-3"
+                                            aria-hidden="true"></i></a>Product Name: </td>
+                                <td class="font-weight-bold">{{productName}}</td>
+                            </tr>
+                            <tr>
+                                <td> <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal"
+                                        (click)="this.editProduct = false; this.editInhabitrPrice = false; 
+                                                        this.editProductBuyPrice = false; this.editDescription = false;
+                                                        this.editFeatures = false; this.editDimension = false; this.editAttr = true; this.getAttributes()">
+                                        <i class="fa fa-pencil-square-o editIcon mr-3"
+                                            aria-hidden="true"></i></a>Attributes:
+                                </td>
+                                <td><span *ngFor='let attribute of attributes'>{{decode(attribute)}}<br></span></td>
+                                
+                            </tr>
+                            <tr *ngIf="warningMsg">
+                                <td></td>
+                                <td style="font-size:18px;text-align: justify;padding: 7px 32px 0 6px;line-height: 26px;font-family: brandon-grotesque;">{{warningMsg}}</td>
+                            </tr>
+                            <tr>
+                                <td>SupplierName:</td>
+                                <!-- <i class="fa fa-pencil-square-o editIcon mr-3" aria-hidden="true"></i> -->
+                                <td class=" ">{{supplierName | titlecase}}</td>
+                            </tr>
+                           
+                            <tr>
+                                <td> <a href="javascript:void(0)" data-toggle="modal" data-target="#categoryModal">
+                                        <i class="fa fa-pencil-square-o editIcon mr-3" aria-hidden="true"> </i>
+                                    </a>Categories:</td>
+                                <td class=" ">{{categoryname}}</td>
+                             
+                            <!-- <td class=" ">{{categoryname}}</td> -->
+                            </tr>
+                            <tr>
+                                <td style="vertical-align: middle;">Room Builder:</td>
+                                <!-- <i class="fa fa-pencil-square-o editIcon mr-3"aria-hidden="true"></i> -->
+                                <td class=" ">
+                                    <div class="main-optional">
+                                        <div style="display: flex">
+
+                                            <input type="checkbox" class="checkbox" [disabled]="!enableCheckbox"
+                                                [(ngModel)]="mainCheck" (change)="mainChangeStatus()" id="checkbox-2" />
+                                            <label for="checkbox-2" class="checkbox-click-target">
+                                                <span class="checkbox-box"></span><span class="position-relative"
+                                                    style="top: 3px">Main
+                                                    Category </span>
+                                            </label>
+                                        </div>
+
+                                        <div style="display: flex">
+                                            <input type="checkbox" class="checkbox" [disabled]="!enableCheckbox"
+                                                [(ngModel)]="optionalCheck" (change)="optionalChangeStatus()"
+                                                id="checkbox-3" />
+                                            <label for="checkbox-3" class="checkbox-click-target">
+                                                <span class="checkbox-box"></span><span class="position-relative"
+                                                    style="top: 3px">Optional
+                                                    Category </span>
+                                            </label>
+                                        </div>
+
+
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- <tr>
+                                                    <td>Supplier Asset Price: </td>
+                    
+                                                    <td class="font-weight-bold">{{supplierAssetPrice | currency}}</td>
+                                                </tr> -->
+                            <tr>
+                                    <td style="white-space: nowrap;"><a href="javascript:void(0)" data-toggle="modal"
+                                        data-target="#exampleModal"
+                                        (click)="this.editProduct = false; this.editInhabitrPrice = true; 
+                                                            this.editProductBuyPrice = false; this.editDescription = false;
+                                                            this.editFeatures = false; this.editDimension = false; this.editAttr = false">
+                                        <i class="fa fa-pencil-square-o editIcon mr-3"
+                                            aria-hidden="true"></i></a>AssetPrice: </td>
+                                <td>{{inhabitrPrice | currency}}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button class="btn btnColor"(click)="imageLens()">Check Price Updates</button>&nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <span class="pr-1"><span>Min Price: </span>${{priceDestails?.glens_min_price}}</span>-
+                                    <span class="pl-1"><span>Max Price: </span>${{priceDestails?.glens_max_price}}</span><br>
+                                    <span>Note : This price is from " {{countOfMatch}} " similar Products</span><br>
+                                    <span>Last Updated on : {{priceDestails?.updated_date |date}}</span><br>
+                                    <a style="color: black;text-decoration: underline;font-size: 15px;"href="javascript:void(0)" data-toggle="modal" data-target="#HistoryModel"
+                                    >Asset Price History</a>
+                                </td>
+                                <td></td>
+                               
+                            </tr>
+                            <br>
+                            <tr>
+                                <td><a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal"
+                                        (click)="this.editProduct = false; this.editInhabitrPrice = false; this.editProductBuyPrice = true; this.editAttr = false">
+                                    </a>Buy Price:<i [title]="'Multiplier='+ buyPriceM"class="fa fa-info-circle fa-1x ml-2 pointer fa-md align-top"></i></td>
+                                <td class=" ">{{buyPrice | currency}}</td>
+                            </tr>
+                            <tr>
+                                <td><a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal"
+                                        (click)="this.editProduct = false; this.editInhabitrPrice = false; this.editProductBuyPrice = true; this.editAttr = false">
+                                    </a>Buy Used Price:<i [title]="'Multiplier='+ buyUsedPriceM"class="fa fa-info-circle fa-1x ml-2 pointer fa-md align-top"></i>
+                                </td>
+                                <td class=" ">{{buyUsedPrice | currency}}</td>
+                            </tr>
+                            <tr style="display: none;">
+                                <td>
+                            <tr>
+                                <td>SKUs Available:</td>
+                                <td width="70%">
+                                    <div class="dropdown text-center position-relative">
+                                        <button
+                                            class="btn btn-white dropdown-toggle border position-relative text-left rounded-0"
+                                            type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
+                                            {{ selectedSku }}
+                                        </button>
+                                        <div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item"
+                                                *ngFor='let skus of variationImages;  let i = index'
+                                                (click)="activeImage(i); setSku(skus)"
+                                                href="javascript:void(0)">{{skus.inhabitr_sku}}</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </td>
+                            <td></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class=" text-center mt-07 bg-white p-3">
+                    <!-- priceBox -->
+                    <div>
+                        <div class="priceBox">
+                            <div class="boxAlign">
+                                <!-- <div class="buyPrice">
+                                    <span class="">
+                                        <input type="radio" (click)="buttonTypeChecked('1')" name="type" class=""
+                                            id="buy" value="1" style="margin-bottom: -3px;">
+                                        <span class="ml-2" style="font-size: 18px;font-weight: 500;">Buy
+                                            Price</span>
+                                        <span class="" style="
+                                        margin-left: 60px;
+                                    ">${{buyPrice}}</span>
+                                    </span>
+                                </div> -->
+                                <!-- <div class="rentPrice">
+                                    <span *ngIf="categoryname !== 'Virtual Product'">
+                                        <input type="radio" name="type" (click)="buttonTypeChecked('0')" id="rent"
+                                            value="0" checked style="margin-bottom: -3px;">
+                                        <span class="ml-2" style="font-size: 18px;font-weight: 500;"> Rental
+                                            Price</span>
+                                        <span class="" style="margin-left: 37px;">${{rentPrice}}/mo</span>
+                                        <p class="months"> (12 Months)</p>
+                                    </span>
+                                </div> -->
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div [ngClass]="{ rentActive: selectedButtonType == '0' }" class="rentPriceView"
+                                        id="rent" (click)="buttonTypeChecked('0')">
+                                            <h3>${{rentPrice}}/mo</h3>
+                                            <p class="m-0">Rental Price</p>
+                                            <p>({{monthNums}} Months)</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="varticalLine"></div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div [ngClass]="{ rentActive: selectedButtonType == '1' }" class="rentPriceView"
+                                        id="buy" (click)="buttonTypeChecked('1')">
+                                            <h3>${{buyPrice}}</h3>
+                                            <p>Purchase Price</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="font-weight-bold pt-3">
+                                    <div class="range-slider">
+                                        <span>Rent Duration:</span>
+                                        <input class="range-slider__range" type="range" value="{{ monthNums }}" min="1"
+                                            max="36" (change)="updateRent($event)">
+                                        <span class="range-slider__value">{{monthNums}}</span>
+                                    </div>
+                                </div>
+                                <div class="row" >
+                                    <div class="col-md-12 label-size-view" *ngIf="sizeValues?.length!=0">
+                                        <!-- <label>Size:</label>
+                                        <select (change)="sizeVariationValue($event)" [(ngModel)]="selectedSize" class="form-control custom-form-control">
+                                            <option value="" disabled selected>Select your option</option>
+                                            <option *ngFor="let sizeValue of sizeValues" name="ratings"  value="{{sizeValue?.attribute_value}}">
+                                                {{sizeValue?.attribute_value}}</option>
+                                        </select> -->
+                                        <label>Size:</label>
+                                        <button class="
+                                        btn btn-white
+                                        dropdown-toggle
+                                        custom-toggle
+                                        border
+                                        position-relative
+                                        custom-toggle
+                                        text-left
+                                      " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                      aria-expanded="false">
+                                      <span *ngIf="!selectedSize">Choose Options</span>
+                                      <span>{{selectedSize}}</span>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                      <a class="dropdown-item" *ngFor="let sizeValue of sizeValues" (click)="sizeVariationValue(sizeValue)"
+                                        href="javascript:void(0)">{{sizeValue?.attribute_value}}</a>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="pt-3">
+                                    <div class="mt-3">
+                                        <span class="Q">Quantity:</span>
+                                        <div class="quty">
+                                            <span class="pl-1 cursor-pointer" (click)="decreaseQty()">-</span>
+                                            <span class="pl-4">{{ commonQty }}</span>
+                                            <span class="pl-4 cursor-pointer" (click)="increaseQty()">+</span>
+                                            <input type="hidden" name="commonQty" id="commonQty"
+                                                value="{{ commonQty }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-5">
+                                    <div class="col-5">
+                                        <button type="button" class="border btn btn-light px-3 mr-3 mb-3 btn-55"
+                                            data-toggle="modal" data-target="#createOrselectMD"
+                                            (click)="openModal1(createOrselectMD)"><span class="editFont">Add to
+                                                Moodboard</span></button>
+                                    </div>
+                                    <div class="col-5">
+                                        <button type="button" class="border btn btn-light px-3 mr-3 mb-3 btn-55"
+                                            data-toggle="modal" data-target="#addToQuote" (click)="openModal1(addToQuote)"  data-dismiss="modal"><span
+                                                class="editFont">Add to
+                                                Quote</span></button>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class=" text-center mt-07 bg-white p-3">
+                    <!-- WarehouseTable -->
+                    <div>
+                        <table class="WarehouseTable" border="1">
+                            <thead>
+                                <tr>
+                                    <th><span>Warehouse</span></th>
+                                    <th style="white-space: nowrap;">Inventory <i
+                                            style="margin-left: 25px;cursor: pointer;" (click)="getInventeryqty()"
+                                            class="fa fa-refresh" aria-hidden="true"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let prod of warehouseLocations;let i = index">
+                                <tr *ngIf="prod.is_inhabitr_warehouse=='Y'">
+                                    <td style="white-space: nowrap;"><span>
+                                            <!-- <span
+                                                *ngIf="prod.is_inhabitr_warehouse=='N'">Inhabitr Storage</span> -->
+                                            <span *ngIf="prod.is_inhabitr_warehouse=='Y'">{{prod.warehouse_name
+                                                | titlecase}}</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div><span (mouseover)="invpopupModelShow(prod.warehouse_id)"
+                                                (mouseout)="invpopupModelHide()"><u
+                                                    style="cursor: pointer;">{{prod.non_assigned_inv ?
+                                                    prod.non_assigned_inv : 0}}</u></span>
+                                            <!-- <span
+                                                *ngIf="is_inventoryCount===1"
+                                                (mouseover)="invpopupModelShow()"
+                                                (mouseout)="invpopupModelHide()">{{TotalInv}}</span> -->
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="prod.is_inhabitr_warehouse=='N'">
+                                    <td><span style="white-space: nowrap;">
+                                            <!-- <span
+                                            *ngIf="prod.is_inhabitr_warehouse=='Y'">Storage</span> -->
+                                            <span *ngIf="prod.is_inhabitr_warehouse=='N'">{{prod.warehouse_name
+                                                | titlecase}}</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <!-- <span (mouseover)="invpopupModelShow(prod.warehouse_id)"
+                                            (mouseout)="invpopupModelHide()">{{prod.non_assigned_inv ? prod.non_assigned_inv : 0}}</span> -->
+                                        <span>{{prod.supplier_quantity ? prod.supplier_quantity :
+                                            0}}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tr>
+                                <td> <b>Total</b> </td>
+                                <td> {{ totalQtyOfSku }} </td>
+                            </tr>
+                        </table>
+
+                        <div class="tooltiptext" id='invpopup'>
+                            <table border="1" class="WarehouseTable">
+                                <tr>
+                                    <td style="width: 50%;">Assigned Inv: </td>
+                                    <td class="font-weight-bold">
+                                        <span>{{AssignedInv}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Unassigned Inv: </td>
+                                    <td class="font-weight-bold">
+                                        <!-- <span *ngIf="is_inventoryCount==0">{{unassignedquantity}}</span> -->
+                                        <span>{{invquantity}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>B2B Storage: </td>
+                                    <td class="font-weight-bold">
+                                        <span>{{B2bstorage}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>In Transit: </td>
+                                    <td class="font-weight-bold">
+                                        <span>{{intransit ? intransit : 0}}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <table style="margin-left: 68px;font-size: 18px;">
+                        <tr style="text-align: left;">
+                            <td>Source Type:</td>
+                            <td class="font-weight-bold">{{sourcetype }}</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                            <td>Supplier SKU:</td>
+                            <td class="font-weight-bold">{{supplierSKU | uppercase }}</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                            <td>Inhabitr SKU: </td>
+                            <td class="font-weight-bold">{{inhabitrSKU | uppercase }}</td>
+                        </tr>
+                        <tr style="text-align: left;">
+                            <td *ngIf="isOPsDb">Last updated in Ops:</td>
+                            <td class="font-weight-bold" *ngIf="isOPsDb">
+                                {{ updateOps | date:'MM-dd-yy' }}</td>
+                        </tr>
+                    </table>
+
+                    <div class="row col-md-12" style="margin-left: 2rem!important;">
+                        <div class="col-md-6" *ngIf="!isOPsDb">
+                            <button type="button" class="pull-right border btn btn-light rounded-0 mt-2 add-btn btn-55"
+                                (click)="registerInOps()">{{registerInOpsButtonText}}</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="pull-left border btn btn-light rounded-0 mt-2 add-btn btn-55"
+                                data-dismiss="modal" (click)="registerInOps()"><span class="editFont">Sync in
+                                    Ops</span></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-2 bg-white p-3 ">
+                    <div>
+
+                        <p style="white-space: nowrap; font-size: 18px; font-weight: 500;">
+                            <span style="    margin-right: 14rem!important;">Inhabitr Warehouse Location for
+                                Publish:</span>
+                            <span style="float: right;">TBD</span>
+                        </p>
+                        <div class="row">
+                            <div class="col-8">
+                                <ng-select class="custom custom-select" [items]="inhabitrWarehouseList" bindLabel="name"
+                                    bindValue="id" [searchable]="true" [clearable]="true" [multiple]="true"
+                                    placeholder="Select Warehouse" [closeOnSelect]="false"
+                                    [(ngModel)]="selectedWarehouseIds" (change)="getValues()">
+                                </ng-select>
+
+                            </div>
+                            <div class="col-4" style="
+                            margin-left: -64px;
+                            margin-top: -8px;
+                        ">
+                                <button type="button" class="border btn btn-light px-5 mr-3 mt-3 btn-55"><span
+                                        class="editFont">Submit</span></button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="flex-wrap mt-2" style="font-size: 15px;">
+                    <div class="d-flex mb-3 text-center">
+                        <div class="p-2 flex-fill bg-white mr-1">
+                            <div style="margin-top: 10px;">Published to Saffron:<b>{{publishedToSaffron}}</b>
+                            </div>
+                            <div *ngIf="publishedToSaffron == 'Yes'">
+
+                                <span *ngIf="publishedToSaffron == 'Yes'">Last updated in Saffron:</span>
+                                <span class="font-weight-bold" *ngIf="publishedToSaffron == 'Yes'">
+                                    {{ updatedAt | date:'MM-dd-yy' }}</span>
+
+                            </div>
+                            <div class="forradio d-flex justify-content-around">
+                                <div>
+                                    <input type="radio" [checked]=" isPublish === 0 " name="common-radio-name"
+                                        id="radio-2" value='1' (change)="onItemChange(1)" class="radio-button" />
+                                    <label for="radio-2" class="radio-button-click-target">
+                                        <span class="radio-button-circle"></span><span style="font-size: 15px;">
+                                            Publish</span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <input type="radio" [checked]=" isPublish === 1 " name="common-radio-name"
+                                        id="radio-3" (change)="onItemChange(0)" class="radio-button" value='0' />
+                                    <label for="radio-3" class="radio-button-click-target">
+                                        <span class="radio-button-circle"></span><span
+                                            style="font-size: 15px;">Unpublish</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="button" (click)='onSubmit("saffron")'
+                                class="border btn btn-light px-3 mr-3 mt-3 btn-55"><span
+                                    class="editFont">Submit</span></button>
+                        </div>
+                        <div class="p-2 flex-fill bg-white ml-1">
+                            <div style="margin-top: 10px;"> Published to Used
+                                Furniture:<b>{{publishedToBuyUsed}}</b></div>
+                            <div *ngIf="publishedToBuyUsed == 'Yes'">
+
+                                <span *ngIf="publishedToBuyUsed == 'Yes'">Last updated in Used Furniture:</span>
+                                <span class="font-weight-bold" *ngIf="publishedToBuyUsed == 'Yes'">
+                                    {{ updatedAtUsedFurniture | date:'MM-dd-yy' }}</span>
+
+                            </div>
+                            <div class="d-flex justify-content-around">
+                                <div *ngIf="sourcetype != 'Ops Dashboard'">
+                                    <input type="radio" [checked]=" publishedToBuyUsed === 'No'"
+                                        name="common-radio-buyused" id="radio-5" value='1'
+                                        (change)="onItemBuyUsedChange(1, 'click')" class="radio-button" />
+                                    <label for="radio-5" class="radio-button-click-target">
+                                        <span class="radio-button-circle"></span><span style="font-size: 15px;">
+                                            Publish</span>
+                                    </label>
+                                </div>
+
+                                <div *ngIf="sourcetype != 'Ops Dashboard'">
+                                    <input type="radio" [checked]=" publishedToBuyUsed ==='Yes'"
+                                        name="common-radio-buyused" id="radio-6"
+                                        (change)="onItemBuyUsedChange(0, 'click')" class="radio-button" value='0' />
+                                    <label for="radio-6" class="radio-button-click-target">
+                                        <span class="radio-button-circle"></span> <span
+                                            style="font-size: 15px;">Unpublish</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <button *ngIf="sourcetype != 'Ops Dashboard'" type="button" [disabled]="!submitDisabled"
+                                (click)='onSubmit("usedFurniture")'
+                                class="border btn btn-light px-3 mr-3 mt-3 btn-55"><span
+                                    class="editFont">Submit</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+<ng-template #createQuotes let-modal>
+    <div class="modal-header prod-modal">
+        <h4 class="modal-title font12" id="modal-basic-title">Create New Quotes</h4>
+        <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </span>
+    </div>
+    <div class="modal-body lightbg">
+        <app-modal-form (close)="modal.dismiss('Cross click');getQuotes() "></app-modal-form>
+    </div>
+</ng-template>
+<!-- add floor plan  -->
+<ng-template #createMoodboard let-modal>
+    <div class="modal-body lightbg" style="margin-left: -188px;">
+        <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </span>
+        <app-create-moodboard (close)="modal.dismiss('Cross click') ;getMoodboardUserList() "></app-create-moodboard>
+    </div>
+</ng-template>
+
+<div class="modal" id="HistoryModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="">Asset Price History</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Old Asset Price:  {{old_asset_price | currency}} </p>
+                <p>Updated by:  {{old_user_name}} {{old_updated_date | date}}</p>
+                <p>New Asset Price:  {{new_asset_price | currency}}</p>
+                <p>Updated by: {{user_name}} {{updated_date | date}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal" id="floorPlanModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="">Add Floor Plans</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                            <span class="">Floor Plan Name*</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right">
+                            <input type="text" class="form-control float-right rounded-0" [(ngModel)]="floorPlanName" />
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                            <span class="">Floor Plan Types</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right">
+                            <div class="dropdown text-center position-relative">
+                                <button class="
+                    btn btn-white
+                    dropdown-toggle
+                    border
+                    position-relative
+                    w-100
+                    text-left
+                    rounded-0
+                  " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    {{ selectedFloorPlanType}}
+                                </button>
+                                <div class="dropdown-menu" style="width: 70%" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" *ngFor="let floor of floorTypesList"
+                                        (click)="selectFloorTypes(floor)" href="javascript:void(0)">
+                                        {{ floor.name }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-6 control-label mt-2 text-dark">
+                            <span class="">No. of Units*</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right">
+                            <input type="number" class="form-control float-right rounded-0" id=""
+                                [(ngModel)]="floorPlanUnit" />
+                        </div>
+                    </div>
+
+                    <div class="row d-flex justify-content-center mt-0 pb-2">
+                        <div>
+                            <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                            data-toggle="modal" data-dismiss="modal" data-target="#mbModalFloor" [disabled]="!floorPlanName && !floorPlanUnit"
+                                (click)="addFloorPlans()">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- add floor plan -->
+<div class="modal" id="mbModalFloor" tabindex="-1" role="dialog" aria-labelledby="unitModalFloorLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 750px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="">Add {{ modalTitle }}</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row d-flex justify-content-around mt-2 pb-2 ">
+                        <div class="col-md-4 control-label mt-2 text-dark" style="margin-left: -51px;">
+                            <h4 for="radio-2" class="radio-button-click-target modalLabel">
+                                Select FloorPlan
+                            </h4>
+                        </div>
+                        <div class="col-md-8 float-left pl-0 mb-4" style="margin-left: -152px;">
+                            <button class="btn btn-white dropdown-toggle border position-relative text-left rounded-0"
+                                type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                {{ selectedFloorPlan }}
+
+                            </button>
+                            <div class="dropdown-menu add w-100" style="width:70%;height: 100px;overflow: auto;"
+                                aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" *ngFor="let fType of floorPlanList"
+                                (click)="selectFloorPlan(fType)"
+                                    href="javascript:void(0)">{{ fType.floorname}}</a>
+                            </div>
+                        </div>
+                       
+                        <div class="row">
+                            <input type="radio" name="optradio" id="radio-21" value="1" class="radio-button"
+                                (click)="isAllUnit(1)" />
+                            <label for="radio-21" class="radio-button-click-target radio-btn-lbl">
+                                <span class="radio-button-circle"></span>All Units
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </label>
+                            <input type="radio" name="optradio" id="radio-31" class="radio-button" value="0"
+                                (click)="isAllUnit(0)" />
+                            <label for="radio-31" class="radio-button-click-target">
+                                <span class="radio-button-circle"></span>Selected Unit
+                            </label>
+                        </div>
+                        <div class="col-12" style="margin-left: 19.5rem!important;">
+                            <div class="row d-flex justify-content-start p-2">
+                                <div *ngFor="let unit of fpUnitList"
+                                    [ngClass]="{ 'allow-click': isSelectedAll ? true : false }"
+                                    (click)="selectUnitsForPlans(unit)" class="px-3 py-2 mx-1 my-1 border position-relative add-unit-mb">
+                                    U{{ unit.unit }}
+                                    <span aria-hidden="true" [ngClass]="{ 'fa-check': unit.isActive ? true : false }"
+                                        class="px-2 pb-1 cross-close fa"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+
+                    <div class="row d-flex justify-content-center mt-0 pb-2">
+                        <div>
+                            <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                                data-dismiss="modal" data-target="#floorPlanModel" (click)="addProductToQuote()">
+                                <!-- (click)="addmoodbaordinFloorPlan()" -->
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid" *ngIf="isUnitTab">
+                    <!-- <div class="col-12"  *ngIf="isUnitTab">
+                <div class="row d-flex justify-content-center " style="height:89px" *ngIf='nodatafoundUnit'>
+                    <div class="d-flex flex-column ml-2" *ngIf='nodatafoundUnit'>No Unit found. Please add Unit.</div>
+                  
+                       
+                </div>
+                <div class="row d-flex justify-content-start" >
+                    
+                  
+                    <div class="px-4 py-3 ml-2  mb-2 border unit-view"  *ngFor ='let unit of unitWOPlans'    (click)='selectUnitsWithoutFloorPlan(unit)' >U{{unit.unit}} <span  aria-hidden="true"  [ngClass]="{'fa-check':(unit.isActive) ? true : false}" class="fa-check px-2 pb-1 cross-close fa "></span></div>
+                   
+                </div>
+            </div> -->
+
+                    <div class="col-12">
+                        <div class="row d-flex justify-content-start p-2">
+                            <div *ngFor="let unit of unitWOPlans"
+                                [ngClass]="{ 'allow-click': isUnitSelectedAll ? true : false }"
+                                (click)="selectUnitsWithoutFloorPlan(unit)"
+                                class="px-3 py-2 mx-1 my-1 border position-relative add-unit-mb">
+                                U{{ unit.unit }}
+                                <span aria-hidden="true" [ngClass]="{ 'fa-check': unit.isActive ? true : false }"
+                                    class="px-2 pb-1 cross-close fa"></span>
+                            </div>
+                            <!--  <div *ngFor='let unit of fpUnitList' [ngClass]="{'allow-click': isUnitSelectedAll ? true : false}"   (click)='selectUnitsForPlans(unit)'    class="px-3 py-2 mx-1 my-1 border position-relative add-unit-mb">U{{unit.unit}} <span  aria-hidden="true"  [ngClass]="{'fa-check':(unit.isActive) ? true : false}" class="px-2 pb-1 cross-close fa "></span></div> -->
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row radio-btn">
+                        <input type="radio" name="optradio1" id="radiounit-1" value="1" class="radio-button"
+                            (click)="isAllUnitWtihoutFP(1)" />
+                        <label for="radiounit-1" class="radio-button-click-target radio-btn-lbl">
+                            <span class="radio-button-circle"></span>All Units
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </label>
+                        <input type="radio" name="optradio1" id="radiounit-2" class="radio-button" value="0"
+                            (click)="isAllUnitWtihoutFP(0)" />
+                        <label for="radiounit-2" class="radio-button-click-target">
+                            <span class="radio-button-circle"></span>Selected Unit
+                        </label>
+                    </div>
+
+                    <div class="row d-flex justify-content-center mt-0 pb-2">
+                        <div>
+                            <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                                data-dismiss="modal" (click)="addwithoutFloorPlanUnits()">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- add moobdoard -->
+<ng-template #createOrselectMD let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Add/Select Moodboard</h4>
+        <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </span>
+    </div>
+    <div class="container-fluid creatMoodbaord">
+        <div class="row d-flex justify-content-around mt-0 pb-2">
+            <div class="col-md-2 control-label text-dark addIcon">
+                <a (click)="createNewMoodboardPopUp(createMoodboard);" style="cursor:pointer;"><img
+                        src="/assets/img/addButton.svg" alt=""></a>
+            </div>
+            <div class="col-8 control-label mt-2 text-dark">
+                <div class="dropdown text-center position-relative d-flex">
+                    <div class="col-md-12 pl-0">
+                        <div class="col-md-12 float-left pl-0 mb-4">
+                            <button class="btn btn-white dropdown-toggle border position-relative text-left rounded-0"
+                                type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                {{moodboardTypeId}}<span *ngIf="moodboardTypeId">-</span>{{moodbTypeName}}
+
+                            </button>
+                            <div class="dropdown-menu add w-100" style="width:70%;height: 250px;overflow: auto;"
+                                aria-labelledby="dropdownMenuButton" *ngIf="ismoodboard">
+                                <a class="dropdown-item" *ngFor="let mbdType of moodbTypes"
+                                    (click)="selectMoodbType(mbdType)"
+                                    href="javascript:void(0)">{{mbdType.sgid}}-{{mbdType.boardname}}</a>
+                            </div>
+                        </div>
+                        <div class="col-md-12 float-left">
+                            <button type="button" class="border btn btn-light px-3 mr-3 mb-3 btn-55"
+                                [disabled]="noDataFoundMoodboard" data-dismiss="modal" (click)="addtoMoodboard()">Add to
+                                Moodboard</button>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</ng-template>
+
+<!--====================-->
+<!--add to quote-->
+<ng-template #addToQuote let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title" id="">Add/Select Quote</h4>
+                <span class="close pointer" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </span>
+            </div>
+                <div class="container-fluid creatMoodbaord">
+                    <div class="row d-flex justify-content-around mt-0 pb-2">
+                        <div class="col-2 control-label mt-2 text-dark" style="margin-left: -243px;" >
+                            <div class="col-md-2 control-label text-dark addIconQ" style="margin-top: -6px;" (click)="createQuotesPopUp(createQuotes);">
+                                <a  class="underline mt-4"
+                                    style="cursor:pointer;">
+                                    <img src="/assets/img/addButton.svg"></a>
+                            </div>
+                        </div>
+
+                        <div class="col-8 control-label mt-2 text-dark">
+                            <div class="col-12 text-right">
+                                <div class="dropdown text-center position-relative d-flex">
+                                    <div class="col-md-12 pl-0">
+                                        <div class="col-md-12 float-left pl-0 mb-3">
+                                            <button
+                                                class="btn btn-white dropdown-toggle border position-relative text-left"
+                                                type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                                {{quoteTypeId}}<span *ngIf="quoteTypeId">-</span>{{quoteTypeName}}
+                                            </button>
+                                            <div style="height: 250px;overflow: auto;" class="dropdown-menu w-100"
+                                                aria-labelledby="dropdownMenuButton" *ngIf="isquote">
+                                                <a class="dropdown-item" *ngFor="let qType of quoteTypes"
+                                                    (click)="selectQuoteType(qType)"
+                                                    href="javascript:void(0)">{{qType.sgid}}-{{qType.name}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 float-left" style="margin-left: 135px;">
+                                <button type="button" *ngIf="floorPlanList?.length<=0"
+                                 class="border btn btn-light px-3 mr-3 mb-3 btn-55" data-toggle="modal"  
+                                    data-target="#floorPlanModel" (click)="modal.dismiss('Cross click')">Add to Quote</button>
+
+                                <button *ngIf="floorPlanList?.length>0" 
+                                    class="border btn btn-light px-3 mr-3 mb-3 btn-55" data-toggle="modal"
+                                     data-target="#mbModalFloor" data-dismiss="modal" (click)="modal.dismiss('Cross click')">Add to Quote</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+</ng-template>
+<!--========================-->
+<div class="container-fluid-50 pb-3 pt-3">
+    <div class="modal" id="inv" tabindex="-1" role="dialog" aria-labelledby="inv" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <table>
+                        <tr>
+                            <td>Assigned Inv: </td>
+                            <td class="font-weight-bold">
+                                <span>{{AssignedInv}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Unassigned Inv: </td>
+                            <td class="font-weight-bold">
+                                <span *ngIf="is_inventoryCount==0">{{quantity}}</span>
+                                <span *ngIf="is_inventoryCount==1 ">{{invquantity}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>B2B Storage: </td>
+                            <td class="font-weight-bold">
+                                <span>{{B2bstorage}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- moadal for edit -->
+    <!-- Modal -->
+    <div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" *ngIf='editInhabitrPrice' id="">Update Inhabitr Asset Price</h6>
+                    <h6 class="modal-title" *ngIf='editProduct' id="">Update Product Name</h6>
+                    <h6 class="modal-title" *ngIf='editProductBuyPrice' id="">Update Buy Price</h6>
+                    <h6 class="modal-title" *ngIf='editDescription' id="">Update Description</h6>
+                    <h6 class="modal-title" *ngIf='editFeatures' id="">Update Features</h6>
+                    <h6 class="modal-title" *ngIf='editDimension' id="">Update Dimensions</h6>
+                    <h6 class="modal-title" *ngIf='editAttr' id="">Update Attributes</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+
+
+                        <div class="row col-md-12 d-flex justify-content-around  mt-0 p-0" *ngIf='editAttr'>
+                            <div class="col-md-6" *ngFor="let attributes of attrList; index as i">
+
+                                <div class="control-label mt-2 text-dark"><span class="">{{attributes.name}}</span>
+                                </div>
+                                <div class="pr-0 text-left">
+                                    <!-- {{ defaultVar | json }} -->
+                                    <select name="{{attributes.name}}" id="{{attributes.name}}" class="w-90"
+                                        (change)="selectAttr($event)">
+                                        <option value="">-- Select --</option>
+                                        <!-- <ng-container *ngFor="let selected of defaultVar"> -->
+
+                                        <ng-container *ngFor="let attrV of attributes.attribute_list">
+                                            <option *ngIf="attrV.sgid == defaultVar[i] " value={{attrV.sgid}} selected>
+                                                {{ attrV.attribute_value }}</option>
+                                            <option *ngIf="attrV.sgid != defaultVar[i] " value={{attrV.sgid}}>{{
+                                                attrV.attribute_value }}</option>
+                                            <!-- <option selected="attrV.sgid == defaultVar[i]" value={{attrV.sgid}}>{{ attrV.attribute_value }} - {{ attrV.sgid == defaultVar[i] }}</option> -->
+                                        </ng-container>
+                                        <!-- </ng-container> -->
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="justify-content-center text-center col-md-12 mt-4">
+                                <button class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                                    (click)="saveAttr()">Update</button>
+                            </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-around  mt-0 pb-2" *ngIf='editDescription'>
+                            <div class="col-3 control-label mt-2 text-dark"><span class="">Description</span></div>
+                            <div class="col-9 pr-0 text-right">
+
+                                <textarea name="updateDesc" [(ngModel)]='updateDesc'
+                                    class="form-control  float-right rounded-0" cols="30"
+                                    rows="10">{{updateDesc}}</textarea>
+
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-around  mt-0 pb-2" *ngIf='editFeatures'>
+                            <div class="col-3 control-label mt-2 text-dark"><span class="">Features</span></div>
+                            <div class="col-9 pr-0 text-right">
+
+                                <textarea name="updateFeat" [(ngModel)]='updateFeat'
+                                    class="form-control  float-right rounded-0" cols="30"
+                                    rows="10">{{updateFeat}}</textarea>
+
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-around  mt-0 pb-2" *ngIf='editDimension'>
+                            <div class="col-3 control-label mt-2 text-dark"><span class="">Dimensions</span></div>
+                            <div class="col-9 pr-0 text-right">
+
+                                <textarea name="updateDim" [(ngModel)]='updateDim'
+                                    class="form-control  float-right rounded-0" cols="30"
+                                    rows="10">{{updateDim}}</textarea>
+
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-around  mt-0 pb-2" *ngIf='editProduct'>
+                            <div class="col-6 control-label mt-2 text-dark"><span class="">Product
+                                    Name</span></div>
+                            <div class="col-6 pr-0 text-right"><input type="text" maxlength="200"
+                                    [(ngModel)]='editProductName' class="form-control  float-right rounded-0" id=""
+                                    value="{{productName}}">
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-around  mt-0 pb-2" *ngIf='editInhabitrPrice'>
+                            <div class="col-6 control-label mt-2 text-dark"><span class="">Inhabitr Asset Price</span>
+                            </div>
+                            <div class="col-6 pr-0 text-right"><input type="number" [(ngModel)]='editPrice'
+                                    (keypress)="onlyNumberKey($event)" class="form-control  float-right rounded-0" id=""
+                                    value="{{inhabitrPrice}}">
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-around  mt-0 pb-2" *ngIf='editProductBuyPrice'>
+                            <div class="col-6 control-label mt-2 text-dark"><span class="">Buy Price</span>
+                            </div>
+                            <div class="col-6 pr-0 text-right"><input type="number" [(ngModel)]='editBuyPrice'
+                                    (keypress)="onlyNumberKey($event)" class="form-control  float-right rounded-0" id=""
+                                    value="{{buyPrice}}">
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center  mt-0 pb-2">
+                            <div>
+                                <button type="button" *ngIf='editDescription'
+                                    class="border btn btn-light rounded-0 mt-2 px-5 add-btn" data-dismiss="modal"
+                                    (click)="updateDescription()">Update</button>
+                                <button type="button" *ngIf='editFeatures'
+                                    class="border btn btn-light rounded-0 mt-2 px-5 add-btn" data-dismiss="modal"
+                                    (click)="updateFeature()">Update</button>
+                                <button type="button" *ngIf='editDimension'
+                                    class="border btn btn-light rounded-0 mt-2 px-5 add-btn" data-dismiss="modal"
+                                    (click)="updateDimension()">Update</button>
+                                <button type="button" *ngIf='editProduct'
+                                    class="border btn btn-light rounded-0 mt-2 px-5 add-btn" data-dismiss="modal"
+                                    (click)="updateProductName()">Update Name</button>
+                                <button type="button" *ngIf='editInhabitrPrice'
+                                    class="border btn btn-light rounded-0 mt-2 px-5 add-btn" data-dismiss="modal"
+                                    (click)="updateAssetPrice()">Update Price</button>
+                                <button type="button" *ngIf='editProductBuyPrice'
+                                    class="border btn btn-light rounded-0 mt-2 px-5 add-btn" data-dismiss="modal"
+                                    (click)="updateBuyPrice()">Update Price</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- mdoal for edit -->
+
+    <!-- add quote -->
+
+    <!-- add quote end -->
+
+    <!--Category Modal-->
+    <div class="modal categoryModal" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="">Product Categories</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body overflowScloing">
+                    <div class="dialogContent">
+                        <ul ng-if="productCategoryList.length>0" class="align-categories">
+                            <div class="col-md-3">
+                                <span
+                                    *ngFor="let category of productCategoryList | orderBy:'name':false; let i = index">
+                                    <li [hidden]="category.name ==''" flex="100" *ngIf="i < 37">
+                                        <!-- <span> {{ category.name | titlecase }}</span> -->
+                                        <label class="category-container">{{ category.name | titlecase }}
+                                            <input *ngIf="category.name" type="radio"
+                                                (click)="getSelectedCategory(category);"
+                                                [attr.checked]="category.name === categoryname ? 'checked' : null"
+                                                name="radio">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </li>
+                                </span>
+                            </div>
+
+                            <div class="col-md-3">
+                                <span
+                                    *ngFor="let category of productCategoryList | orderBy:'name':false; let i = index">
+                                    <li flex="100" *ngIf="i >= 37 && i < 74">
+                                        <label class="category-container">{{ category.name | titlecase }}
+                                            <input *ngIf="category.name" type="radio"
+                                                (click)="getSelectedCategory(category);"
+                                                [attr.checked]="category.name === categoryname ? 'checked' : null"
+                                                name="radio">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </li>
+                                </span>
+                            </div>
+
+                            <div class="col-md-3">
+                                <span
+                                    *ngFor="let category of productCategoryList | orderBy:'name':false; let i = index">
+                                    <li flex="100" *ngIf="i >= 74 && i < 111">
+                                        <label class="category-container">{{ category.name | titlecase }}
+                                            <input *ngIf="category.name" type="radio"
+                                                (click)="getSelectedCategory(category);"
+                                                [attr.checked]="category.name === categoryname ? 'checked' : null"
+                                                name="radio">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </li>
+                                </span>
+                            </div>
+
+                            <div class="col-md-3">
+                                <span
+                                    *ngFor="let category of productCategoryList | orderBy:'name':false; let i = index">
+                                    <li flex="100" *ngIf="i >= 112">
+                                        <label class="category-container">{{ category.name | titlecase }}
+                                            <input type="radio" (click)="getSelectedCategory(category);"
+                                                [attr.checked]="category.name === categoryname ? 'checked' : null"
+                                                name="radio">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </li>
+                                </span>
+                            </div>
+                        </ul>
+                    </div>
+
+                    <div class="row d-flex justify-content-center  mt-0 pb-2">
+                        <div> <button type="button" class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                                data-dismiss="modal" (click)="onUpdateCategory(selectedCategory)">Update</button></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--Category Modal-->
+</div>

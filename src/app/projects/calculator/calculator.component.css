@@ -1,0 +1,128 @@
+.rent-asset-values {
+    padding: 0rem 8rem 0rem 0;
+}
+
+.calculator-bg{
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 13%);
+    margin: 0 0 5px 0px;
+    padding: 8px 10px 8px 10px;
+    position: relative;
+    cursor: pointer;
+}
+
+.calculator-bg h5::before {
+    content: '';
+    background-image: url("../../../assets/img/project/calulator1.png");
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-repeat: no-repeat;
+    left: -19px;
+    top: -10px;
+}
+
+.calculator-bg h5 {
+    color: #000;
+    text-transform: uppercase;
+    padding-left: 36px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 6px;
+    margin-left: 13px;
+}
+
+.calculator-view {
+    background-color: #F4F4F4;
+    border-radius: 5px;
+    margin: 0 0 5px 0px;
+    padding: 10px 10px 10px 10px;
+    color: #000;
+
+}
+
+.calculator-view h6 {
+    position: relative;
+    margin: 0;
+    padding: 0 0 0 12px;
+    cursor: pointer;
+}
+
+.calculator-form-view {
+    padding: 20px 3px 16px 3px;
+}
+
+.calculator-view input {
+    background-color: #fff;
+    height: 25px;
+    padding: 5px !important;
+    /* width: 60px !important; */
+}
+
+.asset-input label {
+    color: #09790E;
+}
+
+.asset-input input {
+    border: 1px solid #09790E;
+}
+
+.calculator-view h6::after {
+    content: '\f054';
+    font-family: 'FontAwesome';
+    position: absolute;
+    right: 0;
+    font-size: 13px;
+    top: 4px;
+}
+
+.calculator-view [aria-expanded="true"]::after {
+    content: '\f078' !important;
+}
+
+.expand::after {
+    content: '\f078' !important;
+}
+
+.calculator-view [aria-expanded="true"] {
+    content: '\f078' !important;
+}
+
+.Calculator-selection-option {
+    background-color: #f4f4f4;
+    text-align: left;
+    z-index: 999;
+    position: absolute;
+    left: 0px;
+    top: 33px;
+    width: 100% !important;
+    box-shadow: 0 0px 0px rgb(0 0 0 / 25%);
+    border: none;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+}
+
+.result-view {
+    padding: 10px 8px 10px 8px;
+   
+}
+
+.calculate-button button {
+    background-color: #3A3838;
+    border: none;
+    width: 178px;
+    height: 27px;
+    border-radius: 3px;
+    color: #fff;
+    margin-top: 10px;
+}
+.dollar{
+    position: absolute;
+    top: 32px;
+    left: 19px;
+    z-index: 9;
+}
+.padding-view{
+    padding: 0 0 0 15px;
+}

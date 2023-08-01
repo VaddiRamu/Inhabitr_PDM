@@ -1,0 +1,204 @@
+<header class="section-header auth-header shadow-sm">
+    <div class="container">
+      <div class="row justify-content-center  ">
+        <div class="col-xs-12  d-flex flex-wrap align-content-center " id="header" align="center">
+            <div  class="header-left d-flex align-items-center"><a  class="navbar-brand" href="/">INHABITR <em _ngcontent-tpd-c1="">Live Flexibly</em></a></div>
+        </div>
+      </div>
+    </div>
+</header>
+<section>
+    <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+        <div class="container">
+            <div class="row justify-content-center signupform">
+                <div class="col-12" >
+
+                    <div class="row">
+                        <div class="col text-center">
+                            <h4 class="login-title my-4"> Sign Up</h4> </div>
+                    </div>
+                    <div class="row align-items-center " >
+                        <div class="col " style="height:60px">
+                            <input type="text" class="form-control" placeholder="First Name*" formControlName="firstName" (keypress)="notAllowmultiplespaces($event,'firstName')">
+                            <div class="text-danger" *ngIf="!signUpForm.controls['firstName'].valid  && isSubmitted">
+                                Enter first name
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <div class="row align-items-center " >
+                       
+                        <div class="col " style="height:60px">
+                            <input type="text" class="form-control" placeholder="Last Name*" formControlName="lastName" (keypress)="notAllowmultiplespaces($event,'lastName')">
+                            <div class="text-danger" *ngIf="!signUpForm.controls['lastName'].valid   && isSubmitted">
+                                Enter last name
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center " >
+                       
+                        <div class="col " style="height:60px">
+                           
+                            <select  class="form-control height:60px  "  formControlName="role_type" (change)="getroletype($event)">
+                                <option value="" disabled selected> Select a role type</option>
+                                <option *ngFor="let roleTypeVal of roleTypes" [ngValue]="roleTypeVal.sgid">
+                                         {{roleTypeVal.role_type}}
+                                     </option>
+                                 </select>
+                            <div class="text-danger" *ngIf="!signUpForm.controls['role_type'].valid   && isSubmitted">
+                                Enter role type
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center " >
+                       
+                        <div class="col " style="height:60px">
+                           
+                            <select  class="form-control height:60px"  formControlName="role" (change)="getEntityNames(signUpForm.controls['role'].value)">
+                                <option value="" disabled selected> Select a role</option>
+                                <option *ngFor="let roleVal of roles" [ngValue]="roleVal.sgid">
+                                         {{roleVal.role_name}}
+                                     </option>
+                                 </select>
+                            <div class="text-danger" *ngIf="!signUpForm.controls['role'].valid   && isSubmitted">
+                                Enter role
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center " *ngIf="(signUpForm.controls['role'].value) === 6">
+                       
+                        <div class="col " style="height:60px">
+                           
+                            <select  class="form-control"  formControlName="supplier_id">
+                                <option value="" disabled selected> Select a supplier</option>
+                                <option *ngFor="let roleEntityName of roleEntityNames" [ngValue]="roleEntityName.supplier_id">
+                                         {{roleEntityName.entity_name}}
+                                     </option>
+                                 </select>
+                            <div class="text-danger" *ngIf="!signUpForm.controls['supplier_id'].valid   && isSubmitted && signUpForm.controls['role_type'].value===2">
+                                Enter role entity name
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center " *ngIf="shouldLocationInputDisplayed">
+                       
+                        <div class="col " style="height:60px">
+                            <input type="text" class="form-control" placeholder="Location*" formControlName="location">
+                            
+                            <div class="text-danger" *ngIf="!signUpForm.controls['location'].valid   && isSubmitted && signUpForm.controls['role_type'].value===2">
+                                Enter location
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center " >
+                        <div class="col " style="height:60px">
+                            <input type="email" class="form-control" placeholder="Email*" formControlName="email" [pattern]="emailPattern">
+                            <div class="text-danger" *ngIf="signUpForm.controls['email'].invalid  && isSubmitted">
+
+                                <div *ngIf="signUpForm.controls['email'].errors.required">
+                                    Enter email
+                                </div>
+                                <div *ngIf="signUpForm.controls['email'].errors.pattern">
+                                    invalid email
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row align-items-center" >
+                        <div class="col " style="height:60px">
+                            <input type="text" class="form-control" placeholder="country" formControlName="country">
+                            <div class="text-danger" *ngIf="!signUpForm.controls['country'].valid && signUpForm.controls['country'].touched">
+                                Enter country name.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center" >
+                        <div class="col " style="height:60px">
+                            <input type="number" class="form-control" placeholder="zipcode" formControlName="zipcode">
+                            <div class="text-danger" *ngIf="!signUpForm.controls['zipcode'].valid && signUpForm.controls['zipcode'].touched">
+                                Enter zipcode.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center" >
+                        <div class="col " style="height:60px">
+                            <input type="number" class="form-control" placeholder="phonenumber" formControlName="phonenumber">
+                            <div class="text-danger" *ngIf="!signUpForm.controls['zipcode'].valid && signUpForm.controls['zipcode'].touched">
+                                Enter Phone Number.
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="row align-items-center"  >
+                        <div class="col " style="height:60px">
+                            <input type="password" class="form-control" placeholder="Password*" formControlName="password">
+                            <div class="text-danger" *ngIf="signUpForm.controls['password'].invalid  && isSubmitted">
+                                <div *ngIf="signUpForm.controls['password'].errors.required">
+                                    Enter password
+                                </div>
+                                <div *ngIf="signUpForm.controls['password'].errors.minlength">
+                                    password must be minimum 6 character length
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row justify-content-center " >
+                        <div class="col " style="height:60px" >
+                            <input type="password" class="form-control" placeholder="Confirm Password*" formControlName="confirm_password">
+                            <div class="text-danger" *ngIf="signUpForm.controls['confirm_password'].invalid && isSubmitted">
+                                <div *ngIf="signUpForm.controls['confirm_password'].errors.required">
+                                    Confirm password required
+                                </div>
+                                <div class="text-danger" *ngIf="signUpForm.get('confirm_password').errors && 
+                                signUpForm.get('confirm_password').errors.ConfirmPassword && isSubmitted || signUpForm.get('confirm_password').errors && 
+                  signUpForm.get('confirm_password').errors.ConfirmPassword && (signUpForm.controls['confirm_password'].dirty && isSubmitted || signUpForm.controls['confirm_password'].touched)">
+                                     Password does not match
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row justify-content-center " >
+                       
+                        <button type="submit" class="btn btn-dark" > Sign Up  </button>
+                        
+                    </div>
+                    <div class="row mb-4 justify-content-right" >
+                        <a routerLink="/login" class="login-back" >Back to Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+<!-- <button (click)="openModal()">button</button>
+<a class="btn btn-primary" data-toggle="modal" href="#ignismyModal">open Popup</a> -->
+<div class="modal fade" id="ignismyModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label=""><span>×</span></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="thank-you-pop">
+                    <img src="http://goactionstations.co.uk/wp-content/uploads/2017/03/Green-Round-Tick.png" alt="">
+                    <h1>Thank You!</h1>
+                    <p>Your Account was Created.</p>
+                    <button type="button" class="btn btn-primary" (click)="navigateToShop()" data-dismiss="modal" aria-label=""><span>Go To Shop</span></button>
+
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- <notifier-container></notifier-container> -->

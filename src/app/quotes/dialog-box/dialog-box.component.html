@@ -1,0 +1,21 @@
+<div *ngIf="leaseAggrement?.dialogType=='lease-aggrement'">
+    <div class="modal-header">
+        <h4 class="modal-title w-100">
+            {{leaseAggrement?.content}}
+        </h4>
+        <span class="close pointer" aria-label="Close" (click)="activeModal.close('Close click')">
+            <span aria-hidden="true">
+                <img src="/assets/img/project/cross.png">
+            </span>
+        </span>
+    </div>
+    <div class="modal-body pdf-scroll">
+        <form (ngSubmit)="savePdf(leaseAggrement.type)">
+            <div [innerHTML]="leaseAggrement?.result?.html"></div>
+
+            <div class="pt-3 pb-3 text-center button-view">
+                <button type="submit" class="btn">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+header{
+    background: #ffffff;
+}
+.section-header .row{
+    height: 70px;
+    margin-bottom: 50px;
+}
+.btn-outline-primary {
+    color: #eb4317;
+    border-color: #eb4317;
+}
+.btn-outline-primary:hover{
+    background: #eb4317;
+    color: #ffffff;
+}
+.fb{
+    background: #3b5998;
+    color: #ffffff;
+    border-color: #3b5998;
+}
+.loginbtn{
+    background: #eb4317;
+    border-color:#eb4317;
+}
+.loginbtn:hover{
+    background: orangered;
+}
+.btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle{
+    background: #eb4317;
+    border: #eb4317;
+}
+.btn-outline-primary:not(:disabled):not(.disabled).active, .btn-outline-primary:not(:disabled):not(.disabled):active, .show>.btn-outline-primary.dropdown-toggle{
+    background: #eb4317;
+    border: #eb4317;
+}
+.form-control:focus{
+    border: 1px solid #ced4da !important;
+}
+.fb:hover,.fb:active{
+    background: #3b5998 !important;
+    color: #ffffff;
+    border-color: #3b5998 !important;
+}
+.card{
+    border: none !important;
+}
+.login_title{
+    color: #f47b20;
+}
+.img_width{
+    width: 200px;
+}
+.img_width img{
+    max-width: 100%;
+    max-height: 100%;
+}

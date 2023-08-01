@@ -1,0 +1,118 @@
+<header class="section-header auth-header shadow-sm">
+    <div class="container">
+        <div class="row justify-content-center  ">
+            <div class="col-xs-12  d-flex flex-wrap align-content-center " id="header">
+                <div class="header-left d-flex align-items-center"><a class="navbar-brand" routerLink="/">INHABITR
+                        <em>Live Flexibly</em></a></div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="room-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 border-view">
+                <div class="row justify-content-between">
+                    <h6 class="heading-view"><img src="assets/img/project/sofa.png"><span>Add an Autopackage</span></h6>
+                    <div>
+                        <b>Asset Value</b><label class="switch">
+                            <input type="checkbox" [checked]="priceType =='rent_price' ? true : false" (change)="checkCheckBoxvalue($event)">
+                            <span class="slider round"></span>
+                        </label><b>Rental Value</b>
+                    </div>
+                </div>
+                <div class="row selection-view">
+                    <div class="col-lg-6">
+                        <label>Select your Room</label>
+                        <div class="room-selection">
+                            <select [(ngModel)]="roomAttrId" (ngModelChange)="onChange($event,'room')">
+                                <option [value]="room?.sgid" *ngFor="let room of roomList">{{room?.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <label>Select your Budget</label>
+                        <div class="room-selection">
+                            <select [(ngModel)]="bgtAttrId" (ngModelChange)="onChange($event,'budget')">
+                                <option [value]="">Select Price Range</option>
+                                <option [value]="price?.price_range" *ngFor="let price of priceRange">{{price?.label}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-6">
+                <ul class="project-list">
+                    <li><b>Project Name:</b> {{unitsInfo?.project?.project_name}}</li>
+                    <li><b>Total Client's Budget For Proejct:</b> ${{unitsInfo?.project?.total_budget}}</li>
+                    <li><b>No of Units:</b> {{unitsInfo?.project?.no_of_units}}</li>
+                    <li *ngIf="unitsInfo?.project?.earnout_type=='RTO'"><b>Type:</b> Rent to Own
+                    </li>
+                    <li *ngIf="unitsInfo?.project?.earnout_type=='RTR'"><b>Type:</b> Rent to
+                        Return
+                    </li>
+                    <li *ngIf="unitsInfo?.project?.earnout_type=='Bo'"><b>Type:</b> Buy</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <ul class="room-breadcrum-list">
+                <li><b>Freight:</b> {{unitsInfo?.project?.freight_percentage}}%</li>
+                <li><b>Earnout Percentage:</b> {{unitsInfo?.project?.earnout_percentage}}%</li>
+                <li><b>Total Earnout Amt:</b> ${{unitsInfo?.project?.earnout_amount}}</li>
+                <li><b>Inhabitr Target AV After Freight:</b> ${{unitsInfo?.project?.inhabitr_asset_budget}}</li>
+                <li><b>Inhabitr Target Rent/month for all units:</b> ${{unitsInfo?.project?.rent_per_month}}</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 mt-3 mb-3" *ngFor="let room of roomBuilderList">
+                <div class="card custom-card">
+                    <div class="card-body p-3">
+                        <div data-count="3" class="image_container mb-2 imageCount_3">
+                            <img class="ap_img" *ngFor="let img of room.images" src={{img?.small}} />
+                        </div>
+                    </div>
+                    <div class="card-footer custom-footer">
+                        <h6><b>{{room?.name}}</b></h6>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <ul class="price-list">
+
+                                    <li>Asset Value ${{room?.asset_value}}</li>
+                                    <li>Rent ${{room?.sale_price}} <label
+                                            class="badge mb-0 ml-2 py-1 badge-success">{{room?.package_type}}</label>
+                                    </li>
+                                    <li>Buy Used ${{room?.buy_price}}</li>
+                                    <li>Buy New ${{room?.buy_new_price}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overly-view"></div>
+                    <div class="custom-overlay-button">
+                        <div class="add-button view-details">
+                            <button type="button" (click)="viewDetails(room?.id,room?.name)">
+                              View Details</button>
+                        </div>
+                        <div class="add-button">
+                            <button type="button" (click)="addToGroup(room?.id)">
+                                <img src="/assets/img/project/plus-square.png" class="mr-2" width="30px"> Add
+                                to Group</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div *ngIf="!roomBuilderList.length" class="nodata">
+                <h6>No result found based on given criteria</h6>
+            </div>
+        </div>
+    </div>
+</section>

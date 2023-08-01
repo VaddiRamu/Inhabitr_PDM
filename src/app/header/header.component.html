@@ -1,0 +1,88 @@
+<header class="navbar navbar-light shadow-sm p-0 pt-2" id="header" *ngIf = hideNav>
+
+  <div>
+    <div class="header-left d-flex align-items-center pl-2">
+      <a class="navbar-brand" routerLink="/admin/dashboard">INHABITR <em>Live Flexibly</em>
+        <em style="padding: 7px 0px 0 0;letter-spacing: 1px;">Product Data Management</em>
+      </a>
+      <!-- <span (click)="toggleMenu()" class="navbar-toggler-icon pl-5 pointer"></span> -->
+      <!-- <span style="color:#FFC000" *ngIf="supplierId === 14">
+        Coaster
+      </span> -->
+      <span class="coaster-logo" *ngIf="supplierId === 14">
+        <img widht="50px" height="50px;" [src]="coasterLogo" />
+      </span>
+    </div>
+
+  </div>
+  <form class="search_form" (submit)='search()' *ngIf="showSearch">
+
+    <div class="input-group">
+      <input type="text" class="form-control font12" name="keywords" value='{{searchString}}' [(ngModel)]="searchString"
+        placeholder="Search products" aria-label="Search" aria-describedby="basic-addon2">
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary search_btn" type="submit">Search</button>
+      </div>
+    </div>
+
+    <!-- <ng-container *ngFor="let ina of noInventoryAttr; let i = index">
+      <label style="margin-top: 10px;">
+        <input type="radio" (ngModelChange)="onChange(ina)" [value]="ina.value" [(ngModel)]="noInventorySelected" name="checkbox"> &nbsp;{{ina.name}}
+        &nbsp;&nbsp;
+      </label>
+    </ng-container> -->
+
+
+    <ng-container>
+      <label style="margin-top: 10px;">
+        <input type="radio" name="food" (ngModelChange)="onChange($event)" value="prod_name" [(ngModel)]="noInventorySelected"  name="checkbox">&nbsp;&nbsp;Products Name
+        &nbsp;&nbsp;
+      </label>
+      <label style="margin-top: 10px;">
+        <input type="radio"  name="food"  (ngModelChange)="onChange($event)" value="supplier_sku" [(ngModel)]="noInventorySelected" name="checkbox">&nbsp;&nbsp;Supplier SKU
+        &nbsp;&nbsp;
+      </label>
+      <label style="margin-top: 10px;">
+        <input type="radio"  name="food"  (ngModelChange)="onChange($event)" value="inhabitr_sku" [(ngModel)]="noInventorySelected" name="checkbox">&nbsp;&nbsp;Inhabitr SKU
+        &nbsp;&nbsp;
+      </label>
+    </ng-container>
+
+  </form>
+  <div class="row d-flex pr-2">
+    <ul class="list-style-none">
+      <li  class="nav-item">
+        <a routerLink="/admin/bookmarklet" class="bookmark nav-link text-dark ">
+          <i class="fa fa-bookmark  fa-fw"></i>
+          Bookmarklet
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-item dropdown ">
+      <a class="nav-link dropdown-toggle font14" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {{auth.getProfileInfo('firstName') | titlecase}} {{auth.getProfileInfo('lastName') | titlecase}}
+      </a>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="margin-left: -70px;">
+        <!-- <a class="dropdown-item" href="javascript:void(0)" (click)="navigate('settings')">Account Settings</a> -->
+        <a class="dropdown-item" style="color: #888;" href="javascript:void(0)" (click)="logout()"> Logout</a>
+      </div>
+    </div>
+  </div>
+
+
+</header>
+<div class="col-md-12 bg-light d-none d-sm-block d-sm-none d-md-block menu" *ngIf = hideNav>
+  <ul class="nav justify-content-center mb-0">
+    <li class="nav-item" *ngFor="let navLink of navLinks">
+      <a style="color: #fff;" routerLink="{{navLink?.url}}" class="nav-link">
+        <span class="sidebar_text">{{navLink?.name}}</span>
+      </a>
+    </li>
+   
+
+  </ul>
+
+</div>
+

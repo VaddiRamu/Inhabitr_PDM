@@ -1,0 +1,12 @@
+:host{
+    font-size: 1.2rem;
+}
+
+.modal-footer { 
+    border-top: none ;
+    justify-content:center;
+}
+.modal-header { border-bottom: none ;}
+.modal-body {
+    text-align: center;
+}

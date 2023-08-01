@@ -1,0 +1,606 @@
+
+
+<div class="col-sm-10 col-md-10 col-7 float-right pb-3">
+    <div class="container-fluid">
+        <div id="content"
+            [class]="!showMenu?'active container p-0 page-content mt-5 ':'container  page-content p-0 mt-5'"
+            *ngIf="itemInfo">
+            <nav aria-label="breadcrumb " class="nav-breadcrumb">
+                <ol class="breadcrumb bg-transparent p-0">
+                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="#" routerLink='/admin/packages'>Products</a></li>
+                    <li class="breadcrumb-item" ><a href="#">{{productName}}</a></li>
+                </ol>
+            </nav>
+
+
+            <div class="row d-flex">
+                <div class="col-sm-5 col-md-5 col">
+                    <div class="card rounded border-0 ml-2">
+                        <div class="card-image clearfix text-center">
+                            <img src="{{displayImage}}" alt="{{productName}}" style="height:300px;" title="{{productName}}"
+                                class="img_prodinfo-width">
+                        </div>
+                    </div>
+                    <!-- <div class="ml-2 text-center mt-3 bg-white p-3" *ngFor="let item of includeitems">
+                            <h6 class=" text-center">Include Items</h6>
+                           <div  class="m-2"><img class="img-thumbnail"  src="{{item.varilength.small}}" (click)="activeImage(item.varilength.small)"/></div>
+                    </div> -->
+
+                <div class="container-fluid pl-4 mt-3">
+                        <h6>Included in this Furniture Set</h6>
+                        <div class="row d-flex bg-white overflow-img" >
+                               <div  class="m-2" *ngFor="let item of includeitems">
+                                   <img class="img-thumbnail"  src="{{item.varilength.small}}" (click)="activeImage(item.varilength.small)"/></div>
+                        </div>
+                    </div>
+
+                    <div class="container-fluid pl-4 mt-3">
+                        <h6>Optional in this Furniture Set</h6>
+                        <div class="row d-flex bg-white overflow-img" >
+                               <div  class="m-2" *ngFor="let item of optionalItemsArray">
+                                   <img class="img-thumbnail"  src="{{item.optionlength.small}}" (click)="activeImage(item.optionlength.small)"/>
+                                </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-7 col-md-7 col">
+                    <div class="p-3 bg-white">
+                    <table class="table border-none m-0">
+                        <tbody>
+                            <tr>
+                                <td>Product Name: <a href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal" (click)="this.editProduct = true; this.editInhabitrPrice = false; this.editProductBuyPrice = false"> [edit]</a></td>
+                                <td  class="font-weight-bold">{{productName}}</td>
+                            </tr>
+                            <tr>
+                                <td>Supplier Name:</td>
+                                <td  class="font-weight-bold">{{supplierName | titlecase}}</td>
+                            </tr>
+                            <tr>
+                                <td>Category:</td>
+                                <td  class="font-weight-bold">
+                                    {{categoryname}}
+                                    <a  href="javascript:void(0)" data-toggle="modal" data-target="#categoryModal"> [edit]</a>
+                                </td>
+                                <!-- <td  class="font-weight-bold">
+                                    <div class="dropdown text-center position-relative">
+                                        <button class="btn btn-white dropdown-toggle border position-relative text-left rounded-0"
+                                            type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                            {{categoryname}}
+                                        </button>
+                                        <div class="dropdown-menu add w-100" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item pointer"*ngFor="let category of productCategoryList" (click)="selectProductCategory(category.name)"  href="javascript:void(0)">{{category.name}}</li>
+                                        </div>
+                                    </div>
+                                </td> -->
+                            </tr>
+                            <!-- <tr>
+                                <td>Buy Price:</td>
+                                <td  class="font-weight-bold">{{buyPrice}}</td>
+                            </tr> -->
+                            <!-- <tr>
+                                <td>Supplier Asset Price: </td>
+                                
+                                <td  class="font-weight-bold">{{supplierPrice | currency}}</td>
+                            </tr> -->
+                            <tr>
+                                <td>Inhabitr Asset Price: <a  href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal"  (click)="this.editProduct = false; this.editInhabitrPrice = true; this.editProductBuyPrice = false"> [edit]</a></td>
+                                <td   class="font-weight-bold">{{inhabitrPrice | currency}}
+                                </td>
+                            </tr>
+                            <tr>
+                                    <td >Buy Price:<a  href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal"  (click)="this.editProduct = false; this.editInhabitrPrice = false; this.editProductBuyPrice = true"> [edit]</a></td>
+                                    <td  class="font-weight-bold">{{buyPrice | currency}}</td>
+                                            <!-- <span class="font-weight-bold" style="margin-left: 15px;">{{buyPrice | currency}}</span> -->
+                            </tr>
+                            <tr>
+                                 <td>Rent Price/{{12}} month: </td>
+                                 <td  class="font-weight-bold">{{rentPrice | currency}}</td>
+                                 <td  class="font-weight-bold">
+                                        <div class="range-slider">
+                                          <label class="rentDuration" style="margin-left:-13%"> <b>Rent Duration:</b></label>
+                                          <input class="range-slider__range" type="range" value="12" min="1" max="12" (change)="updateRent($event)">
+                                          <span class="range-slider__value">{{monthNums}}</span>
+                                        </div> 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td >Buy Used Price:<a  href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal"  (click)="this.editProduct = false; this.editInhabitrPrice = false; this.editProductBuyPrice = true"> [edit]</a></td>
+                                <td  class="font-weight-bold">{{buyusedprice | currency}}</td>
+                                        <!-- <span class="font-weight-bold" style="margin-left: 15px;">{{buyPrice | currency}}</span> -->
+                        </tr>
+                            <tr>
+                                <td>Warehouse Location:</td>
+                                <td  class="font-weight-bold">{{warehouseLocation}}</td>
+                            </tr>
+                            <!-- <tr>
+                                <td>Inhabitr Warehouse Location:</td>
+                                <td  class="font-weight-bold">
+                                <ng-select class="custom"
+                                [items]="inhabitrWarehouseList"
+                                bindLabel="name" 
+                                bindValue="id" 
+                                [searchable]="true" 
+                                [clearable]="true"
+                                [multiple]="true" 
+                                placeholder="Select Warehouse"
+                                [closeOnSelect]="false"
+                                [(ngModel)]="selectedWarehouseIds"
+                                (change)="getValues()">
+                                </ng-select>
+                                  
+                                </td>
+                            </tr> -->
+                            <tr>
+                                <td>Inventory Qty: </td>
+                                <td  class="font-weight-bold">{{quantity}}
+                                <i
+                                        style="margin-left: 25px;cursor: pointer;" 
+                                        class="fa fa-refresh" aria-hidden="true"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Source Type:</td>
+                                <td  class="font-weight-bold">{{sourcetype }}</td>
+                            </tr>
+                            <tr>
+                                <td>Supplier SKU:</td>
+                                <td  class="font-weight-bold">{{supplierSKU | uppercase }}</td>
+                            </tr>
+                            <tr>
+                                <td>Inhabitr SKU: </td>
+                                <td  class="font-weight-bold" >{{inhabitrSKU | uppercase }}</td>
+                            </tr>
+                            <tr>
+                                <td  *ngIf="publishedToSaffron == 'Yes'">Last updated in Ops:</td>
+                                <td  class="font-weight-bold" *ngIf="publishedToSaffron == 'Yes'">{{updatedAt | date:'MM-dd-yy' }}</td>
+                            </tr>
+                            <!-- <tr>
+                                <td>Published to Saffron:</td>
+                                <td  class="font-weight-bold">{{publishedToSaffron}}</td>
+                            </tr> -->
+                            <tr>
+                                <td *ngIf="publishedToSaffron == 'Yes'">Last updated in Saffron:</td>
+                                <td  class="font-weight-bold" *ngIf="publishedToSaffron == 'Yes'">{{updatedAt | date:'MM-dd-yy' }}</td>
+                                <!-- <td *ngIf="!isOPsDb">
+                                    <button type="button" class="border btn btn-light rounded-0 mt-2 add-btn" (click)="registerInOps()">{{registerInOpsButtonText}}</button>
+                                </td> -->
+                            </tr>
+                            <!-- <tr>
+                                <td></td>
+                                <td>
+                                    <button type="button" class="border btn btn-light rounded-0  mt-2 add-btn" (click)="registerInOps()">{{registerInOpsButtonText}}</button>
+                                </td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                    <span *ngIf="!isOPsDb">
+                            <div class="row d-flex justify-content-center  mt-0 pb-2">
+                                <div> <button type="button" class="border btn btn-light rounded-0 mt-2 add-btn" (click)="registerInOps()">{{registerInOpsButtonText}}</button></div>
+                            </div>
+                        </span>
+                    <span *ngIf="isOPsDb">
+                        <div class="row d-flex justify-content-center  mt-0 pb-2">
+                            <div> <button type="button"
+                                    class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                                    data-dismiss="modal"  (click)="registerInOps()" style="background: #999 !important">Sync in Ops</button></div>
+                        </div>
+                    </span>
+                    </div>
+
+                    <div class="accordion mt-2" id="accordionExample">
+                        <div class="card border-0">
+                            <div class="card-header border-0 bg-white" id="headingOne" data-toggle="collapse" data-target="#collapseOne"
+                                aria-expanded="true" aria-controls="collapseOne">
+                                <h2 class="mb-0">
+                                    <button class="btn acc-dropdown bg-white desc" type="button">
+                                        Description
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                data-parent="#accordionExample">
+                                <div class="card-body">
+                                   {{description}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion mt-2" id="accordionExample2">
+                        <div class="card border-0">
+                            <div class="card-header border-0 bg-white" id="heading2" data-toggle="collapse" data-target="#collapse2"
+                                aria-expanded="true" aria-controls="collapse2">
+                                <h2 class="mb-0">
+                                    <button class="btn acc-dropdown desc" type="button">
+                                        Features
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="collapse2" class="collapse" aria-labelledby="heading2"
+                                data-parent="#accordionExample2">
+                                <div class="card-body">
+                                  {{features}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    <div class="text-center mt-2 bg-white p-3">
+                        <div style="display: flex;">
+                            <div>
+                                <div><p  style="white-space: nowrap">Inhabitr Warehouse Location for Publish:</p>
+                                    <ng-select class="custom" style="margin-top: 7px; width: 190px;" 
+                                    [items]="inhabitrWarehouseList" bindLabel="name" bindValue="id" [searchable]="true"
+                                        [clearable]="true" [multiple]="true" placeholder="Select Warehouse"
+                                        [closeOnSelect]="false" [(ngModel)]="selectedWarehouseIds"
+                                        (change)="getValues()">
+                                    </ng-select>
+                                </div>
+                                <div style="margin-left: -115px;margin-top: 10px;">Published to
+                                    Saffron:<b>{{publishedToSaffron}}</b></div>
+                            </div>
+                            <div style="margin-left: 112px;text-align: left;">
+                                <div style="display: flex;">
+                                    <div>
+                                    <input type="radio" [checked]=" isPublish === 1 " name="common-radio-name"
+                                        id="radio-2" value='1' (change)="onItemChange(1)" class="radio-button" />
+                                    <label for="radio-2" class="radio-button-click-target">
+                                        <span class="radio-button-circle"></span>Publish
+                                    </label>
+                                </div>
+                                <div>
+                                    <input type="radio" [checked]=" isPublish === 0 " name="common-radio-name"
+                                        id="radio-3" (change)="onItemChange(0)" class="radio-button" value='0' />
+                                    <label for="radio-3" class="radio-button-click-target">
+                                        <span class="radio-button-circle"></span>Unpublish
+                                    </label>
+                                </div>
+                                </div>
+                                <!-- <div *ngIf="this.source.toLowerCase() === 'ops dashboard'"> -->
+                                <div>
+                                    <input type="checkbox" class="checkbox" checked id="checkbox-2" />
+                                    <label for="checkbox-2" class="checkbox-click-target" style="margin-left: -8px;">
+                                        <span class="checkbox-box" style="margin-left: 10px;"></span>Saffron
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div>
+                        <input type="radio"  [checked]=" isPublish === 1 "    name="common-radio-name" 
+                        id="radio-2" value='1' (change)="onItemChange(1)"
+                        class="radio-button"   />
+               <label for="radio-2" 
+                      class="radio-button-click-target">
+                 <span class="radio-button-circle"></span>Publish
+               </label>
+               <input type="radio" [checked]=" isPublish === 0 "
+                        name="common-radio-name" 
+                        id="radio-3" (change)="onItemChange(0)"
+                        class="radio-button" value='0'/>
+               <label for="radio-3" 
+                      class="radio-button-click-target">
+                 <span class="radio-button-circle"></span>Unpublish
+               </label>
+            </div> -->
+             
+       <!-- <div>         
+        <input type="checkbox" 
+         class="checkbox" checked
+         id="checkbox-2"/>
+ <label for="checkbox-2" 
+        class="checkbox-click-target">
+   <span class="checkbox-box"></span>Saffron
+ </label>
+               </div> -->
+
+               <!-- <div *ngIf="this.source.toLowerCase() === 'api'|| this.source.toLowerCase() === 'edi'">
+                
+                <input type="checkbox" 
+                 class="checkbox" checked
+                 id="checkbox-2"/>
+         <label for="checkbox-2" 
+                class="checkbox-click-target">
+           <span class="checkbox-box"></span>Ops Dashbord
+         </label>
+                       </div> -->
+
+               <button type="button"  (click)='onSubmit()' class="border btn btn-light rounded-0 mt-2 add-btn" style="background: #999 !important">Submit</button>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+
+</div>
+
+<!-- moadal for edit -->
+
+  
+  <!-- Modal -->
+  <div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" *ngIf='editInhabitrPrice' id="">Update Inhabitr Asset Price</h6>
+                <h6 class="modal-title" *ngIf='editProduct' id="">Update Product Name</h6>
+                <h6 class="modal-title" *ngIf='editProductBuyPrice' id="">Update Buy Price</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                
+                    <div class="row d-flex justify-content-around  mt-0 pb-2" *ngIf='editProduct'>
+                        <div class="col-6 control-label mt-2 text-dark"><span class="">Product
+                                Name</span></div>
+                        <div class="col-6 pr-0 text-right"><input type="text" maxlength="200" [(ngModel)]='editProductName'
+                                class="form-control  float-right rounded-0" id="" value="{{productName}}">
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-around  mt-0 pb-2" *ngIf='editInhabitrPrice'>
+                        <div class="col-6 control-label mt-2 text-dark"><span class="">Inhabitr Asset Price</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right"><input type="number" [(ngModel)]='editPrice'
+                            (keypress)="onlyNumberKey($event)" class="form-control  float-right rounded-0" id="" value="{{inhabitrPrice}}">
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-around  mt-0 pb-2" *ngIf='editProductBuyPrice'>
+                        <div class="col-6 control-label mt-2 text-dark"><span class="">Buy Price</span>
+                        </div>
+                        <div class="col-6 pr-0 text-right"><input type="number" [(ngModel)]='editBuyPrice'
+                            (keypress)="onlyNumberKey($event)" class="form-control  float-right rounded-0" id="" value="{{buyPrice}}">
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-center  mt-0 pb-2">
+                        <div> <button type="button" *ngIf='editProduct'
+                                class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                                data-dismiss="modal" (click)="updateProductName()">Update Name</button>
+                                <button type="button" *ngIf='editInhabitrPrice'
+                                class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                                data-dismiss="modal" (click)="updatePrice()">Update Price</button>
+                                <button type="button" *ngIf='editProductBuyPrice'
+                                class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                                data-dismiss="modal" (click)="updateBuyPrice()">Update Price</button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+  </div>
+<!-- mdoal for edit -->
+
+
+
+<!-- add quote -->
+<div class="modal" id="mbModalFloor" tabindex="-1" role="dialog" aria-labelledby="unitModalFloorLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered " style="max-width: 750px;" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h6 class="modal-title" id="">Add {{modalTitle}}</h6>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="container-fluid modalcontent mdbody">
+            <input type="radio"    name="modal-radio-name1"  id="radio-41" value='1'   class="radio-button"  (click)="floorPlanTab()" />
+            <label for="radio-41"   class="radio-button-click-target floorplan-radio">
+                         <span class="radio-button-circle"></span>Floor Plan 
+             </label>
+          <input type="radio" name="modal-radio-name1" id="radio-51" class="radio-button" value='0' (click)="unitTab()"  />
+            <label for="radio-51" class="radio-button-click-target">
+                  <span class="radio-button-circle"></span>Unit Level
+              </label>
+        </div>
+        <br>
+
+            <div class="container-fluid" *ngIf="isFloorPlan">
+                <div class="row d-flex justify-content-around  mt-0 pb-2">
+                    <div class="col-4 control-label mt-2 text-dark">
+                      
+
+                      <label for="radio-2"   class="radio-button-click-target modalLabel">
+                        Select Floor Plan
+                    </label>
+
+
+                    </div>
+                    <div class="col-6 pr-0 text-right">
+                        <div class="dropdown text-center position-relative">
+                          <button class="btn btn-white dropdown-toggle custom-toggle border position-relative text-left rounded-0 dropdownMenuButton1"
+                              type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                              aria-expanded="false">
+                              {{floorTypeName}}
+                          </button>
+                          <div class="dropdown-menu w-100 "  aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item"*ngFor="let fType of floorTypes" (click)="selectFloorType(fType)"  href="javascript:void(0)">{{fType.floorname}}</a>
+                          </div>
+                        </div>
+  
+                      </div>
+                    
+                    <!-- <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" checked name="optradio">All Units
+                        </label>
+                      </div>
+                      <div class="form-check-inline">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" disabled name="optradio">Selected Unit
+                        </label>
+                      </div>
+                      <div class="row d-flex mt-2 justify-content-start p-2">
+                        <div *ngFor='let unit of fpUnitList'  class="px-3 py-2 mx-1 my-1 border">U{{unit.unit}}</div>
+                        
+                     </div> -->
+
+                    <div class="col-12">
+                      <div class="row d-flex  justify-content-start p-2">
+                        <div *ngFor='let unit of fpUnitList' [ngClass]="{'allow-click': isSelectedAll ? true : false}"   (click)='selectUnitsForPlans(unit)'    class="px-3 py-2 mx-1 my-1 border position-relative add-unit-mb">U{{unit.unit}} <span  aria-hidden="true"  [ngClass]="{'fa-check':(unit.isActive) ? true : false}" class="px-2 pb-1 cross-close fa "></span></div>                     
+                      </div>
+                    </div>
+                    <br>
+                </div>
+                  
+
+                    <div class="row radio-btn">
+                      <input type="radio"    name="optradio"  id="radio-21" value='1'   class="radio-button"  (click)='isAllUnit(1)' />
+                      <label for="radio-21"   class="radio-button-click-target radio-btn-lbl">
+                                   <span class="radio-button-circle"></span>All Units  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                       </label>
+                    <input type="radio" name="optradio" id="radio-31" class="radio-button" value='0' (click)='isAllUnit(0)'  />
+                      <label for="radio-31" class="radio-button-click-target">
+                            <span class="radio-button-circle"></span>Selected Unit
+                        </label>
+                  </div>
+
+
+
+
+
+                
+
+                <div class="row d-flex justify-content-center  mt-0 pb-2">
+                    <div> <button type="button"
+                            class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                            data-dismiss="modal"  (click)="addProductinFloorPlan()">Add</button></div>
+                </div>
+            </div>
+
+            <div class="container-fluid" *ngIf="isUnitTab">
+
+              
+                <!-- <div class="col-12"  *ngIf="isUnitTab">
+                    <div class="row d-flex justify-content-center " style="height:89px" *ngIf='nodatafoundUnit'>
+                        <div class="d-flex flex-column ml-2" *ngIf='nodatafoundUnit'>No Unit found. Please add Unit.</div>
+                      
+                           
+                    </div>
+                    <div class="row d-flex justify-content-start" >
+                        
+                      
+                        <div class="px-4 py-3 ml-2  mb-2 border unit-view"  *ngFor ='let unit of unitWOPlans'    (click)='selectUnitsWithoutFloorPlan(unit)' >U{{unit.unit}} <span  aria-hidden="true"  [ngClass]="{'fa-check':(unit.isActive) ? true : false}" class="fa-check px-2 pb-1 cross-close fa "></span></div>
+                       
+                    </div>
+                </div> -->
+
+                <div class="col-12">
+                  <div class="row d-flex  justify-content-start p-2">
+                    <div *ngFor ='let unit of unitWOPlans' [ngClass]="{'allow-click': isUnitSelectedAll ? true : false}"     (click)='selectUnitsWithoutFloorPlan(unit)'  class="px-3 py-2 mx-1 my-1 border position-relative add-unit-mb" >U{{unit.unit}} <span  aria-hidden="true"  [ngClass]="{'fa-check':(unit.isActive) ? true : false}" class=" px-2 pb-1 cross-close fa "></span></div>
+                   <!--  <div *ngFor='let unit of fpUnitList' [ngClass]="{'allow-click': isUnitSelectedAll ? true : false}"   (click)='selectUnitsForPlans(unit)'    class="px-3 py-2 mx-1 my-1 border position-relative add-unit-mb">U{{unit.unit}} <span  aria-hidden="true"  [ngClass]="{'fa-check':(unit.isActive) ? true : false}" class="px-2 pb-1 cross-close fa "></span></div> -->                     
+                  </div>
+                </div>
+                <br>
+
+                <div  class="row radio-btn"> 
+                  <input type="radio"    name="optradio1"  id="radiounit-1" value='1'   class="radio-button"  (click)='isAllUnitWtihoutFP(1)' />
+                  <label for="radiounit-1"   class="radio-button-click-target radio-btn-lbl">
+                               <span class="radio-button-circle"></span>All Units &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                   </label>
+                <input type="radio" name="optradio1" id="radiounit-2" class="radio-button" value='0' (click)='isAllUnitWtihoutFP(0)'  />
+                  <label for="radiounit-2" class="radio-button-click-target">
+                        <span class="radio-button-circle"></span>Selected Unit
+                    </label>
+              </div>
+               
+              <div class="row d-flex justify-content-center  mt-0 pb-2">
+                <div> <button type="button"
+                        class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                        data-dismiss="modal"  (click)="addwithoutFloorPlanUnits()">Add</button></div>
+              </div>
+
+
+            </div>
+            
+        </div>
+
+    </div>
+</div>
+</div>
+<!-- add quote end -->
+
+<!--Category Modal-->
+<div class="modal categoryModal" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="">Product Categories</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <div class="dialogContent">
+                        <ul ng-if="productCategoryList.length>0" class="align-categories">
+                            <div class="col-md-3">
+                                <span *ngFor="let category of productCategoryList | orderBy:'name':false;; let i = index">
+                                    <li flex="100" *ngIf="i < 13">
+                                        <!-- <span> {{ category.name | titlecase }}</span> -->
+                                        <label class="category-container">{{ category.name | titlecase }}
+                                            <input type="radio" (click)="getSelectedCategory(category);" [attr.checked]="category.name === categoryname ? 'checked' : null" name="radio">
+                                            <span class="checkmark"></span>
+                                          </label>
+                                    </li>
+                                </span>
+                            </div>
+                
+                            <div class="col-md-3">
+                                <span *ngFor="let category of productCategoryList | orderBy:'name':false;; let i = index">
+                                    <li flex="100" *ngIf="i >= 13 && i < 26">
+                                        <label class="category-container">{{ category.name | titlecase }}
+                                            <input type="radio" (click)="getSelectedCategory(category);" [attr.checked]="category.name === categoryname ? 'checked' : null" name="radio">
+                                            <span class="checkmark"></span>
+                                          </label>
+                                    </li>
+                                </span>
+                            </div>
+                
+                            <div class="col-md-3">
+                                <span *ngFor="let category of productCategoryList | orderBy:'name':false;; let i = index">
+                                    <li flex="100" *ngIf="i >= 26 && i < 38">
+                                        <label class="category-container">{{ category.name | titlecase }}
+                                            <input type="radio" (click)="getSelectedCategory(category);" [attr.checked]="category.name === categoryname ? 'checked' : null" name="radio">
+                                            <span class="checkmark"></span>
+                                          </label>
+                                    </li>
+                                </span>
+                            </div>
+                
+                            <div class="col-md-3">
+                                <span *ngFor="let category of productCategoryList | orderBy:'name':false;; let i = index">
+                                    <li flex="100" *ngIf="i >= 38">
+                                        <label class="category-container">{{ category.name | titlecase }}
+                                            <input type="radio" (click)="getSelectedCategory(category);" [attr.checked]="category.name === categoryname ? 'checked' : null" name="radio">
+                                            <span class="checkmark"></span>
+                                          </label>
+                                    </li>
+                                </span>
+                            </div>
+                        </ul>
+                       </div>
+
+                    <div class="row d-flex justify-content-center  mt-0 pb-2">
+                        <div> <button type="button"
+                                class="border btn btn-light rounded-0 mt-2 px-5 add-btn"
+                                data-dismiss="modal" (click)="onUpdateCategory(selectedCategory)">Update</button></div>
+                    </div>
+            </div>
+
+        </div>
+    </div>
+  </div>
+<!--Category Modal-->

@@ -1,0 +1,17 @@
+.input-container input{
+   
+    padding-left: 33px;
+  }
+  .input-container{
+      position: relative;
+  }
+  .input-container i{
+    position: absolute;
+    left: 0;
+    top: 0px;
+    padding: 9px 8px;
+    color: white;
+    background-color: #cbcccc;
+}
+
+  
